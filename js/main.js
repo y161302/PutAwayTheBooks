@@ -2,18 +2,21 @@ enchant(); // おまじない
 var rand = function(n){
   return Math.floor(Math.random() * n);
 };
+
+WIDTH = 480; // game canvas width (px)
+HEIGHT = 640; // game canvas height (px)
  
 window.onload = function() {
   
   // 行の終わりには、;（セミコロン）を付けます。
  
-  var game = new Game(480, 640); // ゲーム本体を準備すると同時に、表示される領域の大きさを設定しています。
+  var game = new Game(WIDTH, HEIGHT); // ゲーム本体を準備すると同時に、表示される領域の大きさを設定しています。
   game.fps = 15; // frames（フレーム）per（毎）second（秒）：ゲームの進行スピードを設定しています。
   game.preload("./img/BookBlackA.png", "./img/BookBlueA.png", "./img/BookGreenA.png", "./img/BookRedA.png", "./img/BookWhiteA.png", "./img/BookYellowA.png", "./img/Counter.png", "./img/Human1A.png", "./img/Human2A.png"); // pre（前）-load（読み込み）：ゲームに使う素材をあらかじめ読み込んでおきます。
  
   game.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
     /********** 表示位置 **********/
-    var baseW = 500;
+    var baseW = WIDTH;
     var iOSW = 0;
     var ua = navigator.userAgent.toLowerCase();
     var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
@@ -35,8 +38,8 @@ window.onload = function() {
         w = iOSW;
       }
       if(w < baseW){
-        console.log("initial-scale=" + w/480);
-        viewportContent = "width=480,initial-scale=" + w/480 + ",user-scalable=no,shrink-to-fit=no";
+        console.log("initial-scale=" + w/WIDTH);
+        viewportContent = "width=WIDTH,initial-scale=" + w/WIDTH + ",user-scalable=no,shrink-to-fit=no";
       }else{
         viewportContent = "width=device-width,initial-scale=1.0,user-scalable=no,shrink-to-fit=no";
       }
@@ -90,7 +93,7 @@ window.onload = function() {
     });
     
     // カウンターオブジェクト
-    var counter = new Sprite(480, 264);
+    var counter = new Sprite(WIDTH, 264);
     counter.image = game.assets['./img/Counter.png'];
     counter.x = 0;
     counter.y = 300;
@@ -108,20 +111,20 @@ window.onload = function() {
     game.rootScene.addEventListener('enterframe', ()=>{
       if(game.input.b){
         var b = new Book(rand(5));
-        b.x = (rand(3) + 1) * 480 / 4;
+        b.x = (rand(3) + 1) * WIDTH / 4;
         grpBook.addChild(b);
         console.log("added book ({$b.x}, {$b.y})");
       }
       if(game.input.h){
         var h = new Human();
-        h.x = (rand(3) + 1) * 480 / 4;
+        h.x = (rand(3) + 1) * WIDTH / 4;
         h.y = 0;
         grpHuman.addChild(h);
         console.log("added human");
       }
     });
 
-    alert("読み込み完了");
+    //alert("読み込み完了");
     /*
         var kuma = new Sprite(32, 32);  // くまというスプライト(操作可能な画像)を準備すると同時に、スプライトの表示される領域の大きさを設定しています。
         kuma.image = game.assets['./img/chara1.png']; // くまにあらかじめロードしておいた画像を適用します。
