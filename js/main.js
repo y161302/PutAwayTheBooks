@@ -32,7 +32,7 @@ window.onload = function() {
       var w = window.outerWidth;
       console.log(w, document.documentElement.clientWidth, isiOS);
       if(isiOS){
-        w = document.documentElement.clientWidth;
+        w = iOSW;
       }
       if(w < baseW){
         console.log("initial-scale=" + w/480);
