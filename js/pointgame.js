@@ -149,7 +149,6 @@ window.onload = function() {
         this.LAMBDA = 25 - (this.Level - 1) * 1.5
         this.SPEED = 1 + (this.Level - 1) / 10;
       }
-      console.log(this.id, "Lv. " + this.Level);
     }
     });
 
@@ -292,11 +291,9 @@ window.onload = function() {
         }else{
           // 空のテーブルから本を回収しようとした
           core.untouchable = WAITTIME;
-          navigator.vibrate(50);
           bp.visible = true;
         }
       }
-      console.log("POINT: " + core.point);
     });
 
     ////////// フレーム毎の処理（全体処理） //////////
@@ -340,7 +337,7 @@ window.onload = function() {
 
       //------ GAME OVER 時の挙動 ( リミット到達時の挙動 より前に記述する必要あり）
       if(core.isGameOver){
-        alert("GAME OVER...");
+        alert("GAME OVER...\nScore: " + core.point + "pt.");
         core.stop();
       }
       
