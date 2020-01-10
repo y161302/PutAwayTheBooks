@@ -1,4 +1,5 @@
 enchant(); // おまじない
+alert(1);
 var rand = function(n){
   return Math.floor(Math.random() * n);
 };
