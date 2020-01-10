@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert(1);
+alert(2);
 var rand = function(n){
   return Math.floor(Math.random() * n);
 };
@@ -271,6 +271,7 @@ window.onload = function() {
     // ポイント文字の横幅を取得する関数
     ptLabel.context2d = document.getElementsByTagName('canvas')[0].getContext('2d');
     ptLabel.context2d.font = ptLabel.font;
+    alert(ptLabel.context2d);
     ptLabel.getWidth = (str) => ptLabel.context2d.measureText(str);
     ptLabel.x = WIDTH / 2 - ptLabel.getWidth(ptLabel.text).width / 2;
     ptLabel.y = 560;
@@ -370,6 +371,9 @@ window.onload = function() {
       //------ GAME OVER 時の挙動 ( リミット到達時の挙動 より前に記述する必要あり）
       if(core.isGameOver){
         alert("GAME OVER...\nScore: " + core.point + "pt.");
+        core.rootScene.removeChild(grpHuman);
+        core.rootScene.removeChild(grpBook);
+        bp.visible = true;
         core.stop();
       }
       
