@@ -124,7 +124,7 @@ window.onload = function() {
       var ret = this.books.lastChild;
       this.books.removeChild(ret);
       this.popNum++;
-      if(this.popNum >= 5)
+      if(this.popNum >= 4 + this.Level)
         this.levelUp();
       return ret;
     },
@@ -137,7 +137,6 @@ window.onload = function() {
       return ret;
     },
     levelUp: function(){
-      console.log(this.id, "Lv. " + this.Level);
       new LvUp(); // LEVEL UP 画像の出現
       this.popNum = 0;
       this.Level++;
@@ -150,6 +149,7 @@ window.onload = function() {
         this.LAMBDA = 25 - (this.Level - 1) * 1.5
         this.SPEED = 1 + (this.Level - 1) / 10;
       }
+      console.log(this.id, "Lv. " + this.Level);
     }
     });
 
@@ -213,7 +213,7 @@ window.onload = function() {
     }
     });
 
-    //------ レベルアップクラス
+    //------ レベルアップ画像クラス
     var LvUp = Class.create(Sprite, {
     initialize: function(){
       Sprite.call(this, WIDTH, 75);
