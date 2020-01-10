@@ -3,6 +3,7 @@ var rand = function(n){
   return Math.floor(Math.random() * n);
 };
 
+////////// ゲームパラメーター //////////
 WIDTH = 480; // game canvas width (px)
 HEIGHT = 640; // game canvas height (px)
 WAITTIME = 20; // 人が本を置いて立ち去るまでの時間（難易度指標の一つ）
@@ -15,9 +16,41 @@ SPEED = 7; // 人が歩いてくる速度
 window.onload = function() { 
   var game = new Game(WIDTH, HEIGHT); // ゲーム本体を準備すると同時に、表示される領域の大きさを設定しています。
   game.fps = 15; // frames（フレーム）per（毎）second（秒）：ゲームの進行スピードを設定しています。
-  game.preload("./img/BookBlackA.png", "./img/BookBlueA.png", "./img/BookGreenA.png", "./img/BookRedA.png", "./img/BookWhiteA.png", "./img/BookYellowA.png", "./img/Counter.png", "./img/Human1A.png", "./img/Human2A.png", "./img/tokei.png");
+  game.preload("./img/BookBlackA.png", "./img/BookBlueA.png", "./img/BookGreenA.png", "./img/BookRedA.png", "./img/BookWhiteA.png", "./img/BookYellowA.png", "./img/Counter.png", "./img/Human1A.png", "./img/Human2A.png", "./img/tokei.png", "./img/PauseBG.png", "./img/ResumeButton.png", "./img/EndButton.png");
   game.lane = 3; // レーン数
   game.point = 0; // ポイント
+
+  ////////// ポーズシーンの生成 //////////
+  var createPauseScene = Class.create(Scene, {
+  initialize: function(){
+    Scene.call();
+
+    var grpButton = new Group();
+    
+    var bg = new Sprite(WIDTH, HEIGHT);
+    bg.image = game.assets['./img/PauseBG.png'];
+
+    var buttonPanel = new Sprite(WIDTH, HEIGHT/2);
+    buttonPanel.image = game.assets['./img/ButtonPanel.png'];
+    buttonPanel.x = 0;
+    buttonPanel.y = HEIGHT/4;
+    grpButton.addChild(buttonPanel);
+
+    var resumeButton = new Sprite(80, 40);
+    resumeButton.image = game.assets['./img/ResumeButton.png'];
+    grpButton.addChild(resumeButton);
+
+    var endButton = new Sprite(80, 40);
+    endButton.image = game.assets['./img/EndButton.png'];
+    grpButton.addChild(endButton);
+    
+    scene.addChild(bg);
+    scene.addChild(grpButton);
+    return scene;
+  }
+
+  ////////// ゲームオーバーシーンの生成 //////////
+  
  
   game.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
     ////////// 表示位置 //////////
@@ -87,6 +120,7 @@ window.onload = function() {
       this.y = 400 - index * Book.PILE.Y;
       this.time = TAKENTIME;
       grpBook.addChild(this);
+      // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
         if(index == books[lane].length - 1){
           if(this.time <= 0){
@@ -107,7 +141,7 @@ window.onload = function() {
     Book.BLUE = 3;
     Book.YELLOW = 4;
     Book.GREEN = 5;
-    Book.PILE = {X: 1, Y: 9};
+    Book.PILE = {X: 1, Y: 9}; // 表示上の移動距離
     
     //------ 人オブジェクト
     var Human = Class.create(Sprite, {
@@ -119,6 +153,7 @@ window.onload = function() {
       this.x = (lane * 2 + 1) * WIDTH / (game.lane * 2) - this.width / 2 - (lane - 1) * (counter.y - this.y) / 10;
       this.c = 0;
       grpHuman.addChild(this);
+      // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
         if(this.y < counter.y - this.height / 2){
           if(this.y < counter.y - this.height / 2 - 30 * humans[lane].indexOf(this)){
@@ -155,19 +190,24 @@ window.onload = function() {
     
     ////////// タッチ入力 //////////
     this.rootScene.addEventListener("touchstart", function(e) {
-      console.log("touched.");
-      var lane = parseInt(e.x * game.lane / WIDTH);
-      var b = books[lane].pop();
-      if(b){
-        grpBook.removeChild(b);
-        if(b.color == Book.BLACK){
-          if(game.point > 0)
-            game.point--;
-        }else{
-          game.point++;
+      if(e.y < HEIGHT/2){
+        game.pause();
+      }else{
+        var lane = parseInt(e.x * game.lane / WIDTH);
+        if(lane < 0) lane = 0; // 下の境界
+        if(lane >= game.lane) lane = game.lane-1; // 上の境界
+        var b = books[lane].pop();
+        if(b){
+          grpBook.removeChild(b);
+          if(b.color == Book.BLACK){
+            if(game.point > 0)
+              game.point--;
+          }else{
+            game.point++;
+          }
         }
+        console.log("POINT: " + game.point);
       }
-      console.log("POINT: " + game.point);
     });
     
     ////////// フレーム毎の処理（全体処理） //////////
