@@ -9,16 +9,20 @@
     <script src="./js/enchant.js"></script>
     <script src="./js/pointgame.js"></script>
     <style>
-      /* ウィンドウとゲーム画面のすき間をなくします */
       body {
-        width: 480px;
+        position: absolute;
+        top: 0;
         bottom: 0;
+        left: 0;
+        right: 0;
+        width: 480px;
+        height: 640px;
         padding: 0;
         margin: auto;
       }
     </style>
   </head>
   <body style="background: #000;">
-    <div id="enchant-stage" style="width: 480px; height: 640px; background: #0cf"></div>
+    <div id="enchant-stage" style="width: 480px; height: 640px; background: #0cf; margin: auto; position:absolute;"></div>
   </body>
 </html>

@@ -43,11 +43,14 @@ window.onload = function() {
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
     ////////// ウィンドウ設定（iOS対応用） //////////
     var baseW = WIDTH;
+    var baseH = HEIGHT;
     var iOSW = 0;
+    var iOSH = 0;
     var ua = navigator.userAgent.toLowerCase();
     var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
     if(isiOS){
       iOSW = document.documentElement.clientWidth;
+      iOSH = document.documentElement.clientHeight;
     }
     window.addEventListener("resize", updateMetaViewport, false);
     window.addEventListener("orientationchange", updateMetaViewport, false);
@@ -56,18 +59,25 @@ window.onload = function() {
       window.dispatchEvent(ev);
     function updateMetaViewport(){
       var ua = navigator.userAgent.toLowerCase();
-      var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
+      //var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
       var viewportContent;
       var w = window.outerWidth;
-      console.log(w, document.documentElement.clientWidth, isiOS);
+      var h = window.outerHeight;
+      console.log(w, document.documentElement.clientWidth, h, document.documentElement.cliendHeight);
       if(isiOS){
         w = iOSW;
+        h = iOSH;
       }
       if(w < baseW){
         console.log("initial-scale=" + w/WIDTH);
-        viewportContent = "width=WIDTH,initial-scale=" + w/WIDTH + ",user-scalable=no,shrink-to-fit=no";
+        viewportContent = "width=" + WIDTH + ",initial-scale=" + w/WIDTH + ",user-scalable=no,shrink-to-fit=no";
       }else{
         viewportContent = "width=device-width,initial-scale=1.0,user-scalable=no,shrink-to-fit=no";
+      }
+      if(h < baseH){
+        viewportContent = "height=" + HEIGHT + "," + viewportContent;
+      }else{
+        viewportContent = "height=device-height," + viewportContent;
       }
       document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent);
     }
@@ -245,13 +255,33 @@ window.onload = function() {
     tokei.scaleX = 0;
     tokei.scaleY = 0;
 
-    //------ レーンオブジェクト
+    //------ レーンオブジェクト(レーンクラスの実体)
     var LaneArray = [];
     for(var i=0; i<core.lane; i++){
       LaneArray.push(new Lane(i));
       // どうせループ回すならrootSceneに追加しちゃお
       core.rootScene.addChild(LaneArray[i]);
     }
+
+    //------ ポイント文字のオブジェクト
+    ptLabel = new Label();
+    ptLabel.font = '36px Comic Sans MS';
+    ptLabel.text = '0 pt.';
+    // ポイント文字の横幅を取得する関数
+    ptLabel.context2d = document.getElementsByTagName('canvas')[0].getContext('2d');
+    ptLabel.context2d.font = ptLabel.font;
+    ptLabel.getWidth = (str) => ptLabel.context2d.measureText(str);
+    ptLabel.x = WIDTH / 2 - ptLabel.getWidth(ptLabel.text).width / 2;
+    ptLabel.y = 560;
+    ptLabel.point = core.point;
+    ptLabel.addEventListener("enterframe", ()=>{
+      if(ptLabel.point != core.point){
+        ptLabel.point = core.point;
+        ptLabel.text = core.point + " pt.";
+        ptLabel.x = WIDTH / 2 - ptLabel.getWidth(ptLabel.text).width / 2;
+      }
+    });
+    
 
     //------ ブラックパネルオブジェクト
     var bp = new Sprite(WIDTH, HEIGHT);
@@ -265,6 +295,7 @@ window.onload = function() {
     core.rootScene.addChild(counter);
     core.rootScene.addChild(grpBook);
     core.rootScene.addChild(grpLvUp);
+    core.rootScene.addChild(ptLabel);
     core.rootScene.addChild(tokei);
     core.rootScene.addChild(bp);
 
