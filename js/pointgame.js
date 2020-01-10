@@ -29,7 +29,7 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/BookFrameA.png",
            "./img/BookFrameDotA.png",
            "./img/BookFrameLimitA.png",
-           "./img/BlackPanelA25.png",
+           "./img/BlackPanelA50.png",
            "./img/LEVELUPA.png"];
  
 window.onload = function() { 
@@ -138,7 +138,7 @@ window.onload = function() {
     },
     levelUp: function(){
       console.log(this.id, "Lv. " + this.Level);
-      new LvUp();
+      new LvUp(); // LEVEL UP 画像の出現
       this.popNum = 0;
       this.Level++;
       if(this.Level >= 10){
@@ -256,7 +256,7 @@ window.onload = function() {
 
     //------ ブラックパネルオブジェクト
     var bp = new Sprite(WIDTH, HEIGHT);
-    bp.image = core.assets['./img/BlackPanelA25.png'];
+    bp.image = core.assets['./img/BlackPanelA50.png'];
     bp.x = 0;
     bp.y = 0;
     bp.visible = false;
@@ -285,6 +285,7 @@ window.onload = function() {
       if(!core.untouchable){
         var lane = LaneArray[parseInt(e.x * core.lane / WIDTH)];
         var book = lane.popBook();
+        console.log(book);
         if(book){
           // 本が回収された
           core.point++;
