@@ -37,7 +37,7 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/BlackPanelA.png",
            "./img/BlackPanelA40.png",
            "./img/LEVELUPA.png",
-           "./img/otetsukiA.png",
+           "./img/OtetsukiA.png",
            "./img/GameOverA.png",
            "./img/WarnningPanelA.png"];
  
@@ -760,7 +760,7 @@ window.onload = function() {
     var Otetsuki = Class.create(Sprite, {
     initialize: function(){
       Sprite.call(this, 262, 67);
-      this.image = core.assets['./img/otetsukiA.png'];
+      this.image = core.assets['./img/OtetsukiA.png'];
       this.x = (WIDTH - this.width) / 2;
       this.y = 420;
       this.visible = false;
