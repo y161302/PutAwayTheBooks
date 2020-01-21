@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.3");
+alert("Debug: ver.4");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -17,8 +17,9 @@ LAMBDA = 25; // LAMBDAフレームに一人出現
 SPEED = 1.0; // 人が歩いてくる速度
 COUNTER_Y = 360; // ゴールとなるカウンターの表示座標
 LANE = 3; // レーン数
-DISTLIMIT = 20; // タッチ判定となる距離
+DISTLIMIT = 30; // タッチ判定となる距離
 BLACKRATE = 0.05; // 黒い本の出現率
+HUMANHEIGHT = 150; // 人の描画上の縦幅
 
 ////////// プリロード一覧 //////////
 PRELOAD = ["./img/BookBlackA.png",
@@ -28,20 +29,39 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/BookWhiteA.png",
            "./img/BookYellowA.png",
            "./img/Counter.png",
-           "./img/Human1A.png",
-           "./img/Human2A.png",
            "./img/tokei.png",
            "./img/BookFrameA.png",
-           "./img/BookFrameDotA.png",
            "./img/BookFrameLimitA.png",
            "./img/BlackPanelA.png",
            "./img/BlackPanelA40.png",
            "./img/LEVELUPA.png",
            "./img/OtetsukiA.png",
            "./img/GameOverA.png",
-           "./img/WarnningPanelA.png"];
+           "./img/WarnningPanelA.png",
+           "./img/school0A.png",
+           "./img/school1A.png",
+           "./img/school2A.png",
+           "./img/school3A.png",
+           "./img/school4A.png",
+           "./img/school5A.png",
+           "./img/school6A.png",
+           "./img/school7A.png",
+           "./img/guest_0A.png",
+           "./img/guest_1A.png",
+           "./img/guest_2A.png",
+           "./img/guest_3A.png",
+           "./img/title_title.png",
+           "./img/title_book.png",
+           "./img/SpeechBubble1A.png",
+           "./img/SpeechBubble2A.png",
+           "./img/SpeechBubble3A.png",
+           "./img/StartImageA.png",
+           "./img/EndImageA.png",
+           "./img/ResumeImageA.png",
+           "./img/Twitter_Social_Icon_Circle_Color.png"];
  
-window.onload = function() { 
+window.onload = function() {
+  var stage = document.getElementById("enchant-stage");
   core = new Core(WIDTH, HEIGHT); // ゲーム本体を準備すると同時に、表示される領域の大きさを設定しています。
   core.fps = 15; // frames（フレーム）per（毎）second（秒）：ゲームの進行スピードを設定しています。
   //core.preload("./img/BookBlackA.png", "./img/BookBlueA.png", "./img/BookGreenA.png", "./img/BookRedA.png", "./img/BookWhiteA.png", "./img/BookYellowA.png", "./img/Counter.png", "./img/Human1A.png", "./img/Human2A.png", "./img/tokei.png");
@@ -92,12 +112,12 @@ window.onload = function() {
     var SceneManager = Class.create({
     change: function(sceneName){
       this.now = sceneName.toLowerCase();
+      var style = stage.style;
       switch(sceneName.toLowerCase()){
       case "title":
-        //core.replaceScene(new TitleScene());
+        core.replaceScene(new TitleScene());
+        style.background = "url('./img/bg_title" + (rand(2)+1) + ".png')";
         break;
-      case "ready":
-        //core.replaceScene(new ReadyScene());
       case "game":
         core.replaceScene(new GameScene());
         break;
@@ -110,6 +130,7 @@ window.onload = function() {
         break;
       case "result":
         core.replaceScene(new ResultScene());
+        style.background = "url('./img/bg_result1.png')";
         break;
       }
     }
@@ -121,7 +142,7 @@ window.onload = function() {
       Scene.call(this);
 
       // フェードパネル
-      this.fadePanel = new Sprite(WIDTH, HEIGHT);
+      this.fadePanel = new ScaleSprite(WIDTH, HEIGHT);
       this.fadePanel.image = core.assets['./img/BlackPanelA.png'];
       this.fadePanel.visible = false;
       this.fadePanel.delta = 0;
@@ -277,7 +298,7 @@ window.onload = function() {
           var id = parseInt(e.x * core.lane / WIDTH);
           // タッチされたレーンに基づき、黒い本でないタッチ記録があれば、その本を片付けたことにする。
           if(this.touches[id]){
-            // 黒い本でないことと、タッチ開始位置から 20px 以内であることが条件
+            // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であることが条件
             if(this.getDistance(this.touches[id], e) < DISTLIMIT && this.touches[id].book.color != Book.Color.indexOf("Black")){
               this.lane[id].removeBook(this.touches[id].book);
             }
@@ -289,23 +310,6 @@ window.onload = function() {
           }
         }
       });
-      /*
-      this.addEventListener("touchstart", (e)=>{
-        if(!this.untouchable){
-          var id = parseInt(e.x * core.lane / WIDTH);
-          var book = this.lane[id].touched();
-          if(book){
-            // 本が回収された
-            core.point++;
-          }else{
-            // 空のテーブルから本を回収しようとした
-            this.untouchable = WAITTIME;
-            bp.visible = true;
-            ottk.visible = true;
-          }
-        }
-      });
-       */
 
       //------ フレーム毎の処理（全体処理）
       this.addEventListener("enterframe", ()=>{
@@ -357,20 +361,6 @@ window.onload = function() {
       // ゲーム実行開始前の処理
       this.doFadeIn();
     },
-    getClosest: function(e, id){
-      var closest;
-      var distance = 0;
-      if(this.touches[id].length){
-        this.touches.foreach(item=>{
-          var d = this.getDistance(d, item);
-          if(d < distance){
-            distance = d;
-            closest = item;
-          }
-        });
-      }
-      return closest;
-    },
     getDistance: function(e, f){
       return Math.sqrt(Math.pow(e.x - f.x, 2) + Math.pow(e.y - f.y, 2));
     }
@@ -380,6 +370,20 @@ window.onload = function() {
     var ResultScene = Class.create(FadeScene, {
     initialize: function(){
       FadeScene.call(this);
+
+      // やめるボタンを押したときの動作
+      var ended = ()=>{
+        this.doFadeOut(()=>{
+          manager.change("title");
+        });
+      };
+
+      // つづけるボタンを押したときの動作
+      var resumed = ()=>{
+        this.doFadeOut(()=>{
+          manager.change("game");
+        });
+      };
 
       // オブジェクトの生成
       var gameover = new GameOverSprite();
@@ -395,68 +399,30 @@ window.onload = function() {
       label2.font = "24px Arial";
       label2.text = "片付けた！";
       label2.x = 320;
-      label2.y = 360;
+      label2.y = WIDTH - 20 - getTextWidth(label2.text, label2.font);
       label2.visible = false;
-      var ptLabel = new Label();
+      var ptLabel = new PointLabel();
       ptLabel.font = "48px Century Gothic";
-      ptLabel.text = "    冊";
-      ptLabel.x = 160;
       ptLabel.y = 260;
       ptLabel.visible = false;
       ptLabel.random = false;
-      ptLabel.addEventListener("enterframe", ()=>{
-        if(ptLabel.random){
-          ptLabel.text = (rand(core.point)) + " 冊";
-        }
-      });
+      var tweet = new TweetButton();
+      var resume = new ResumeButton(resumed);
+      resume.opacity = 0;
+      var end = new EndButton(ended);
+      end.opacity = 0;
 
       // オブジェクトの追加
       this.addChildOnFadePanel(gameover);
       this.addChild(label1);
       this.addChild(ptLabel);
       this.addChild(label2);
+      this.addChild(tweet);
+      this.addChild(resume);
+      this.addChild(end);
 
       // フェードインの実行
       this.doFadeIn();
-
-      // タイムラインの設定
-      /* skipが上手くいかないのでやめる
-      gameover.tl.moveTo(gameover.x, 20, 20).then(()=>{
-        gameover.finished = true;
-      });
-      label1.tl.repeat(()=>{
-        if(this.finish){
-          label1.visible = true;
-          label1.finished = true;
-        }
-      }, 30).and().delay(30).then(()=>{
-        label1.visible = true;
-        label1.finished = true;
-      });
-      label2.tl.repeat(()=>{
-        if(this.finish){
-          label2.visible = true;
-          label2.finished = true;
-        }
-      }, 30).and().delay(30).then(()=>{
-        label2.visible = true;
-        label2.finished = true;
-      });
-      ptLabel.tl.repeat(()=>{
-        if(this.finish){
-          ptLabel.visible = true;
-          ptLabel.text = core.point + " 冊";
-          ptLabel.finished = true;
-        }
-      }, 60).and().delay(30).then(()=>{
-        ptLabel.visible = true;
-        ptLabel.random = true;
-      }).delay(30).then(()=>{
-        ptLabel.random = false;
-        ptLabel.text = core.point + " 冊";
-        ptLabel.finished = true;
-      });
-        */
       
       // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
@@ -472,9 +438,14 @@ window.onload = function() {
         if(this.age == 60 && !this.finished){
           ptLabel.random = false;
           ptLabel.text = core.point + " 冊";
+          ptLabel.x = (WIDTH - getTextWidth(ptLabel.text, ptLabel.font)) / 2;
         }
         if(this.age > 60 && this.age <= 90 && !this.finished){
-          // ボタンをちょっとずつ見せてく
+          resume.opacity = (this.age - 60) / 30;
+          end.opacity = (this.age - 60) / 30;
+        }
+        if(this.age == 90 && !this.finished){
+          tweet.visible = true;
         }
       });
       
@@ -482,28 +453,139 @@ window.onload = function() {
       this.addEventListener("touchstart", ()=>{
         if(!this.finished){ // 表示がすべて終わってないとき
           this.finished = true;
+          
           // 表示をすべて終わらせる
+          this.finishFadeIn();
           gameover.y = 0;
           label1.visible = true;
           label2.visible = true;
           ptLabel.visible = true;
           ptLabel.random = false;
           ptLabel.text = core.point + " 冊";
-          this.finishFadeIn();
-          //ボタンを表示
+          ptLabel.x = (WIDTH - getTextWidth(ptLabel.text, ptLabel.font)) / 2;
           
+          //ボタンを表示
+          tweet.visible = true;
+          resume.opacity = 1.0;
+          end.opacity = 1.0;
         }else{
           // 各ボタンの処理をここに書こうかしら
         }
       });
     }
     });
+
+    ////////// タイトルシーン //////////
+    var TitleScene = Class.create(FadeScene, {
+    initialize: function(){
+      FadeScene.call(this);
+      this.enable = false;
+
+      // スタートボタンが押された時の関数
+      started = ()=>{
+        this.doFadeOut(()=>{
+          manager.change("game");
+        });
+      };
+
+      // オブジェクトの生成
+      var logo = new TitleLogo();
+      var book = new TitleBook();
+      var nanobie = new Nanobie();
+      var start = new StartButton(started);
+
+      // オブジェクトの追加
+      this.addChild(logo);
+      this.addChild(book);
+      this.addChild(nanobie);
+      this.addChild(start);
+
+      // すべての子要素に対して有効とする奴
+      enabling = function(node, enable){
+        if(node){
+          node.enable = enable;
+          if(node.childNodes){
+            node.childNodes.forEach(child=>{
+              if(node !== child && child.enable != enable)
+                enabling(child);
+            });
+          }
+        }
+      };
+
+      // ランダムな時間ごとに吹き出しを表示
+      this.addEventListener("enterframe", ()=>{
+        if(!this.sbCount){
+          this.sbCount = rand(20) + 20;
+          this.sb = new SpeechBubble();
+          this.addChild(this.sb);
+        }
+        if(this.underFadePanel.childNodes.indexOf(this.sb) == -1){
+          this.sbCount--;
+        }
+      });
+
+      // マルチタッチ時のタッチムーブイベントの掌握用
+      var s = "";
+      var c = 0;
+      var w = window.open();
+      var div = w.document.body.appendChild(w.document.createElement("div"));
+      div.style.width = "auto";
+      div.style.left = 0;
+      div.style.margin = "auto";
+      this.addEventListener("touchmove", (e)=>{
+        var lane = parseInt(e.x * core.lane / WIDTH);
+        s += "m" + lane + "(" + e.x + "," + e.y + ")";
+        c++;
+        if(c > 10){
+          c=0;
+          s += "\n";
+        }
+      });
+      this.addEventListener("touchend", (e)=>{
+        div.innerText = s;
+      });
+      
+      // フェードインの実行
+      this.doFadeIn(()=>{enabling(this, true);});
+    },
+    addChild: function(node){ // Override
+      if(node){
+        node.enable = this.enable;
+        FadeScene.prototype.addChild.call(this, node);
+      }
+    },
+    letsGame: function(){
+      this.doFadeOut(()=>{
+        manager.change("game");
+      });
+    }
+    });
+
+    ////////// オブジェクトのクラスの定義 //////////
+    //------ スケール問題解消のスプライト
+    var ScaleSprite = Class.create(Sprite, {
+    initialize: function(w, h){
+      Sprite.call(this, w, h);
+    },
+    setX: function(x){
+      this.x = x - this.width * (1 - this.scaleX) / 2;
+    },
+    setY: function(y){
+      this.y = y - this.height * (1 - this.scaleY) / 2;
+    },
+    getSetX: function(x){
+      return x - this.width * (1 - this.scaleX) / 2;
+    },
+    getSetY: function(y){
+      return y - this.height * (1 - this.scaleY) / 2;
+    }
+    });
     
-    ////////// クラスの定義 //////////
     //------ レーンクラス
-    var Lane = Class.create(Sprite, {
+    var Lane = Class.create(ScaleSprite, {
     initialize: function(laneNumber){
-      Sprite.call(this, 0, 0);
+      ScaleSprite.call(this, 0, 0);
       this.id = laneNumber;
       this.x = WIDTH / core.lane * laneNumber;
       
@@ -538,7 +620,7 @@ window.onload = function() {
           this.numberOfAppear = rand(this.LAMBDA);
         }
         if(core.frame % this.LAMBDA == this.numberOfAppear){
-          this.humans.addChild(new Human(this, this.SPEED, this.getHumanNum()));
+          this.humans.insertBefore(new Human(this, this.SPEED, this.getHumanNum()), this.humans.firstChild);
         }
         this.warnning = (this.books.childNodes.length > LIMIT * 0.8) || (this.books.childNodes.length >= LIMIT - 2);
       });
@@ -567,8 +649,8 @@ window.onload = function() {
     getHumanNum: function(){
       return this.humans.childNodes.length;
     },
-    shiftHuman: function(){
-      var ret = this.humans.firstChild;
+    popHuman: function(){
+      var ret = this.humans.lastChild;
       this.humans.removeChild(ret);
       return ret;
     },
@@ -587,7 +669,7 @@ window.onload = function() {
         this.SPEED = 2;
       }else{
         this.WAITTIME = WAITTIME - (this.Level - 1) * 1.5;
-        this.LAMBDA = LAMBDA - (this.Level - 1) * 1.5
+        this.LAMBDA = LAMBDA - (this.Level - 1) * 1.5;
         this.SPEED = 1 + (this.Level - 1) / 10;
       }
     },
@@ -604,9 +686,9 @@ window.onload = function() {
     });
 
     //------ 本クラス
-    var Book = Class.create(Sprite, {
+    var Book = Class.create(ScaleSprite, {
     initialize: function(lane, colorNum, index) {
-      Sprite.call(this, 50, 80);
+      ScaleSprite.call(this, 50, 80);
       this.image = core.assets[`./img/Book${Book.Color[colorNum]}A.png`];
       this.color = colorNum;
       this.x = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width / 2 + index * (lane.id - (core.lane - 1) / 2) * Book.PILE.X;
@@ -623,9 +705,9 @@ window.onload = function() {
     Book.PILE = {X: 1, Y: 9}; // 描画時に重なって見えるようにずらす幅
 
     //------ 本枠クラス
-    var BookFrame = Class.create(Sprite, {
+    var BookFrame = Class.create(ScaleSprite, {
     initialize: function(lane, index){
-      Sprite.call(this, 50, 80);
+      ScaleSprite.call(this, 50, 80);
       this.image = (index == LIMIT - 1) ? core.assets["./img/BookFrameLimitA.png"] : core.assets["./img/BookFrameA.png"];
       this.x = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width / 2 + index * (lane.id - (core.lane - 1) / 2) * Book.PILE.X
       this.y = COUNTER_Y + 40 - index * Book.PILE.Y;
@@ -638,19 +720,60 @@ window.onload = function() {
     });
     
     //------ 人クラス
-    var Human = Class.create(Sprite, {
+    var Human = Class.create(ScaleSprite, {
     initialize: function(lane, speed, index){
       //console.log('./img/Human' + (rand(2) + 1) + 'A.png');
-      Sprite.call(this, 66, 174);
-      this.image = core.assets['./img/Human' + (rand(2) + 1) + 'A.png'];
-      this.y = -this.height;
-      this.x = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width / 2 - (lane.id - (core.lane - 1) / 2) * (COUNTER_Y - this.y) / 10;
+      this.SPEED = lane.SPEED;
+      var image;
+      var delta = 0;
+      // 図書館キャラの動きの定義
+      if(rand(100) < 3){
+        var n = rand(4);
+        image = core.assets['./img/guest_' + n + 'A.png'];
+        ScaleSprite.call(this, image.width, image.height);
+        switch(n){
+        case 0: // コブック
+          this.tl.moveBy(0, 20, core.fps / 2, enchant.Easing.QUART_EASEINOUT)
+                 .moveBy(0, -20, core.fps / 2, enchant.Easing.QUART_EASEINOUT)
+                 .loop();
+          break;
+        case 1: // 本読んでる二人
+          this.tl.moveBy(0, 30, core.fps / 2, enchant.Easing.CUBIC_EASEIN)
+                 .moveBy(0, -30, core.fps / 2, enchant.Easing.CUBIC_EASEOUT)
+                 .loop();
+        case 2: case 3:
+          delta = 15;
+          break;
+        }
+      }else{
+        image = core.assets['./img/school' + rand(8) + 'A.png'];
+        ScaleSprite.call(this, 32, 48);
+      }
+      this.image = image;
+      var scale = HUMANHEIGHT / this.height;
+      this.scaleY = scale;
+      this.scaleX = scale;
+      //var defY = (this.height + HUMANHEIGHT) / 2;
+      var offsetY = - HUMANHEIGHT;
+      var setY = offsetY;
+      this.setY(setY);
+      var offsetX = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width * scale / 2;
+      var setX = offsetX - (lane.id - (core.lane - 1) / 2) * ((COUNTER_Y - 60) - setY) / 10;
+      this.setX(setX);
       this.c = 0;
+      this.moveAge = 0;
       this.addEventListener("enterframe", ()=>{
-        if(this.y < COUNTER_Y - this.height / 2){
-          if(this.y < COUNTER_Y - this.height / 2 - 30 * lane.humans.childNodes.indexOf(this)){
-            this.y += (COUNTER_Y + this.height / 2) / (5 * core.fps) * lane.SPEED;
-            this.x = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width / 2 - (lane.id - (core.lane - 1) / 2) * (COUNTER_Y - this.y) / 10;
+        switch(parseInt(this.age / 2) % 4){
+          case 3: this.frame = 1; break;
+          default: this.frame = parseInt(this.age / 2) % 4; break;
+        }
+        if(setY < COUNTER_Y - 60){
+          if(setY < (COUNTER_Y - 60) - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
+            setY = offsetY + (COUNTER_Y + HUMANHEIGHT / 2) / (5 * core.fps) * this.SPEED * this.moveAge;
+            this.setY(setY);
+            setX = offsetX - (lane.id - (core.lane - 1) / 2) * ((COUNTER_Y - 60) - setY) / 8;
+            this.setX(setX);
+            this.moveAge++;
           }
         }else{
           if(this.c == 0){
@@ -661,7 +784,7 @@ window.onload = function() {
           }
           this.c++;
           if(this.c > lane.WAITTIME){
-            lane.shiftHuman();
+            lane.popHuman();
           }
         }
       });
@@ -669,9 +792,9 @@ window.onload = function() {
     });
 
     //------ レベルアップ画像クラス
-    var LvUp = Class.create(Sprite, {
+    var LvUp = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, WIDTH, 75);
+      ScaleSprite.call(this, WIDTH, 75);
       this.image = core.assets['./img/LEVELUPA.png'];
       this.frame = 0;
       this.x = 0;
@@ -695,9 +818,9 @@ window.onload = function() {
     });
 
     //------ カウンター画像クラス
-    var Counter = Class.create(Sprite, {
+    var Counter = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, WIDTH, 264);
+      ScaleSprite.call(this, WIDTH, 264);
       this.image = core.assets['./img/Counter.png'];
       this.x = 0;
       this.y = COUNTER_Y;
@@ -705,61 +828,36 @@ window.onload = function() {
     });
 
     //------ ブラックパネルクラス（画面自体を暗くするやつ）
-    var BlackPanel = Class.create(Sprite, {
+    var BlackPanel = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, WIDTH, HEIGHT);
+      ScaleSprite.call(this, WIDTH, HEIGHT);
       this.image = core.assets['./img/BlackPanelA40.png'];
     }
     });
-
-    //------ 時計オブジェクト
-    /* 使ってない
-    var tokei = new Sprite(128, 128);
-    tokei.image = core.assets['./img/tokei.png'];
-    tokei.x = WIDTH - tokei.width*2;
-    tokei.y = 0;
-    tokei.scaleX = 0;
-    tokei.scaleY = 0;
-      */
 
     //------ ポイント表示用クラス
     var PointLabel = Class.create(Label, {
     initialize: function(){
       Label.call(this);
       this.font = '36px Comic Sans MS';
-      this.text = '0 pt.';
+      this.text = '0 冊';
       // ポイント文字の横幅を取得する関数
-      this.canvas = document.getElementsByTagName('canvas')[0];
-      if(this.canvas){
-        this.context2d = this.canvas.getContext('2d');
-        this.context2d.font = this.font;
-        this.getWidth = (str) => this.context2d.measureText(str);
-      }else{
-        this.getWidth = (str) => str.length * 10;
-      }
-      this.x = WIDTH / 2 - this.getWidth(this.text).width / 2;
+      this.x = (WIDTH - getTextWidth(this.text, this.font)) / 2;
       this.y = 560;
-      core.point = 0;
       this.addEventListener("enterframe", ()=>{
-        // canvas設定用
-        if(this.canvas == undefined){
-          this.canvas = document.getElementsByTagName('canvas')[0];
-          if(this.canvas){
-            this.context2d = this.canvas.getContext('2d');
-            this.context2d.font = this.font;
-            this.getWidth = (str) => this.context2d.measureText(str);
-          }
-        }
-        this.text = core.point + " 冊";
-        this.x = WIDTH / 2 - this.getWidth(this.text).width / 2;
+        if(this.random)
+          this.text = rand(core.point) + " 冊";
+        else
+          this.text = core.point + " 冊";
+        this.x = (WIDTH - getTextWidth(this.text, this.font)) / 2;
       });
     }
     });
 
     //------ お手付き表示クラス
-    var Otetsuki = Class.create(Sprite, {
+    var Otetsuki = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, 262, 67);
+      ScaleSprite.call(this, 262, 67);
       this.image = core.assets['./img/OtetsukiA.png'];
       this.x = (WIDTH - this.width) / 2;
       this.y = 420;
@@ -768,9 +866,9 @@ window.onload = function() {
     });
 
     //------ ゲームオーバー表示クラス
-    var GameOverSprite = Class.create(Sprite, {
+    var GameOverSprite = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, 456, 80);
+      ScaleSprite.call(this, 456, 80);
       this.image = core.assets['./img/GameOverA.png'];
       this.y = (HEIGHT - this.height) / 2;
       this.x = (WIDTH - this.width) / 2;
@@ -779,9 +877,9 @@ window.onload = function() {
     });
 
     //------ 危険な時のエフェクト表示クラス
-    var WarnningPanel = Class.create(Sprite, {
+    var WarnningPanel = Class.create(ScaleSprite, {
     initialize: function(){
-      Sprite.call(this, WIDTH, HEIGHT);
+      ScaleSprite.call(this, WIDTH, HEIGHT);
       this.image = core.assets['./img/WarnningPanelA.png'];
       this.FRAME = 15;
       this.frame = this.FRAME - 1;
@@ -797,66 +895,282 @@ window.onload = function() {
       });
     }
     });
-    
-    //------ ブラックパネルオブジェクト
-    /*
-    bp = new Sprite(WIDTH, HEIGHT);
-    bp.image = core.assets['./img/BlackPanelA.png'];
-    bp.x = 0;
-    bp.y = 0;
-    bp.visible = false;
-      */
 
-    ////////// 本と人のレーンごとの格納配列の用意 //////////
-    /* Laneクラス実装により廃止
-    var books = [];
-    var humans = [];
-    for(var i=0; i<core.lane; i++){
-      books[i] = [];
-      humans[i] = [];
+    //------ タイトルロゴ
+    var TitleLogo = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets['./img/title_title.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
     }
-      */
+    });
+
+    //------ タイトルに表示する本
+    var TitleBook = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets['./img/title_book.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      this.y = 160;
+    }
+    });
+
+    //------ タイトルに表示するなのビィ
+    var Nanobie = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets['./img/guest_2A.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      var scale = 240 / this.height;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.setX(300);
+      this.setY(100);
+      this.tl.moveBy(0, 100, parseInt(core.fps * 1.5), enchant.Easing.SIN_EASEINOUT)
+             .moveBy(0, -100, parseInt(core.fps * 1.5), enchant.Easing.SIN_EASEINOUT)
+             .loop();
+      this.rotatable = false;
+      var rotateFrame = parseInt(core.fps / 5);
+      this.addEventListener("touchstart", (e)=>{
+        this.rotatable = true;
+      });
+      this.addEventListener("enterframe", ()=>{
+        if(this.rotatable){
+          if(!this.rotateAge){
+            this.rotateAge = rotateFrame * 2;
+          }
+          if(this.rotateAge > rotateFrame){
+            // 前半
+            this.rotate(- parseInt(30 / rotateFrame));
+          }else{
+            // 後半
+            this.rotate(+ parseInt(30 / rotateFrame));
+          }
+          this.rotateAge--;
+          if(this.rotateAge == 0)
+            this.rotatable = false;
+        }
+      });
+    }
+    });
+
+    //------ タイトルに表示するなのビィの吹き出し
+    var SpeechBubble = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets['./img/SpeechBubble' + (rand(3) + 1) + 'A.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      var w = 300;
+      var scale = w / image.width;
+      var h = image.height * scale;
+      this.scaleX = 0;
+      this.scaleY = 0;
+      this.setX(w);
+      this.setY(120 + h);
+
+      var moveFrame = parseInt(core.fps / 3);
+      this.tl.moveBy(-w/2, -h/2, moveFrame).and().scaleTo(scale, moveFrame)
+             .delay(parseInt(core.fps * 2.5))
+             .moveBy(w/2, h/2, moveFrame).and().scaleTo(0, moveFrame)
+             .removeFromScene();
+    }
+    });
+
+    //------はじめるボタン
+    var StartButton = Class.create(ScaleSprite, {
+    initialize: function(start){
+      var image = core.assets["./img/StartImageA.png"];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      this.start = start;
+      var w = 300;
+      var scale = w / image.width;
+      var h = image.height * scale;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.setX(WIDTH / 2 - this.width * scale / 2);
+      this.setY(520);
+      this.addEventListener("touchstart", (e)=>{
+        var x = e.x - this.width * (1 - scale) / 2 - this.x;
+        var y = e.y - this.height * (1 - scale) / 2 - this.y;
+        this.touching = true;
+        this.opacity = 0.8;
+        console.log("StartButton: start ", x, y);
+      });
+      this.addEventListener("touchmove", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          if(x < 0 || x > w || y < 0 || y > h){
+            this.touching = false;
+            this.opacity = 1.0;
+          }
+        }
+      });
+      this.addEventListener("touchend", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          this.touching = false;
+          this.tl.hide().delay(parseInt(core.fps * 0.15)).show().delay(parseInt(core.fps * 0.15)).loop();
+          this.start();
+        }
+      });
+    }
+    });
+
+    //------ つづけるボタン
+    var ResumeButton = Class.create(ScaleSprite, {
+    initialize: function(resume){
+      image = core.assets['./img/ResumeImageA.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      this.resume = resume;
+
+      var w = 200;
+      var scale = w / image.width;
+      var h = image.height * scale;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.setX(WIDTH * 1 / 4 - this.width * scale / 2);
+      this.setY(540);
+      this.addEventListener("touchstart", (e)=>{
+        var x = e.x - this.width * (1 - scale) / 2 - this.x;
+        var y = e.y - this.height * (1 - scale) / 2 - this.y;
+        this.touching = true;
+        this.opacity = 0.8;
+        console.log("StartButton: start ", x, y);
+      });
+      this.addEventListener("touchmove", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          if(x < 0 || x > w || y < 0 || y > h){
+            this.touching = false;
+            this.opacity = 1.0;
+          }
+        }
+      });
+      this.addEventListener("touchend", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          this.touching = false;
+          this.tl.hide().delay(parseInt(core.fps * 0.15)).show().delay(parseInt(core.fps * 0.15)).loop();
+          this.resume();
+        }
+      });
+    }
+    });
+
     
 
-    /*
-    ////////// キーボード入力の登録 //////////
-    core.keybind('B'.charCodeAt(0), 'b');
-    core.keybind('H'.charCodeAt(0), 'h');
+    //------ つづけるボタン
+    var EndButton = Class.create(ScaleSprite, {
+    initialize: function(end){
+      image = core.assets['./img/EndImageA.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      this.end = end;
 
-    ////////// キーボード入力の処理 //////////
-    this.addEventListener('enterframe', ()=>{
-      if(core.input.b){
-        var b = new Book(rand(5));
-        b.x = (rand(core.lane) * 2 + 1) * WIDTH / (core.lane * 2) - b.width / 2;
-        grpBook.addChild(b);
-        console.log("added book ({$b.x}, {$b.y})");
+      var w = 200;
+      var scale = w / image.width;
+      var h = image.height * scale;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.setX(WIDTH * 3 / 4 - this.width * scale / 2);
+      this.setY(540);
+      this.addEventListener("touchstart", (e)=>{
+        var x = e.x - this.width * (1 - scale) / 2 - this.x;
+        var y = e.y - this.height * (1 - scale) / 2 - this.y;
+        this.touching = true;
+        this.opacity = 0.8;
+        console.log("StartButton: start ", x, y);
+      });
+      this.addEventListener("touchmove", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          if(x < 0 || x > w || y < 0 || y > h){
+            this.touching = false;
+            this.opacity = 1.0;
+          }
+        }
+      });
+      this.addEventListener("touchend", (e)=>{
+        if(this.touching){
+          var x = e.x - this.width * (1 - scale) / 2 - this.x;
+          var y = e.y - this.height * (1 - scale) / 2 - this.y;
+          this.touching = false;
+          this.tl.hide().delay(parseInt(core.fps * 0.15)).show().delay(parseInt(core.fps * 0.15)).loop();
+          this.end();
+        }
+      });
+    }
+    });
+
+    //------ ツイートボタン
+    var TweetButton = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets["./img/Twitter_Social_Icon_Circle_Color.png"];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      var scale = 50 / this.height;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.setX((WIDTH - this.width * this.scaleX) / 2);
+      this.setY(400);
+      this.visible = false;
+
+      // タップしたらツイート画面を別タブで開く
+      this.addEventListener("touchstart", (e)=>{
+        var x = e.x - this.width * (1 - scale) / 2 - this.x;
+        var y = e.y - this.height * (1 - scale) / 2 - this.y;
+        // 正確にロゴの上をタッチした時
+        if(Math.pow(x-25, 2) + Math.pow(y-25, 2) < Math.pow(25, 2)){
+          var params = [
+            "text=" + encodeURIComponent("あなたは " + core.point + " 冊 片付けた！\n遊んでくれてありがとう！\n"),
+            "url=" + encodeURIComponent("http://www2.city.tahara.aichi.jp/section/library/"),
+            "hashtags=" + encodeURIComponent("田原市図書館")];
+          // a タグを一時的に生成してクリックしたことにする
+          var a = document.body.appendChild(document.createElement("a"));
+          a.href = "https://twitter.com/share?" + params.join("&");
+          a.setAttribute("data-lang", "ja");
+          a.setAttribute("rel", "noopener noreferrer");
+          a.setAttribute("target", "_blank"); // 別タブ
+          console.log(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      });
+    }
+    });
+
+    // 実質のスタート
+    var manager = new SceneManager();
+    manager.change("title");
+
+    // canvas の context2D から得られる文字の横幅を得る関数
+    function getTextWidth(str, font){
+      if(!core.context2d){
+        return str.length * 24;
+      }else{
+        core.context2d.font = font;
+        var measure = core.context2d.measureText(str);
+        return measure.width;
       }
-      if(core.input.h){
-        var h = new Human();
-        h.x = (rand(core.lane) * 2 + 1) * WIDTH / (core.lane * 2) - h.width / 2;
-        h.y = 0;
-        grpHuman.addChild(h);
-        console.log("added human");
+    };
+
+    // canvas が追加され次第 context2D を取得する
+    core.currentScene.addEventListener("enterframe", ()=>{
+      if(!core.canvas){
+        core.canvas = document.getElementsByTagName("canvas")[0];
+        if(core.canvas){
+          core.context2d = core.canvas.getContext('2d');
+          console.log("set context2d: ", core.context2d);
+        }
       }
     });
-      */
-
-    //alert("読み込み完了");
-    /*
-        var kuma = new Sprite(32, 32);  // くまというスプライト(操作可能な画像)を準備すると同時に、スプライトの表示される領域の大きさを設定しています。
-        kuma.image = core.assets['./img/chara1.png']; // くまにあらかじめロードしておいた画像を適用します。
-        kuma.x = 100; // くまの横位置を設定します。
-        kuma.y = 120; // くまの縦位置を設定します。
-        core.rootScene.addChild(kuma); // ゲームのシーンにくまを表示させます。
-        core.rootScene.backgroundColor  = '#7ecef4'; // ゲームの動作部分の背景色を設定しています。
-     */
-
-    // シーンを切り替える
-    //core.replaceScene(new GameScene());
-    //new GameScene();
-    //new ResultScene();
-    var manager = new SceneManager();
-    manager.change("game");
   }
   core.start(); // ゲームをスタートさせます
   console.log("started game.");
