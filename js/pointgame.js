@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.4");
+alert("Debug: ver.5");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -58,6 +58,8 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/StartImageA.png",
            "./img/EndImageA.png",
            "./img/ResumeImageA.png",
+           "./img/SwipeHelperA.png",
+           "./img/804.png",
            "./img/Twitter_Social_Icon_Circle_Color.png"];
  
 window.onload = function() {
@@ -214,6 +216,7 @@ window.onload = function() {
       FadeScene.call(this);
       this.doFadeIn();
       core.point = 0;
+      core.blackCount = 3; // スワイプヘルパーを表示する回数
       this.finished = false;
       
       //------ グループの生成
@@ -318,8 +321,10 @@ window.onload = function() {
           for(var i=0; i<core.lane; i++){
             if(this.touches[i]){
               this.touches[i].count--;
-              if(this.touches[i].count == 0)
+              if(this.touches[i].count == 0){
                 this.touches[i] = undefined;
+                this.touchNum--;
+              }
             }
           }
           
@@ -524,27 +529,6 @@ window.onload = function() {
           this.sbCount--;
         }
       });
-
-      // マルチタッチ時のタッチムーブイベントの掌握用
-      var s = "";
-      var c = 0;
-      var w = window.open();
-      var div = w.document.body.appendChild(w.document.createElement("div"));
-      div.style.width = "auto";
-      div.style.left = 0;
-      div.style.margin = "auto";
-      this.addEventListener("touchmove", (e)=>{
-        var lane = parseInt(e.x * core.lane / WIDTH);
-        s += "m" + lane + "(" + e.x + "," + e.y + ")";
-        c++;
-        if(c > 10){
-          c=0;
-          s += "\n";
-        }
-      });
-      this.addEventListener("touchend", (e)=>{
-        div.innerText = s;
-      });
       
       // フェードインの実行
       this.doFadeIn(()=>{enabling(this, true);});
@@ -699,10 +683,34 @@ window.onload = function() {
         this.x = (lane.id * 2 + 1) * WIDTH / (core.lane * 2) - this.width / 2 + idx * (lane.id - (core.lane - 1) / 2) * Book.PILE.X;
         this.y = COUNTER_Y + 40 - idx * Book.PILE.Y;
       });
+      if(colorNum == Book.Color.indexOf("Black") && core.blackCount > 0){
+        lane.scene.addChild(new SwipeHelper(lane, this));
+        core.blackCount--;
+      }
     }
     });
     Book.Color = ["Black", "White", "Red", "Blue", "Yellow", "Green"];
     Book.PILE = {X: 1, Y: 9}; // 描画時に重なって見えるようにずらす幅
+
+    //------ スワイプヘルパー
+    var SwipeHelper = Class.create(ScaleSprite, {
+    initialize: function(lane, book){
+      var image = core.assets['./img/SwipeHelperA.png'];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+      this.setX(book.x + (book.width - this.width) / 2);
+      this.setY(book.y - this.height - 10);
+      this.tl.moveBy(0, -50, core.fps - 1).and().fadeOut(core.fps - 1)
+             .moveBy(0, 50, 1).and().show().loop();
+      this.addEventListener("enterframe", ()=>{
+        if(lane.books.lastChild != book){
+          this.visible = false;
+        }else{
+          this.visible = true;
+        }
+      });
+    }
+    });
 
     //------ 本枠クラス
     var BookFrame = Class.create(ScaleSprite, {
@@ -995,7 +1003,6 @@ window.onload = function() {
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
         this.touching = true;
         this.opacity = 0.8;
-        console.log("StartButton: start ", x, y);
       });
       this.addEventListener("touchmove", (e)=>{
         if(this.touching){
@@ -1039,7 +1046,6 @@ window.onload = function() {
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
         this.touching = true;
         this.opacity = 0.8;
-        console.log("StartButton: start ", x, y);
       });
       this.addEventListener("touchmove", (e)=>{
         if(this.touching){
@@ -1084,8 +1090,7 @@ window.onload = function() {
         var x = e.x - this.width * (1 - scale) / 2 - this.x;
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
         this.touching = true;
-        this.opacity = 0.8;
-        console.log("StartButton: start ", x, y);
+        this.opacity = 0.8
       });
       this.addEventListener("touchmove", (e)=>{
         if(this.touching){
@@ -1115,7 +1120,8 @@ window.onload = function() {
       var image = core.assets["./img/Twitter_Social_Icon_Circle_Color.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
-      var scale = 50 / this.height;
+      var size = 80;
+      var scale = size / this.height;
       this.scaleX = scale;
       this.scaleY = scale;
       this.setX((WIDTH - this.width * this.scaleX) / 2);
@@ -1127,7 +1133,7 @@ window.onload = function() {
         var x = e.x - this.width * (1 - scale) / 2 - this.x;
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
         // 正確にロゴの上をタッチした時
-        if(Math.pow(x-25, 2) + Math.pow(y-25, 2) < Math.pow(25, 2)){
+        if(Math.pow(x - size/2, 2) + Math.pow(y - size/2, 2) < Math.pow(size/2, 2)){
           var params = [
             "text=" + encodeURIComponent("あなたは " + core.point + " 冊 片付けた！\n遊んでくれてありがとう！\n"),
             "url=" + encodeURIComponent("http://www2.city.tahara.aichi.jp/section/library/"),
