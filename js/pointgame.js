@@ -1244,15 +1244,14 @@ var openTweetPage = function(){
     alert(location.href);
   }
     */
-  alert("別タブで開いた後元タブでiframe開けるかチャレンジ");
+  alert("別タブで開いた後元タブでiframeでTwitter開けるかチャレンジ");
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
   var iframe = document.body.appendChild(document.createElement("iframe"));
   iframe.style.display = "none";
-  /*
   if(isiOS){
     iframe.src = 'twitter://post?message=' + message;
   }else if(isAndroid){
     iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
   }
-    */
+  iframe.parentNode.removeChild(iframe);
 };
