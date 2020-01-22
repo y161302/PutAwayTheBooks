@@ -1244,9 +1244,9 @@ var openTweetPage = function(){
     alert(location.href);
   }
     */
-  alert("別タブで開いた後iframe開けるかチャレンジ");
+  alert("別タブで開いた後元タブでiframe開けるかチャレンジ");
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
-  var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
+  var iframe = document.body.appendChild(document.createElement("iframe"));
   iframe.style.display = "none";
   /*
   if(isiOS){
