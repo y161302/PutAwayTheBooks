@@ -1182,7 +1182,7 @@ window.onload = function() {
 
     // 実質のスタート
     var manager = new SceneManager();
-    manager.change("result");
+    manager.change("title");
 
     // canvas の context2D から得られる文字の横幅を得る関数
     function getTextWidth(str, font){
@@ -1213,8 +1213,8 @@ window.onload = function() {
 ////////// 表示位置を画面中央にする奴 //////////
 var moveStageToCenter = function(core) {
   var stagePos = {
-  top: (window.innerHeight - (core.height * core.scale)) / 2,
-  left: (window.innerWidth - (core.width * core.scale)) / 2,
+  top: (document.documentElement.clientHeight - (core.height * core.scale)) / 2,
+  left: (document.documentElement.clientWidth - (core.width * core.scale)) / 2,
   };
   var stage = document.getElementById('enchant-stage');
   stage.style.position = 'absolute';
