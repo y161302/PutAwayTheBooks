@@ -60,6 +60,7 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/ResumeImageA.png",
            "./img/SwipeHelperA.png",
            "./img/804.png",
+           "./img/mouseTest.png",
            "./img/Twitter_Social_Icon_Circle_Color.png"];
  
 window.onload = function() {
@@ -71,7 +72,8 @@ window.onload = function() {
   core.lane = LANE; // レーン数
  
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
-    ////////// ウィンドウ設定（iOS対応用） //////////
+    ////////// ウィンドウ設定（iOS対応用） ////////// 同時にinitial-scale < 1.0 のときにタップ座標がずれる分の計算
+    pointingMarginTop = 0;
     var baseW = WIDTH;
     var baseH = HEIGHT;
     var iOSW = 0;
@@ -99,6 +101,7 @@ window.onload = function() {
       if(w < baseW){
         console.log("initial-scale=" + w/WIDTH);
         viewportContent = "width=" + WIDTH + ",initial-scale=" + w/WIDTH + ",user-scalable=no,shrink-to-fit=no";
+        pointingMarginTop = (document.documentElement.clientHeight - window.parent.screen.height) / 2;
       }else{
         viewportContent = "width=device-width,initial-scale=1.0,user-scalable=no,shrink-to-fit=no";
       }
@@ -109,6 +112,9 @@ window.onload = function() {
       }
       document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent);
     }
+
+    // 画面中央に表示する
+    moveStageToCenter(core);
 
     ////////// シーン管理 //////////
     var SceneManager = Class.create({
@@ -455,7 +461,7 @@ window.onload = function() {
       });
       
       // タッチイベントの処理
-      this.addEventListener("touchstart", ()=>{
+      this.addEventListener("touchstart", (e)=>{
         if(!this.finished){ // 表示がすべて終わってないとき
           this.finished = true;
           
@@ -1071,7 +1077,7 @@ window.onload = function() {
 
     
 
-    //------ つづけるボタン
+    //------ やめるボタン
     var EndButton = Class.create(ScaleSprite, {
     initialize: function(end){
       image = core.assets['./img/EndImageA.png'];
@@ -1180,4 +1186,18 @@ window.onload = function() {
   }
   core.start(); // ゲームをスタートさせます
   console.log("started game.");
+};
+
+////////// 表示位置を画面中央にする奴 //////////
+var moveStageToCenter = function(core) {
+  var stagePos = {
+  top: (window.innerHeight - (core.height * core.scale)) / 2,
+  left: (window.innerWidth - (core.width * core.scale)) / 2,
+  };
+  var stage = document.getElementById('enchant-stage');
+  stage.style.position = 'absolute';
+  stage.style.top = stagePos.top + 'px';
+  stage.style.left = stagePos.left + 'px';
+  core._pageX = stagePos.left;
+  core._pageY = stagePos.top;
 };
