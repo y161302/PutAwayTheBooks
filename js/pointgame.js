@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.6");
+alert("Debug: ver.7");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -1230,7 +1230,8 @@ var openTweetPage = function(){
                 + "遊んでくれてありがとう！\n"
                 + "http://www2.city.tahara.aichi.jp/section/library/ #田原市図書館";
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
-  
+
+  /*
   var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
   iframe.style.display = "none";
   iframe.src = "twitter://post?message=" + encodeURIComponent(message);
