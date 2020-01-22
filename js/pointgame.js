@@ -1240,6 +1240,7 @@ var openTweetPage = function(){
     schemeStr:   schemeStr,
     fallbackUrl: location.href,
     });
+    alert(location.href);
   }
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
 };
