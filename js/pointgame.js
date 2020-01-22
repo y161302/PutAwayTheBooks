@@ -1244,7 +1244,7 @@ var openTweetPage = function(){
     alert(location.href);
   }
     */
-  alert("別タブで開いた後元タブでiframeでTwitter開けるかチャレンジ");
+  alert("別タブで開いた後元タブでiframeでTwitter開けるかチャレンジ-");
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
   w.onload = function(){
     alert("yeah");
