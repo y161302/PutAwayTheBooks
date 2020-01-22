@@ -1247,9 +1247,11 @@ var openTweetPage = function(){
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
   var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
   iframe.style.display = "none";
+  /*
   if(isiOS){
     iframe.src = 'twitter://post?message=' + message;
   }else if(isAndroid){
     iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
   }
+    */
 };
