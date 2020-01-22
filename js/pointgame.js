@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.8");
+alert("Debug: ver.9");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -1229,18 +1229,16 @@ var openTweetPage = function(){
   var message = "あなたは " + core.point + " 冊 片付けた！\n"
                 + "遊んでくれてありがとう！\n"
                 + "http://www2.city.tahara.aichi.jp/section/library/ #田原市図書館";
-  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
 
-  var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
-  iframe.style.display = "none";
-  //iframe.src = "twitter://post?message=" + encodeURIComponent(message);
-  console.log(iframe);
-  /*
-  var a = w.document.body.appendChild(w.document.createElement("a"));
-  a.href = "twitter://post?message=" + encodeURIComponent(message);
-  a.setAttribute("data-lang", "ja");
-  console.log(a);
-  a.click();
-  w.document.body.removeChild(a);
-    */
+  var isAndroid = navigator.userAgent.toLowerCase().indexOf('android') !== -1;
+  var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
+  if(isiOS || isAndroid){
+    var schemeStr = (isAndroid) ? 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;'
+                                : 'twitter://post?message=' + message;
+    new AppOpener({
+    schemeStr:   schemeStr,
+    fallbackUrl: location.href,
+    });
+  }
+  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
 };
