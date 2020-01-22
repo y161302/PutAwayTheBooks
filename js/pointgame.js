@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.5");
+alert("Debug: ver.6");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -280,6 +280,35 @@ window.onload = function() {
           }
         }
       });
+      //------ タッチ入力（移動）
+      this.addEventListener("touchmove", function(e){
+        var id = parseInt(e.x * core.lane / WIDTH);
+        var near = parseInt(e.x * core.lane * 2 / WIDTH);
+        // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
+        if(this.touches[id]){
+          if(this.getDistance(this.touches[id], e) < DISTLIMIT){
+            // 指位置の更新
+            this.touches[id].x = e.x;
+            this.touches[id].y = e.y;
+          }else{ // 一定距離より離れてる場合の処理
+            if(id * 2 == near && id > 0){
+              if(this.touches[id - 1]){
+                if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT){
+                  this.touches[id - 1] = undefined;
+                  this.touchNum--;
+                }
+              }
+            }else if(id * 2 + 1 == near && id < core.lane - 1){
+              if(this.touches[id + 1]){
+                if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT){
+                  this.touches[id + 1] = undefined;
+                  this.touchNum--;
+                }
+              }
+            }
+          }
+        }
+      });
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
         this.touchNum--;
@@ -308,15 +337,20 @@ window.onload = function() {
           // タッチされたレーンに基づき、黒い本でないタッチ記録があれば、その本を片付けたことにする。
           if(this.touches[id]){
             // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であることが条件
-            if(this.getDistance(this.touches[id], e) < DISTLIMIT && this.touches[id].book.color != Book.Color.indexOf("Black")){
-              this.lane[id].removeBook(this.touches[id].book);
+            if(this.touches[id].book.color == Book.Color.indexOf("Black")){
+              new SwipeHelper(lane[id], this.touches[id].book);
+            }else{
+              if(this.getDistance(this.touches[id], e) < DISTLIMIT){
+                this.lane[id].removeBook(this.touches[id].book);
+              }
             }
           }
         }
-        if(this.touchNum == 0){
+        if(this.touchNum <= 0){
           for(var i=0; i<core.lane; i++){
             this.touches[i] = undefined;
           }
+          this.touchNum == 0;
         }
       });
 
@@ -1140,19 +1174,7 @@ window.onload = function() {
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
         // 正確にロゴの上をタッチした時
         if(Math.pow(x - size/2, 2) + Math.pow(y - size/2, 2) < Math.pow(size/2, 2)){
-          var params = [
-            "text=" + encodeURIComponent("あなたは " + core.point + " 冊 片付けた！\n遊んでくれてありがとう！\n"),
-            "url=" + encodeURIComponent("http://www2.city.tahara.aichi.jp/section/library/"),
-            "hashtags=" + encodeURIComponent("田原市図書館")];
-          // a タグを一時的に生成してクリックしたことにする
-          var a = document.body.appendChild(document.createElement("a"));
-          a.href = "https://twitter.com/share?" + params.join("&");
-          a.setAttribute("data-lang", "ja");
-          a.setAttribute("rel", "noopener noreferrer");
-          a.setAttribute("target", "_blank"); // 別タブ
-          console.log(a);
-          a.click();
-          document.body.removeChild(a);
+          openTweetPage();
         }
       });
     }
@@ -1160,7 +1182,7 @@ window.onload = function() {
 
     // 実質のスタート
     var manager = new SceneManager();
-    manager.change("title");
+    manager.change("result");
 
     // canvas の context2D から得られる文字の横幅を得る関数
     function getTextWidth(str, font){
@@ -1200,4 +1222,25 @@ var moveStageToCenter = function(core) {
   stage.style.left = stagePos.left + 'px';
   core._pageX = stagePos.left;
   core._pageY = stagePos.top;
+};
+
+////////// ツイートページを開くやつ //////////
+var openTweetPage = function(){
+  var message = "あなたは " + core.point + " 冊 片付けた！\n"
+                + "遊んでくれてありがとう！\n"
+                + "http://www2.city.tahara.aichi.jp/section/library/ #田原市図書館";
+  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
+  
+  var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
+  iframe.style.display = "none";
+  iframe.src = "twitter://post?message=" + encodeURIComponent(message);
+  console.log(iframe);
+  /*
+  var a = w.document.body.appendChild(w.document.createElement("a"));
+  a.href = "twitter://post?message=" + encodeURIComponent(message);
+  a.setAttribute("data-lang", "ja");
+  console.log(a);
+  a.click();
+  w.document.body.removeChild(a);
+    */
 };
