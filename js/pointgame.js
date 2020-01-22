@@ -1231,6 +1231,7 @@ var openTweetPage = function(){
                 + "http://www2.city.tahara.aichi.jp/section/library/ #田原市図書館";
 
   var isAndroid = navigator.userAgent.toLowerCase().indexOf('android') !== -1;
+  var ua = navigator.userAgent.toLowerCase();
   var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
   if(isiOS || isAndroid){
     var schemeStr = (isAndroid) ? 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;'
