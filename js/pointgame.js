@@ -1230,25 +1230,10 @@ var openTweetPage = function(){
                 + "遊んでくれてありがとう！\n"
                 + "http://www2.city.tahara.aichi.jp/section/library/ #田原市図書館";
 
-  var isAndroid = navigator.userAgent.toLowerCase().indexOf('android') !== -1;
   var ua = navigator.userAgent.toLowerCase();
+  var isAndroid = ua.indexOf('android') !== -1;
   var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
-  /*
-  if(isiOS || isAndroid){
-    var schemeStr = (isAndroid) ? 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;'
-                                : 'twitter://post?message=' + message;
-    new AppOpener({
-    schemeStr:   schemeStr,
-    fallbackUrl: location.href,
-    });
-    alert(location.href);
-  }
-    */
-  alert("別タブで開いた後元タブでiframeでTwitter開けるかチャレンジ-");
-  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
-  w.onload = function(){
-    alert("yeah");
-  };
+  
   var iframe = document.body.appendChild(document.createElement("iframe"));
   iframe.style.display = "none";
   if(isiOS){
@@ -1257,4 +1242,5 @@ var openTweetPage = function(){
     iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
   }
   iframe.parentNode.removeChild(iframe);
+  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
 };
