@@ -1,5 +1,5 @@
 enchant(); // おまじない
-alert("Debug: ver.9");
+alert("Debug: ver.10");
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
@@ -1233,6 +1233,7 @@ var openTweetPage = function(){
   var isAndroid = navigator.userAgent.toLowerCase().indexOf('android') !== -1;
   var ua = navigator.userAgent.toLowerCase();
   var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
+  /*
   if(isiOS || isAndroid){
     var schemeStr = (isAndroid) ? 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;'
                                 : 'twitter://post?message=' + message;
@@ -1242,5 +1243,13 @@ var openTweetPage = function(){
     });
     alert(location.href);
   }
+    */
   var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
+  var iframe = w.document.body.appendChild(w.document.createElement("iframe"));
+  iframe.style.display = "none";
+  if(isiOS){
+    iframe.src = 'twitter://post?message=' + message;
+  }else if(isAndroid){
+    iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
+  }
 };
