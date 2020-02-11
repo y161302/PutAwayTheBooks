@@ -123,9 +123,9 @@ function main() {
       }
       document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent);
     }
+    
 
-    // 画面中央に表示する
-    window.onresize = ()=>moveStageToCenter(core);
+    // 画面中央に表示
     moveStageToCenter(core);
 
     ////////// シーン管理 //////////
@@ -162,11 +162,10 @@ function main() {
       Scene.call(this);
 
       // フェードパネル
-      this.fadePanel = new ScaleSprite(WIDTH, HEIGHT);
-      this.fadePanel.image = core.assets['assets/image/parts/BlackPanelA.png'];
-      this.fadePanel.visible = false;
-      this.fadePanel.delta = 0;
-      this.FRAME = 20;
+      fp = new ScaleSprite(WIDTH, HEIGHT);
+      fp.image = core.assets['assets/image/parts/BlackPanelA.png'];
+      fp.visible = false;
+      delta = 0;
 
       // フェードパネルの上下のグループ
       this.onFadePanel = new Group();
@@ -174,43 +173,49 @@ function main() {
 
       // 要素の追加
       Scene.prototype.addChild.call(this, this.underFadePanel);
-      Scene.prototype.addChild.call(this, this.fadePanel);
+      Scene.prototype.addChild.call(this, fp);
       Scene.prototype.addChild.call(this, this.onFadePanel);
+
+      // 透過度の最大値
+      var max = 20;
       
       this.doFadeIn = function(callback){
-        this.fadePanel.frame = 0;
-        this.fadePanel.delta = 1;
-        this.fadePanel.visible = true;
+        fp.opacity = 1;
+        count = max;
+        delta = -1;
+        fp.visible = true;
         this.callback = callback;
       };
       this.finishFadeIn = function(){
-        this.fadePanel.frame = this.FRAME - 1;
-        this.fadePanel.delta = 0;
-        this.fadePanel.visible = false;
+        fp.opacity = 0;
+        delta = 0;
+        fp.visible = false;
         if(this.callback){
           this.callback();
           this.callback = undefined;
         }
       };
       this.doFadeOut = function(callback){
-        this.fadePanel.frame = this.FRAME - 1;
-        this.fadePanel.delta = -1;
-        this.fadePanel.visible = true;
+        fp.opacity = 0;
+        count = 0;
+        delta = 1;
+        fp.visible = true;
         this.callback = callback;
       };
       this.finishFadeOut = function(){
-        this.fadePanel.frame = 0;
-        this.fadePanel.delta = 0;
+        fp.opacity = 1;
+        delta = 0;
         if(this.callback){
           this.callback();
           this.callback = undefined;
         }
       };
-      this.fadePanel.addEventListener("enterframe", () => {
-        this.fadePanel.frame += this.fadePanel.delta;
-        if(this.fadePanel.frame < 0){ // fadeOut 完了
+      addEventListener("enterframe", () => {
+        count += delta;
+        fp.opacity = count / max;
+        if(count >= max){ // fadeOut 完了
           this.finishFadeOut();
-        }else if(this.fadePanel.frame >= this.FRAME){ // fadeIn 完了
+        }else if(count <= 0){ // fadeIn 完了
           this.finishFadeIn();
         }
       });
@@ -890,7 +895,8 @@ function main() {
     var BlackPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets['assets/image/parts/BlackPanelA40.png'];
+      this.image = core.assets['assets/image/parts/BlackPanelA.png'];
+      this.opacity = 0.4;
     }
     });
 
@@ -1219,20 +1225,6 @@ function main() {
   }
   core.start(); // ゲームをスタートさせます
   console.log("started game.");
-};
-
-////////// 表示位置を画面中央にする奴 //////////
-var moveStageToCenter = function(core) {
-  var stagePos = {
-  top: (document.documentElement.clientHeight - (core.height * core.scale)) / 2,
-  left: (document.documentElement.clientWidth - (core.width * core.scale)) / 2,
-  };
-  var stage = document.getElementById('enchant-stage');
-  stage.style.position = 'absolute';
-  stage.style.top = stagePos.top + 'px';
-  stage.style.left = stagePos.left + 'px';
-  core._pageX = stagePos.left;
-  core._pageY = stagePos.top;
 };
 
 ////////// ツイートページを開くやつ //////////

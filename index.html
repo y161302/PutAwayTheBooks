@@ -10,6 +10,23 @@
 prm = {};
 PRELOAD = undefined;
 window.onload = ()=>prm.WINDOW_ONLOAD=true;
+
+// 画面中央に表示する
+window.onresize = ()=>moveStageToCenter(core);
+
+////////// 表示位置を画面中央にする奴 //////////
+var moveStageToCenter = function(core) {
+  var stagePos = {
+  top: (document.documentElement.clientHeight - (core.height * core.scale)) / 2,
+  left: (document.documentElement.clientWidth - (core.width * core.scale)) / 2,
+  };
+  var stage = document.getElementById('enchant-stage');
+  stage.style.position = 'absolute';
+  stage.style.top = stagePos.top + 'px';
+  stage.style.left = stagePos.left + 'px';
+  core._pageX = stagePos.left;
+  core._pageY = stagePos.top;
+};
     </script>
     <script src="./js/enchant.js" id="enchant.js" onload="javascript:prm.ENCHANT_JS_ONLOAD=true;"></script>
     <script src="./js/fileload.js" id="fileload.js"></script>
