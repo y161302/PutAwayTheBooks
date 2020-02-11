@@ -165,7 +165,6 @@ function main() {
       fp = new ScaleSprite(WIDTH, HEIGHT);
       fp.image = core.assets['assets/image/parts/BlackPanelA.png'];
       fp.visible = false;
-      delta = 0;
 
       // フェードパネルの上下のグループ
       this.onFadePanel = new Group();
@@ -176,19 +175,21 @@ function main() {
       Scene.prototype.addChild.call(this, fp);
       Scene.prototype.addChild.call(this, this.onFadePanel);
 
-      // 透過度の最大値
-      var max = 20;
+      // 透過度に関する奴ら
+      fp.max = 20;
+      fp.count = 0;
+      fp.delta = 0;
       
       this.doFadeIn = function(callback){
         fp.opacity = 1;
-        count = max;
-        delta = -1;
+        fp.count = fp.max;
+        fp.delta = -1;
         fp.visible = true;
         this.callback = callback;
       };
       this.finishFadeIn = function(){
         fp.opacity = 0;
-        delta = 0;
+        fp.delta = 0;
         fp.visible = false;
         if(this.callback){
           this.callback();
@@ -197,26 +198,28 @@ function main() {
       };
       this.doFadeOut = function(callback){
         fp.opacity = 0;
-        count = 0;
-        delta = 1;
+        fp.count = 0;
+        fp.delta = 1;
         fp.visible = true;
         this.callback = callback;
       };
       this.finishFadeOut = function(){
         fp.opacity = 1;
-        delta = 0;
+        fp.delta = 0;
         if(this.callback){
           this.callback();
           this.callback = undefined;
         }
       };
       addEventListener("enterframe", () => {
-        count += delta;
-        fp.opacity = count / max;
-        if(count >= max){ // fadeOut 完了
-          this.finishFadeOut();
-        }else if(count <= 0){ // fadeIn 完了
-          this.finishFadeIn();
+        if(fp.delta){
+          fp.count += fp.delta;
+          fp.opacity = fp.count / fp.max;
+          if(fp.count >= fp.max){ // fadeOut 完了
+            this.finishFadeOut();
+          }else if(fp.count <= 0){ // fadeIn 完了
+            this.finishFadeIn();
+          }
         }
       });
     },
