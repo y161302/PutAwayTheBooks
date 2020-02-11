@@ -291,14 +291,14 @@ function main() {
         console.log(e.x, e.y, e.book);
         // タッチが有効であるときは記録する
         if(!this.untouchable && !this.touches[id]){
-          if(!e.book){ // 本がない時
-            if(e.y <= COUNTER_Y){// お手付き！
+          if(e.book === undefined){ // 本がないとき
+            if(e.y >= COUNTER_Y){ // お手付き！
               this.untouchable = WAITTIME;
               ottk.visible = true;
               bp.visible = true;
             }
           }else{ // 本があるとき
-            if(e.y <= COUNTER_Y || e.y <= e.book.y){
+            if(e.y >= COUNTER_Y || e.y >= e.book.y){
               this.lane[id].touched();
               this.touches[id] = e;
             }
