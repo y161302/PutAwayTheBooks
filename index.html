@@ -6,12 +6,13 @@
     <link rel="apple-touch-icon-precomposed" href="./img/BookRedA.png">
     <link rel="icon" href="./img/BookRedA.png">
     <meta name="viewport" content="width=device-width,user-scalable=no">
-    <script src="./js/enchant.js" id="enchant.js" onload="javascript:ENCHANT_JS_ONLOAD=true;"></script>
+    <script src="./js/enchant.js" id="enchant.js" onload="javascript:prm.ENCHANT_JS_ONLOAD=true;"></script>
     <script src="./js/fileload.js" id="fileload.js"></script>
     <script src="./js/main.js"></script>
     <script>
 prm = {};
 PRELOAD = undefined;
+window.onload = ()=>prm.WINDOW_ONLOAD=true;
     </script>
   </head>
   <body style="background: #000;">

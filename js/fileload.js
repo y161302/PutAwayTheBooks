@@ -5,7 +5,7 @@ async function fileload(){
     .then(filelist=>{
       PRELOAD = filelist;
     });
-  FILELOAD_ONLOAD = true;
+  prm.FILELOAD_ONLOAD = true;
 }
 
 function getFileList(url){
