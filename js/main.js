@@ -16,7 +16,7 @@ LAMBDA = 25; // LAMBDAフレームに一人出現
 SPEED = 1.0; // 人が歩いてくる速度
 COUNTER_Y = HEIGHT * 0.6; // ゴールとなるカウンターの表示座標（描画基準）
 LANE = 3; // レーン数
-DISTLIMIT = 30; // タッチ判定となる最大距離(px.)
+DISTLIMIT = 32; // タッチ判定となる最大距離(px.)
 BLACKRATE = 0.05; // 黒い本の出現率
 HUMANHEIGHT = 150; // 人の描画上の縦幅
 FPS = 15; // このゲームの描画速度(frame / sec.)
@@ -287,16 +287,20 @@ function main() {
         this.touchNum++;
         e.id = id;
         e.count = core.fps; // １秒間は待ってくれる
+        e.book = this.lane[id].books.lastChild;
         // タッチが有効であるときは記録する
-        if(!this.untouchable && e.y >= COUNTER_Y && !this.touches[id]){
-          this.lane[id].touched();
-          if(this.lane[id].books.childNodes.length){
-            e.book = this.lane[id].books.lastChild;
-            this.touches[id] = e;
-          }else{ // お手付き！
-            this.untouchable = WAITTIME;
-            ottk.visible = true;
-            bp.visible = true;
+        if(!this.untouchable && !this.touches[id]){
+          if(!e.book){ // 本がない時
+            if(e.y <= COUNTER_Y){// お手付き！
+              this.untouchable = WAITTIME;
+              ottk.visible = true;
+              bp.visible = true;
+            }
+          }else{ // 本があるとき
+            if(e.y <= COUNTER_Y || e.y <= e.book.y){
+              this.lane[id].touched();
+              this.touches[id] = e;
+            }
           }
         }
       });
@@ -321,8 +325,14 @@ function main() {
             }else if(id * 2 + 1 == near && id < LANE - 1){
               if(this.touches[id + 1]){
                 if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT){
+                  if(!this.touches[id]){
+                    this.touches[id] = this.touches[id + 1];
+                    this.touches[id].x = e.x;
+                    this.touches[id].y = e.y;
+                  }else{
+                    this.touchNum--;
+                  }
                   this.touches[id + 1] = undefined;
-                  this.touchNum--;
                 }
               }
             }
