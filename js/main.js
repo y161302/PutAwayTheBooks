@@ -211,7 +211,7 @@ function main() {
           this.callback = undefined;
         }
       };
-      addEventListener("enterframe", () => {
+      fp.addEventListener("enterframe", () => {
         if(fp.delta){
           fp.count += fp.delta;
           fp.opacity = fp.count / fp.max;
