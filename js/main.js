@@ -288,6 +288,7 @@ function main() {
         e.id = id;
         e.count = core.fps; // １秒間は待ってくれる
         e.book = this.lane[id].books.lastChild;
+        console.log(e.x, e.y, e.book);
         // タッチが有効であるときは記録する
         if(!this.untouchable && !this.touches[id]){
           if(!e.book){ // 本がない時
