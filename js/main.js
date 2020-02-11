@@ -22,6 +22,7 @@ HUMANHEIGHT = 150; // 人の描画上の縦幅
 FPS = 15; // このゲームの描画速度(frame / sec.)
 
 ////////// プリロード一覧 //////////
+/*
 PRELOAD = ["./img/BookBlackA.png",
            "./img/BookBlueA.png",
            "./img/BookGreenA.png",
@@ -62,6 +63,7 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/804.png",
            "./img/mouseTest.png",
            "./img/Twitter_Social_Icon_Circle_Color.png"];
+  */
 
 // index.html 内で管理しているフラグがすべて建ったら main() を実行 //
 var b = true;
@@ -134,7 +136,7 @@ function main() {
       switch(sceneName.toLowerCase()){
       case "title":
         core.replaceScene(new TitleScene());
-        style.background = "url('./assets/image/background/bg_title" + (rand(2)+1) + ".png')";
+        style.background = "url('assets/image/background/bg_title" + (rand(2)+1) + ".png')";
         break;
       case "game":
         core.replaceScene(new GameScene());
@@ -148,7 +150,7 @@ function main() {
         break;
       case "result":
         core.replaceScene(new ResultScene());
-        style.background = "url('./assets/image/background/bg_result1.png')";
+        style.background = "url('assets/image/background/bg_result1.png')";
         break;
       }
     }
@@ -161,7 +163,7 @@ function main() {
 
       // フェードパネル
       this.fadePanel = new ScaleSprite(WIDTH, HEIGHT);
-      this.fadePanel.image = core.assets['./assets/image/parts/BlackPanelA.png'];
+      this.fadePanel.image = core.assets['assets/image/parts/BlackPanelA.png'];
       this.fadePanel.visible = false;
       this.fadePanel.delta = 0;
       this.FRAME = 20;
@@ -744,7 +746,7 @@ function main() {
     //------ スワイプヘルパー
     var SwipeHelper = Class.create(ScaleSprite, {
     initialize: function(lane, book){
-      var image = core.assets['./assets/image/parts/SwipeHelperA.png'];
+      var image = core.assets['assets/image/parts/SwipeHelperA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.setX(book.x + (book.width - this.width) / 2);
@@ -765,7 +767,7 @@ function main() {
     var BookFrame = Class.create(ScaleSprite, {
     initialize: function(lane, index){
       ScaleSprite.call(this, 50, 80);
-      this.image = (index == LIMIT - 1) ? core.assets["./assets/image/parts/BookFrameLimitA.png"] : core.assets["./assets/image/parts/BookFrameA.png"];
+      this.image = (index == LIMIT - 1) ? core.assets["assets/image/parts/BookFrameLimitA.png"] : core.assets["assets/image/parts/BookFrameA.png"];
       this.x = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width / 2 + index * (lane.id - (LANE - 1) / 2) * Book.PILE.X
       this.y = COUNTER_Y + 40 - index * Book.PILE.Y;
       // フレーム毎の処理
@@ -786,7 +788,7 @@ function main() {
       // 図書館キャラの動きの定義
       if(rand(100) < 3){
         var n = rand(4);
-        image = core.assets['./assets/image/rarehuman/guest_' + n + 'A.png'];
+        image = core.assets['assets/image/rarehuman/guest_' + n + 'A.png'];
         ScaleSprite.call(this, image.width, image.height);
         switch(n){
         case 0: // コブック
@@ -803,7 +805,7 @@ function main() {
           break;
         }
       }else{
-        image = core.assets['./assets/image/human/school' + rand(8) + 'A.png'];
+        image = core.assets['assets/image/human/school' + rand(8) + 'A.png'];
         ScaleSprite.call(this, 32, 48);
       }
       this.image = image;
@@ -852,7 +854,7 @@ function main() {
     var LvUp = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 75);
-      this.image = core.assets['./assets/image/parts/LEVELUPA.png'];
+      this.image = core.assets['assets/image/parts/LEVELUPA.png'];
       this.frame = 0;
       this.x = 0;
       this.y = 100;
@@ -878,7 +880,7 @@ function main() {
     var Counter = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 264);
-      this.image = core.assets['./assets/image/parts/Counter.png'];
+      this.image = core.assets['assets/image/parts/Counter.png'];
       this.x = 0;
       this.y = COUNTER_Y;
     }
@@ -888,7 +890,7 @@ function main() {
     var BlackPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets['./assets/image/parts/BlackPanelA40.png'];
+      this.image = core.assets['assets/image/parts/BlackPanelA40.png'];
     }
     });
 
@@ -915,7 +917,7 @@ function main() {
     var Otetsuki = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 262, 67);
-      this.image = core.assets['./assets/image/parts/OtetsukiA.png'];
+      this.image = core.assets['assets/image/parts/OtetsukiA.png'];
       this.x = (WIDTH - this.width) / 2;
       this.y = 420;
       this.visible = false;
@@ -926,7 +928,7 @@ function main() {
     var GameOverSprite = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 456, 80);
-      this.image = core.assets['./assets/image/parts/GameOverA.png'];
+      this.image = core.assets['assets/image/parts/GameOverA.png'];
       this.y = (HEIGHT - this.height) / 2;
       this.x = (WIDTH - this.width) / 2;
       this.visible = false;
@@ -937,7 +939,7 @@ function main() {
     var WarnningPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets['./assets/image/parts/WarnningPanelA.png'];
+      this.image = core.assets['assets/image/parts/WarnningPanelA.png'];
       this.FRAME = 15;
       this.frame = this.FRAME - 1;
       this.delta = -1;
@@ -956,7 +958,7 @@ function main() {
     //------ タイトルロゴ
     var TitleLogo = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['./assets/image/parts/title_title.png'];
+      var image = core.assets['assets/image/parts/title_title.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
     }
@@ -965,7 +967,7 @@ function main() {
     //------ タイトルに表示する本
     var TitleBook = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['./assets/image/parts/title_book.png'];
+      var image = core.assets['assets/image/parts/title_book.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.y = 160;
@@ -975,7 +977,7 @@ function main() {
     //------ タイトルに表示するなのビィ
     var Nanobie = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['./assets/image/rarehuman/guest_2A.png'];
+      var image = core.assets['assets/image/rarehuman/guest_2A.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var scale = 240 / this.height;
@@ -1014,7 +1016,7 @@ function main() {
     //------ タイトルに表示するなのビィの吹き出し
     var SpeechBubble = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['./assets/image/parts/SpeechBubble' + (rand(3) + 1) + 'A.png'];
+      var image = core.assets['assets/image/parts/SpeechBubble' + (rand(3) + 1) + 'A.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var w = 300;
@@ -1036,7 +1038,7 @@ function main() {
     //------はじめるボタン
     var StartButton = Class.create(ScaleSprite, {
     initialize: function(start){
-      var image = core.assets["./assets/image/parts/StartImageA.png"];
+      var image = core.assets["assets/image/parts/StartImageA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.start = start;
@@ -1078,7 +1080,7 @@ function main() {
     //------ つづけるボタン
     var ResumeButton = Class.create(ScaleSprite, {
     initialize: function(resume){
-      image = core.assets['./assets/image/parts/ResumeImageA.png'];
+      image = core.assets['assets/image/parts/ResumeImageA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.resume = resume;
@@ -1123,7 +1125,7 @@ function main() {
     //------ やめるボタン
     var EndButton = Class.create(ScaleSprite, {
     initialize: function(end){
-      image = core.assets['./assets/image/parts/EndImageA.png'];
+      image = core.assets['assets/image/parts/EndImageA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.end = end;
@@ -1166,7 +1168,7 @@ function main() {
     //------ ツイートボタン
     var TweetButton = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets["./assets/image/parts/Twitter_Social_Icon_Circle_Color.png"];
+      var image = core.assets["assets/image/parts/Twitter_Social_Icon_Circle_Color.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var size = 80;
