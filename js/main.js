@@ -64,10 +64,12 @@ PRELOAD = ["./img/BookBlackA.png",
            "./img/Twitter_Social_Icon_Circle_Color.png"];
 
 // index.html 内で管理しているフラグがすべて建ったら main() を実行 //
+var b = true;
 var id = setInterval(()=>{
   if(prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD){
-    main();
-    setTimeout(clearInterval, 0, id);
+    if(b) main();
+    b = false;
+    clearInterval(id);
   }
 }, 1);
 
