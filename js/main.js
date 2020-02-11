@@ -733,7 +733,7 @@ function main() {
     var Book = Class.create(ScaleSprite, {
     initialize: function(lane, colorNum, index) {
       ScaleSprite.call(this, 50, 80);
-      this.image = core.assets[`./assets/image/parts/Book${Book.Color[colorNum]}A.png`];
+      this.image = core.assets[`assets/image/parts/Book${Book.Color[colorNum]}A.png`];
       this.color = colorNum;
       this.x = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width / 2 + index * (lane.id - (LANE - 1) / 2) * Book.PILE.X;
       this.y = COUNTER_Y + 40 - index * Book.PILE.Y;
