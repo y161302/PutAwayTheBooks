@@ -439,14 +439,14 @@ function main() {
       // やめるボタンを押したときの動作
       var ended = ()=>{
         this.doFadeOut(()=>{
-          manager.change("title");
+          window.close();
         });
       };
 
       // つづけるボタンを押したときの動作
       var resumed = ()=>{
         this.doFadeOut(()=>{
-          manager.change("game");
+          manager.change("title");
         });
       };
 
