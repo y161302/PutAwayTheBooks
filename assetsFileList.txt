@@ -10,6 +10,7 @@ assets/image/human/school4A.png
 assets/image/human/school5A.png
 assets/image/human/school6A.png
 assets/image/human/school7A.png
+assets/image/parts/BlackPanelA.png
 assets/image/parts/BookBlackA.png
 assets/image/parts/BookBlueA.png
 assets/image/parts/BookFrameA.png
