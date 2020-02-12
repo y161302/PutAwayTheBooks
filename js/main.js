@@ -8,6 +8,7 @@ WIDTH = 480; // core canvas width (px)
 HEIGHT = 640; // core canvas height (px)
 COUNTER_Y = HEIGHT * 0.55; // ゴールとなるカウンターの表示座標
 HUMANHEIGHT = 150; // 人の描画上の縦幅
+FPS = 15; // １秒当たりの描画フレーム数
 
 ////////// ゲームパラメータ― //////////
 // 人が本を置いて立ち去るまでの初期時間
