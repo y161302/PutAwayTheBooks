@@ -789,7 +789,7 @@ function main() {
           if(setY < goalY - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
             setY = offsetY + (COUNTER_Y + HUMANHEIGHT / 2) / (5 * core.fps) * this.SPEED * this.moveAge;
             this.setY(setY);
-            setX = offsetX - (lane.id - (LANE - 1) / 2) * (goalY) - setY) / 8;
+            setX = offsetX - (lane.id - (LANE - 1) / 2) * (goalY - setY) / 8;
             this.setX(setX);
             this.moveAge++;
           }
