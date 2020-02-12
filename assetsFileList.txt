@@ -1,13 +1,13 @@
 assets/image/background/bg_result1.png
 assets/image/background/bg_title1.png
 assets/image/background/bg_title2.png
-assets/image/human/school0A.png
 assets/image/human/school10A.png
 assets/image/human/school11A.png
 assets/image/human/school12A.png
 assets/image/human/school13A.png
 assets/image/human/school14A.png
 assets/image/human/school15A.png
+assets/image/human/school16A.png
 assets/image/human/school1A.png
 assets/image/human/school2A.png
 assets/image/human/school3A.png
@@ -17,7 +17,7 @@ assets/image/human/school6A.png
 assets/image/human/school7A.png
 assets/image/human/school8A.png
 assets/image/human/school9A.png
-assets/image/human/SchoolGirl0A.png
+assets/image/human/SchoolGirl1A.png
 assets/image/parts/BlackPanelA.png
 assets/image/parts/BookBlackA.png
 assets/image/parts/BookBlueA.png
