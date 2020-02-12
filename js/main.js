@@ -764,7 +764,7 @@ function main() {
         var key = keys[rand(keys.length)];
         var setting = HumanSetting[key];
         image = core.assets['assets/image/human/' + key + (rand(setting.num) + 1) + 'A.png'];
-        frameLoop = setting.frame;
+        frameLoop = setting.frames;
         ScaleSprite.call(this, setting.width, setting.height);
       }
       this.image = image;
