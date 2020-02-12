@@ -3,23 +3,43 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-////////// ゲームパラメータ― //////////
+////////// 描画パラメータ //////////
 WIDTH = 480; // core canvas width (px)
 HEIGHT = 640; // core canvas height (px)
-WAITTIME = 20; // 人が本を置いて立ち去るまでのフレーム数（難易度指標の一つ）
-//TAKENTIME = 30; // 一番上の本がほかの人に取られるまでの時間（難易度指標の一つ）
-//OVERTIME = 60; // ゲームオーバーとなる時間
-//TIMERTIME = 5; // 時計が揺れ始める時間（ゲームオーバーの〇秒前）
-//AFTERTIME = 30; // 後半戦の区切り時間
-LIMIT = 15 // ゲームオーバーとなる積立冊数
-LAMBDA = 25; // LAMBDAフレームに一人出現
-SPEED = 1.0; // 人が歩いてくる速度
-COUNTER_Y = HEIGHT * 0.6; // ゴールとなるカウンターの表示座標（描画基準）
-LANE = 3; // レーン数
-DISTLIMIT = 32; // タッチ判定となる最大距離(px.)
-BLACKRATE = 0.05; // 黒い本の出現率
+COUNTER_Y = HEIGHT * 0.55; // ゴールとなるカウンターの表示座標
 HUMANHEIGHT = 150; // 人の描画上の縦幅
-FPS = 15; // このゲームの描画速度(frame / sec.)
+
+////////// ゲームパラメータ― //////////
+// 人が本を置いて立ち去るまでの初期時間
+WAITTIME = 20;
+
+// ゲームオーバーとなる積立冊数
+LIMIT = 15;
+
+// 人の初期出現率 (１人 ／ LAMBDA フレーム)
+LAMBDA = 25;
+
+// 人が歩いてくる初期速度
+SPEED = 1.0;
+
+// レーン数
+LANE = 3;
+
+// タッチ判定となる移動距離 この距離以内ならOK
+DISTLIMIT = 30;
+
+// 黒い本の出現率
+BLACKRATE = 0.05;
+
+// リザルト画面で「やめる」を選択した際の遷移先 URL
+BACK_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
+
+// リザルト画面でツイッター共有する際のツイートに載せる URL
+TWEET_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
+
+// リザルト画面でツイッター共有する際のツイートに載せるメッセージ
+// （「あなたは n 冊片付けました！」の続きに載せるメッセージです。）
+TWEET_MSG = "みんなも挑戦してね！";
 
 ////////// プリロード一覧 //////////
 /*
@@ -343,7 +363,7 @@ function main() {
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
         this.touchNum--;
-        if(e.y < COUNTER_Y){ // カウンターより上で離された時
+        if(e.y < COUNTER_Y && e.y < e.book.y){ // カウンターより上で離された時
           var black = {};
           black.distX = WIDTH;
           // X 座標が一番近い黒い本のタッチ記録があった時、その本を片付けたことにする
@@ -1140,8 +1160,6 @@ function main() {
     }
     });
 
-    
-
     //------ やめるボタン
     var EndButton = Class.create(ScaleSprite, {
     initialize: function(end){
@@ -1243,14 +1261,16 @@ function main() {
 
 ////////// ツイートページを開くやつ //////////
 var openTweetPage = function(){
-  var message = "あなたは " + core.point + " 冊 片付けた！\n"
-                + "遊んでくれてありがとう！\n"
-                + location.href + " #田原市図書館";
+  var message = "ミニゲーム『本を片付けて！』| 田原市図書館\n"
+                + core.point + " 冊 片付けました！\n"
+                + TWEET_MSG + "\n"
+                + TWEET_URL + " #田原市図書館";
 
   var ua = navigator.userAgent.toLowerCase();
   var isAndroid = ua.indexOf('android') !== -1;
   var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
   
+
   var iframe = document.body.appendChild(document.createElement("iframe"));
   iframe.style.display = "none";
   if(isiOS){
@@ -1259,5 +1279,7 @@ var openTweetPage = function(){
     iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
   }
   iframe.parentNode.removeChild(iframe);
-  var w = window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(message));
+  setTimeout(function(){
+    location.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(message);
+  }, 0);
 };
