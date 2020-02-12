@@ -1,9 +1,0 @@
-files="./"
-loadfile="./loadfile.txt"
-
-if [ -e loadfile ]; then
-  touch loadfile
-fi
-
-for file in $files; do
-  

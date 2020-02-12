@@ -3,93 +3,20 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-////////// 描画パラメータ //////////
-WIDTH = 480; // core canvas width (px)
-HEIGHT = 640; // core canvas height (px)
-COUNTER_Y = HEIGHT * 0.55; // ゴールとなるカウンターの表示座標
-HUMANHEIGHT = 150; // 人の描画上の縦幅
-FPS = 15; // １秒当たりの描画フレーム数
+// パラメータファイル読み込み
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "./js/parameter.js", true);
+xhr.responseType = "text";
+xhr.onload = ()=>{
+  var src = document.head.appendChild(document.createElement("script"));
+  src.innerText = xhr.responseText + "\nprm.PARAMETER_ONLOAD = true;";
+};
+xhr.send("");
 
-////////// ゲームパラメータ― //////////
-// 人が本を置いて立ち去るまでの初期時間
-WAITTIME = 20;
-
-// ゲームオーバーとなる積立冊数
-LIMIT = 15;
-
-// 人の初期出現率 (１人 ／ LAMBDA フレーム)
-LAMBDA = 25;
-
-// 人が歩いてくる初期速度
-SPEED = 1.0;
-
-// レーン数
-LANE = 3;
-
-// タッチ判定となる移動距離 この距離以内ならOK
-DISTLIMIT = 30;
-
-// 黒い本の出現率
-BLACKRATE = 0.05;
-
-// リザルト画面で「やめる」を選択した際の遷移先 URL
-BACK_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
-
-// リザルト画面でツイッター共有する際のツイートに載せる URL
-TWEET_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
-
-// リザルト画面でツイッター共有する際のツイートに載せるメッセージ
-// （「あなたは n 冊片付けました！」の続きに載せるメッセージです。）
-TWEET_MSG = "みんなも挑戦してね！";
-
-////////// プリロード一覧 //////////
-/*
-PRELOAD = ["./img/BookBlackA.png",
-           "./img/BookBlueA.png",
-           "./img/BookGreenA.png",
-           "./img/BookRedA.png",
-           "./img/BookWhiteA.png",
-           "./img/BookYellowA.png",
-           "./img/Counter.png",
-           "./img/tokei.png",
-           "./img/BookFrameA.png",
-           "./img/BookFrameLimitA.png",
-           "./img/BlackPanelA.png",
-           "./img/BlackPanelA40.png",
-           "./img/LEVELUPA.png",
-           "./img/OtetsukiA.png",
-           "./img/GameOverA.png",
-           "./img/WarnningPanelA.png",
-           "./img/school0A.png",
-           "./img/school1A.png",
-           "./img/school2A.png",
-           "./img/school3A.png",
-           "./img/school4A.png",
-           "./img/school5A.png",
-           "./img/school6A.png",
-           "./img/school7A.png",
-           "./img/guest_0A.png",
-           "./img/guest_1A.png",
-           "./img/guest_2A.png",
-           "./img/guest_3A.png",
-           "./img/title_title.png",
-           "./img/title_book.png",
-           "./img/SpeechBubble1A.png",
-           "./img/SpeechBubble2A.png",
-           "./img/SpeechBubble3A.png",
-           "./img/StartImageA.png",
-           "./img/EndImageA.png",
-           "./img/ResumeImageA.png",
-           "./img/SwipeHelperA.png",
-           "./img/804.png",
-           "./img/mouseTest.png",
-           "./img/Twitter_Social_Icon_Circle_Color.png"];
-  */
-
-// index.html 内で管理しているフラグがすべて建ったら main() を実行 //
+// フラグがすべて建ったら main() を実行 //
 var b = true;
 var id = setInterval(()=>{
-  if(prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD){
+  if(prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD && prm.PARAMETER_ONLOAD){
     if(b) main();
     b = false;
     clearInterval(id);
@@ -100,7 +27,6 @@ function main() {
   var stage = document.getElementById("enchant-stage");
   core = new Core(WIDTH, HEIGHT); // ゲーム本体を準備すると同時に、表示される領域の大きさを設定しています。
   core.fps = FPS; // frames（フレーム）per（毎）second（秒）：ゲームの進行スピードを設定しています。
-  //core.preload("./img/BookBlackA.png", "./img/BookBlueA.png", "./img/BookGreenA.png", "./img/BookRedA.png", "./img/BookWhiteA.png", "./img/BookYellowA.png", "./img/Counter.png", "./img/Human1A.png", "./img/Human2A.png", "./img/tokei.png");
   core.preload(PRELOAD);
  
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
@@ -823,54 +749,47 @@ function main() {
     initialize: function(lane, speed, index){
       //console.log('./img/Human' + (rand(2) + 1) + 'A.png');
       this.SPEED = lane.SPEED;
+      var goalY = COUNTER_Y - HUMANHEIGHT * 0.4;
       var image;
-      var delta = 0;
-      // 図書館キャラの動きの定義
-      if(rand(100) < 3){
+      var frameLoop;
+      // RareRate に収まっていればレアキャラが出てくる
+      if(rand(100) < RARERATE){
+        // 図書館キャラの動きの定義
         var n = rand(4);
         image = core.assets['assets/image/rarehuman/guest_' + n + 'A.png'];
+        frameLoop = [1];
         ScaleSprite.call(this, image.width, image.height);
-        switch(n){
-        case 0: // コブック
-          this.tl.moveBy(0, 20, core.fps / 2, enchant.Easing.QUART_EASEINOUT)
-                 .moveBy(0, -20, core.fps / 2, enchant.Easing.QUART_EASEINOUT)
-                 .loop();
-          break;
-        case 1: // 本読んでる二人
-          this.tl.moveBy(0, 30, core.fps / 2, enchant.Easing.CUBIC_EASEIN)
-                 .moveBy(0, -30, core.fps / 2, enchant.Easing.CUBIC_EASEOUT)
-                 .loop();
-        case 2: case 3:
-          delta = 15;
-          break;
-        }
       }else{
-        image = core.assets['assets/image/human/school' + rand(8) + 'A.png'];
-        ScaleSprite.call(this, 32, 48);
+        var keys = Object.keys(HumanSetting);
+        var key = keys[rand(keys.length)];
+        var setting = HumanSetting[key];
+        image = core.assets['assets/image/human/' + key + rand(setting.num) + 'A.png'];
+        frameLoop = setting.frame;
+        ScaleSprite.call(this, setting.width, setting.height);
       }
       this.image = image;
-      var scale = HUMANHEIGHT / this.height;
+      // 高さを HumanHeight にそろえる
+      var scale = HUMANHEIGHT / this.height; 
       this.scaleY = scale;
       this.scaleX = scale;
-      //var defY = (this.height + HUMANHEIGHT) / 2;
-      var offsetY = - HUMANHEIGHT;
-      var setY = offsetY;
-      this.setY(setY);
-      var offsetX = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width * scale / 2;
-      var setX = offsetX - (lane.id - (LANE - 1) / 2) * ((COUNTER_Y - 60) - setY) / 10;
-      this.setX(setX);
+      // 描画座標計算用の数値設定
+      var offsetY = - HUMANHEIGHT; // ちょうど画面から見えない上部をずらす前のＹ座標とする
+      var setY = offsetY; // 初期Ｙ座標はオフセットそのまま
+      this.setY(setY); // ScaleSprite.setY()
+      var offsetX = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width * scale / 2; // レーンの中心Ｘ座標をずらす前のＸ座標とする
+      var setX = offsetX - (lane.id - (LANE - 1) / 2) * ((COUNTER_Y - 60) - setY) / 10; // 初期Ｘ座標は少し中心寄り
+      this.setX(setX); // ScaleSprite.setX()
+      // 動きの設定用
       this.c = 0;
       this.moveAge = 0;
+      // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
-        switch(parseInt(this.age / 2) % 4){
-          case 3: this.frame = 1; break;
-          default: this.frame = parseInt(this.age / 2) % 4; break;
-        }
-        if(setY < COUNTER_Y - 60){
-          if(setY < (COUNTER_Y - 60) - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
+        this.frame = frameLoop[this.age % frameLoop.length];
+        if(setY < goalY){
+          if(setY < goalY - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
             setY = offsetY + (COUNTER_Y + HUMANHEIGHT / 2) / (5 * core.fps) * this.SPEED * this.moveAge;
             this.setY(setY);
-            setX = offsetX - (lane.id - (LANE - 1) / 2) * ((COUNTER_Y - 60) - setY) / 8;
+            setX = offsetX - (lane.id - (LANE - 1) / 2) * (goalY) - setY) / 8;
             this.setX(setX);
             this.moveAge++;
           }
