@@ -59,7 +59,7 @@ TWEET_MSG = "みんなも挑戦してね！";
 
   既存の設定を参考にお願いします。
  *********************************************************/
-HumanSetting = {};
+HumanSetting = [];
 
 HumanSetting.push({
   name: "school",
