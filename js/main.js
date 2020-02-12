@@ -762,7 +762,7 @@ function main() {
       }else{
         var n = rand(HumanNum);
         var setting;
-        HumanSetting.forEach(k=>{var s=HumanSetting[k]; if(0<=n&&n<s.length) setting=s; n-=s.length;});
+        HumanSetting.forEach(k=>{var s=HumanSetting[k]; if(0<=n&&n<s.num) setting=s; n-=s.num;});
         image = core.assets['assets/image/human/' + setting.name + (rand(setting.num) + 1) + 'A.png'];
         frameLoop = setting.frames;
         ScaleSprite.call(this, setting.width, setting.height);

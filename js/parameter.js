@@ -78,4 +78,4 @@ HumanSetting.push({
 });
 
 // 人ファイルの合計数 ※ここより上に設定を記述してください。
-HumanNum = HumanSetting.map(s=>{return s.length;}).reduce((p,c)=>{return p+c;});
+HumanNum = HumanSetting.map(s=>{return s.num;}).reduce((p,c)=>{return p+c;});
