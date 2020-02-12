@@ -9,7 +9,7 @@ xhr.open("GET", "./js/parameter.js", true);
 xhr.responseType = "text";
 xhr.onload = ()=>{
   var src = document.head.appendChild(document.createElement("script"));
-  src.innerText = xhr.responseText + "\nprm.PARAMETER_ONLOAD = true;";
+  src.textContent = xhr.responseText + "prm.PARAMETER_ONLOAD = true;";
 };
 xhr.send("");
 
@@ -763,7 +763,7 @@ function main() {
         var keys = Object.keys(HumanSetting);
         var key = keys[rand(keys.length)];
         var setting = HumanSetting[key];
-        image = core.assets['assets/image/human/' + key + rand(setting.num) + 'A.png'];
+        image = core.assets['assets/image/human/' + key + (rand(setting.num) + 1) + 'A.png'];
         frameLoop = setting.frame;
         ScaleSprite.call(this, setting.width, setting.height);
       }
@@ -784,24 +784,26 @@ function main() {
       this.moveAge = 0;
       // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
+        // 動かす
         this.frame = frameLoop[this.age % frameLoop.length];
-        if(setY < goalY){
+        if(setY < goalY){ // ゴールにたどり着いてなければ
           if(setY < goalY - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
+            // 行列を形成する必要がない時はスピードに合わせて動かす。
             setY = offsetY + (COUNTER_Y + HUMANHEIGHT / 2) / (5 * core.fps) * this.SPEED * this.moveAge;
             this.setY(setY);
             setX = offsetX - (lane.id - (LANE - 1) / 2) * (goalY - setY) / 8;
             this.setX(setX);
             this.moveAge++;
           }
-        }else{
-          if(this.c == 0){
+        }else{ // ゴールにたどり着いたとき
+          if(this.c == 0){ // たどり着いた瞬間の処理
             var n = rand(parseInt(lane.Level / 2)) + 1;
             for(var i=0; i<n; i++){
               lane.addBook();
             }
           }
           this.c++;
-          if(this.c > lane.WAITTIME){
+          if(this.c > lane.WAITTIME){ // 一定時間たったら消える
             lane.popHuman();
           }
         }
