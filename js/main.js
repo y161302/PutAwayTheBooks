@@ -760,10 +760,10 @@ function main() {
         frameLoop = [1];
         ScaleSprite.call(this, image.width, image.height);
       }else{
-        var keys = Object.keys(HumanSetting);
-        var key = keys[rand(keys.length)];
-        var setting = HumanSetting[key];
-        image = core.assets['assets/image/human/' + key + (rand(setting.num) + 1) + 'A.png'];
+        var n = rand(HumanNum);
+        var setting;
+        HumanSetting.forEach(k=>{var s=HumanSetting[k]; if(0<=n&&n<s.length) setting=s; n-=s.length;});
+        image = core.assets['assets/image/human/' + setting.name + (rand(setting.num) + 1) + 'A.png'];
         frameLoop = setting.frames;
         ScaleSprite.call(this, setting.width, setting.height);
       }
@@ -785,7 +785,7 @@ function main() {
       // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
         // 動かす
-        this.frame = frameLoop[this.age % frameLoop.length];
+        this.frame = frameLoop[parseInt(this.age / 2) % frameLoop.length];
         if(setY < goalY){ // ゴールにたどり着いてなければ
           if(setY < goalY - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
             // 行列を形成する必要がない時はスピードに合わせて動かす。
