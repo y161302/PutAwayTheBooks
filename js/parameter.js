@@ -71,11 +71,13 @@ HumanSetting.push({
 
 HumanSetting.push({
   name: "SchoolGirl",
-  frames: [1, 3, 5, 3],
+  frames: [1, 2, 3, 4, 5, 4, 3, 2],
   width: 40,
   height: 100,
   num: 1
 });
 
-// 人ファイルの合計数 ※ここより上に設定を記述してください。
+/**************** ここより上に設定を記述してください *****************/
+
+// 人ファイルの合計数を計算 
 HumanNum = HumanSetting.map(s=>{return s.num;}).reduce((p,c)=>{return p+c;});

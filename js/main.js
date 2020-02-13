@@ -256,6 +256,7 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
+        console.log("move", e, touches[id]);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
           if(this.getDistance(this.touches[id], e) < DISTLIMIT){
@@ -298,6 +299,7 @@ function main() {
             if(item){
               if(item.book.color == Book.Color.indexOf("Black")){
                 var d = Math.abs(e.x - item.x);
+                console.log("end", e.x, item.x);
                 if(d < black.distX){
                   black.distX = d;
                   black.book = item.book;
