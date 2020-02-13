@@ -4,9 +4,12 @@ var rand = function(n){ // よく使う [0-n) ランダム
 };
 alert("ver 2");
 var d = window.open().document;
-d.head.appendChild(d.createElement("style")).innerText = 'span { margin: 2px; } span::after { content: "\\A"; white-space: pre;}';
-console.log = function(){Array.from(arguments).forEach(a=>d.body.appendChild(d.createElement("span")).innerText=a)};
-window.onerror = (e)=>console.log(e);
+d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
+console.log = function(){
+  var p = d.body.appendChild(d.createElement("p"));
+  Array.from(arguments).forEach(a=>p.appendChild(d.createElement("span")).innerText=a);
+};
+window.onerror = e=>console.log(e, e.stack);
 
 // パラメータファイル読み込み
 var xhr = new XMLHttpRequest();
