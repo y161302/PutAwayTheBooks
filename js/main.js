@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 2");
+alert("ver 3");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -256,7 +256,7 @@ function main() {
               this.lane[id].touched();
               e.start = {x: e.x, y: e.y};
               this.touches[id] = e;
-              console.log(e, e.x, e.y);
+              console.log("lane: " + id, e.x, e.y);
             }
           }
         }
@@ -265,6 +265,7 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
+        console.log("move: " + id, this.touches[id], e.x, e.y);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
           if(this.getDistance(this.touches[id], e) < DISTMOVE){ // 一定距離内なら
