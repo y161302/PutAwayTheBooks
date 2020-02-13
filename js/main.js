@@ -141,6 +141,7 @@ function main() {
         fp.delta = -1;
         fp.visible = true;
         this.callback = callback;
+        if(core.bgm) core.bgm.play();
       };
       this.finishFadeIn = function(){
         fp.opacity = 0;
@@ -161,6 +162,7 @@ function main() {
       this.finishFadeOut = function(){
         fp.opacity = 1;
         fp.delta = 0;
+        if(core.bgm) core.bgm.stop();
         if(this.callback){
           this.callback();
           this.callback = undefined;
@@ -170,6 +172,7 @@ function main() {
         if(fp.delta){
           fp.count += fp.delta;
           fp.opacity = fp.count / fp.max;
+          if(core.bgm) core.bgm.volume = fp.count / fp.max;
           if(fp.count >= fp.max){ // fadeOut 完了
             this.finishFadeOut();
           }else if(fp.count <= 0){ // fadeIn 完了
@@ -235,8 +238,7 @@ function main() {
       this.addChildOnFadePanel(gameover);
 
       // 音楽流してみるか enterframeで音楽最後まで行ったら最初からするようにしてる
-      this.bgm = core.assets[AudioDir + "game1.mp3"].clone();
-      this.bgm.play();
+      core.bgm = core.assets[AudioDir + "game1.mp3"].clone();
 
       this.touches = [];
       this.touchNum = 0;
@@ -411,22 +413,24 @@ function main() {
             if(GameOverFlg){
               // ゲームオーバー音を鳴らそう
               core.assets[AudioDir + "gameOver.mp3"].clone().play();
+              
               this.isGameOver = true;
               gameover.visible = true;
               this.doFadeOut(()=>{this.finished = true;});
               this.untouchable = 100;
             }
+          }else{
+            finishTime++;
           }
         }else{ // this.finished: true;
           manager.change("result");
-          finishTime++;
-          this.bgm.volume = (FPS - finishTime) / FPS;
         }
 
         // 音楽について
-        if(this.bgm.currentTime >= this.bgm.duration){
-          this.bgm.stop();
-          this.bgm.play();
+        if(core.bgm.currentTime >= core.bgm.duration){
+          core.bgm.stop();
+          core.bgm.currentTime = 0;
+          core.bgm.play();
         }
       });
 
@@ -496,7 +500,7 @@ function main() {
       this.addChild(end);
 
       // 音楽鳴らすぜぇ
-      core.assets[AudioDir + "result1.mp3"].clone().play();
+      core.bgm = core.assets[AudioDir + "result1.mp3"].clone();
 
       // フェードインの実行
       this.doFadeIn();
@@ -579,8 +583,7 @@ function main() {
       this.addChild(start);
 
       // 音楽流すぜ
-      this.bgm = core.assets[AudioDir + "title1.mp3"].clone();
-      this.bgm.play();
+      core.bgm = core.assets[AudioDir + "title1.mp3"].clone();
 
       // すべての子要素に対して有効とする奴
       var enabling = function(node, enable){
