@@ -402,6 +402,8 @@ function main() {
           
           // リミット到達時の処理
           if(!this.isGameOver){ // ゲームオーバー処理がされてないとき
+            // ゲームオーバー音を鳴らそう
+            core.assets[AudioDir + "gameOver.mp3"].clone().play();
             // リミット到達したレーンがあるか調べる
             var GameOverFlg = false;
             for(var i=0; i<LANE; i++){
@@ -446,6 +448,7 @@ function main() {
         this.doFadeOut(()=>{
           window.close();
         });
+        core.assets[AudioDir + "pageEnd.mp3"].clone().play();
       };
 
       // つづけるボタンを押したときの動作
@@ -453,6 +456,7 @@ function main() {
         this.doFadeOut(()=>{
           manager.change("title");
         });
+        core.assets[AudioDir + "pageResume.mp3"].clone().play();
       };
 
       // オブジェクトの生成
@@ -490,6 +494,9 @@ function main() {
       this.addChild(tweet);
       this.addChild(resume);
       this.addChild(end);
+
+      // 音楽鳴らすぜぇ
+      core.assets[AudioDir + "result1.mp3"].clone().play();
 
       // フェードインの実行
       this.doFadeIn();
@@ -556,6 +563,7 @@ function main() {
         this.doFadeOut(()=>{
           manager.change("game");
         });
+        core.assets[AudioDir + "gameStart.mp3"].clone().play();
       };
 
       // オブジェクトの生成
@@ -570,8 +578,12 @@ function main() {
       this.addChild(nanobie);
       this.addChild(start);
 
+      // 音楽流すぜ
+      this.bgm = core.assets[AudioDir + "title1.mp3"].clone();
+      this.bgm.play();
+
       // すべての子要素に対して有効とする奴
-      enabling = function(node, enable){
+      var enabling = function(node, enable){
         if(node){
           node.enable = enable;
           if(node.childNodes){
@@ -693,6 +705,8 @@ function main() {
     },
     removeBook: function(book){
       this.books.removeChild(book);
+      if(book.color = Book.Color.indexOf("black"))
+        core.assets[AudioDir + "bookBlack.mp3"].clone().play();
       core.point++;
     },
     getHumanNum: function(){
@@ -709,6 +723,7 @@ function main() {
         this.levelUp();
     },
     levelUp: function(){
+      core.assets[AudioDir + "LvUp.mp3"].clone().play();
       this.lvup.start();
       this.touchNum = 0;
       this.Level++;
