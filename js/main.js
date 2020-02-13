@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 6");
+alert("ver 7");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -238,25 +238,27 @@ function main() {
       this.touchNum = 0;
       //------ タッチ入力（開始）
       this.addEventListener("touchstart", function(e) {
-        var id = parseInt(e.x * LANE / WIDTH);
+        var touch = {};
+        touch.id = parseInt(e.x * LANE / WIDTH);
         this.touchNum++;
-        e.id = id;
-        e.count = core.fps; // １秒間は待ってくれる
-        e.book = this.lane[id].books.lastChild;
+        touch.count = core.fps; // １秒間は待ってくれる
+        touch.book = this.lane[id].books.lastChild;
+        touch.x = e.x;
+        touch.y = e.y;
         // タッチが有効であるときは記録する
         if(!this.untouchable && !this.touches[id]){
-          if(e.book === undefined){ // 本がないとき
+          if(touch.book === undefined){ // 本がないとき
             if(e.y >= COUNTER_Y){ // お手付き！
               this.untouchable = WAITTIME;
               ottk.visible = true;
               bp.visible = true;
             }
           }else{ // 本があるとき
-            if(e.y >= COUNTER_Y || e.y >= e.book.y){ // カウンターおよび本より画面的に下なら
+            if(e.y >= COUNTER_Y || e.y >= touch.book.y){ // カウンターおよび本より画面的に下なら
               this.lane[id].touched();
-              e.start = {x: e.x, y: e.y};
-              this.touches[id] = e;
-              console.log("lane: " + id, e.x, e.y, this.touches[id]);
+              touch.start = {x: e.x, y: e.y};
+              this.touches[id] = touch;
+              console.log("lane: " + id, touch.x, touch.y, this.touches[id]);
             }
           }
         }
