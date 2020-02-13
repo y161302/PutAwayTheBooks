@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 5");
+alert("ver 6");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -345,6 +345,7 @@ function main() {
         console.log("lane: " + id, this.touches[id]);
         if(this.touches[id]){
           var touch = this.touches[id];
+          console.log("  続き: ", touch.id, touch.book.color);
           // タッチ開始した時の本が黒のとき
           if(touch.book.color == Book.Color.indexOf("Black")){
             if(touch.start.y - e.y > DISTBLACK){ // 指定の縦の距離より上で離しているなら片付ける
