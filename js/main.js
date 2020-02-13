@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 1");
+alert("ver 2");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'span { margin: 2px; } span::after { content: "\\A"; white-space: pre;}';
 console.log = function(){Array.from(arguments).forEach(a=>d.body.appendChild(d.createElement("span")).innerText=a)};
@@ -336,7 +336,7 @@ function main() {
       this.addEventListener("touchend", function(e){
         this.touchNum--;
         var id = parseInt(e.x * LANE / WIDTH);
-        console.log("lane: " + id, touches[id]);
+        console.log("lane: " + id, this.touches[id]);
         if(this.touches[id]){
           var touch = this.touches[id];
           // タッチ開始した時の本が黒のとき
