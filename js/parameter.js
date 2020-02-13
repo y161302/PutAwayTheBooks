@@ -5,6 +5,11 @@ COUNTER_Y = HEIGHT * 0.55; // ゴールとなるカウンターの表示座標
 HUMANHEIGHT = 150; // 人の描画上の縦幅
 FPS = 15; // １秒当たりの描画フレーム数
 
+////////// ファイルパスパラメータ ////////// このパラメータは、ファイル構成を変更したときに更新してください。
+HumanDir = "assets/image/human/";
+PartsDir = "assets/image/parts/";
+AudioDir = "assets/audio/";
+
 ////////// ゲームパラメータ― ////////// このパラメータは変更して大丈夫です。
 // 人が本を置いて立ち去るまでの初期時間
 WAITTIME = 20;

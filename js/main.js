@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver A");
+alert("ver B");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -118,7 +118,7 @@ function main() {
 
       // フェードパネル
       fp = new ScaleSprite(WIDTH, HEIGHT);
-      fp.image = core.assets['assets/image/parts/BlackPanelA.png'];
+      fp.image = core.assets[PartsDir + 'BlackPanelA.png'];
       fp.visible = false;
 
       // フェードパネルの上下のグループ
@@ -233,6 +233,10 @@ function main() {
       this.addChild(ottk);
       this.addChild(warnning);
       this.addChildOnFadePanel(gameover);
+
+      // 音楽流してみるか enterframeで音楽最後まで行ったら最初からするようにしてる
+      this.bgm = assets[AudioDir + "game1.mp3"].clone();
+      this.bgm.play();
 
       this.touches = [];
       this.touchNum = 0;
@@ -367,6 +371,7 @@ function main() {
       });
 
       //------ フレーム毎の処理（全体処理）
+      var finishTime = 0;
       this.addEventListener("enterframe", ()=>{
         if(!this.finished){ // this.finished: false
           // タッチした本の有効時間の減少
@@ -412,6 +417,14 @@ function main() {
           }
         }else{ // this.finished: true;
           manager.change("result");
+          finishTime++;
+          this.bgm.volume = (FPS - finishTime) / FPS;
+        }
+
+        // 音楽について
+        if(this.bgm.currentTime >= this.bgm.duration){
+          this.bgm.stop();
+          this.bgm.play();
         }
       });
 
@@ -746,7 +759,7 @@ function main() {
     //------ スワイプヘルパー
     var SwipeHelper = Class.create(ScaleSprite, {
     initialize: function(lane, book){
-      var image = core.assets['assets/image/parts/SwipeHelperA.png'];
+      var image = core.assets[PartsDir + 'SwipeHelperA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.setX(book.x + (book.width - this.width) / 2);
@@ -767,7 +780,7 @@ function main() {
     var BookFrame = Class.create(ScaleSprite, {
     initialize: function(lane, index){
       ScaleSprite.call(this, 50, 80);
-      this.image = (index == LIMIT - 1) ? core.assets["assets/image/parts/BookFrameLimitA.png"] : core.assets["assets/image/parts/BookFrameA.png"];
+      this.image = (index == LIMIT - 1) ? core.assets[PartsDir + "BookFrameLimitA.png"] : core.assets[PartsDir + "BookFrameA.png"];
       this.x = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width / 2 + index * (lane.id - (LANE - 1) / 2) * Book.PILE.X
       this.y = COUNTER_Y + 40 - index * Book.PILE.Y;
       // フレーム毎の処理
@@ -797,7 +810,7 @@ function main() {
         var n = rand(HumanNum);
         var setting;
         HumanSetting.forEach(s=>{if(0<=n&&n<s.num) setting=s; n-=s.num;});
-        image = core.assets['assets/image/human/' + setting.name + (rand(setting.num) + 1) + 'A.png'];
+        image = core.assets[HumanDir + setting.name + (rand(setting.num) + 1) + 'A.png'];
         frameLoop = setting.frames;
         ScaleSprite.call(this, setting.width, setting.height);
       }
@@ -849,7 +862,7 @@ function main() {
     var LvUp = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 75);
-      this.image = core.assets['assets/image/parts/LEVELUPA.png'];
+      this.image = core.assets[PartsDir + 'LEVELUPA.png'];
       this.frame = 0;
       this.x = 0;
       this.y = 100;
@@ -875,7 +888,7 @@ function main() {
     var Counter = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 264);
-      this.image = core.assets['assets/image/parts/Counter.png'];
+      this.image = core.assets[PartsDir + 'Counter.png'];
       this.x = 0;
       this.y = COUNTER_Y;
     }
@@ -885,7 +898,7 @@ function main() {
     var BlackPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets['assets/image/parts/BlackPanelA.png'];
+      this.image = core.assets[PartsDir + 'BlackPanelA.png'];
       this.opacity = 0.4;
     }
     });
@@ -913,7 +926,7 @@ function main() {
     var Otetsuki = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 262, 67);
-      this.image = core.assets['assets/image/parts/OtetsukiA.png'];
+      this.image = core.assets[PartsDir + 'OtetsukiA.png'];
       this.x = (WIDTH - this.width) / 2;
       this.y = 420;
       this.visible = false;
@@ -924,7 +937,7 @@ function main() {
     var GameOverSprite = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 456, 80);
-      this.image = core.assets['assets/image/parts/GameOverA.png'];
+      this.image = core.assets[PartsDir + 'GameOverA.png'];
       this.y = (HEIGHT - this.height) / 2;
       this.x = (WIDTH - this.width) / 2;
       this.visible = false;
@@ -935,7 +948,7 @@ function main() {
     var WarnningPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets['assets/image/parts/WarnningPanelA.png'];
+      this.image = core.assets[PartsDir + 'WarnningPanelA.png'];
       this.FRAME = 15;
       this.frame = this.FRAME - 1;
       this.delta = -1;
@@ -954,7 +967,7 @@ function main() {
     //------ タイトルロゴ
     var TitleLogo = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['assets/image/parts/title_title.png'];
+      var image = core.assets[PartsDir + 'title_title.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
     }
@@ -963,7 +976,7 @@ function main() {
     //------ タイトルに表示する本
     var TitleBook = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['assets/image/parts/title_book.png'];
+      var image = core.assets[PartsDir + 'title_book.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.y = 160;
@@ -1012,7 +1025,7 @@ function main() {
     //------ タイトルに表示するなのビィの吹き出し
     var SpeechBubble = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['assets/image/parts/SpeechBubble' + (rand(3) + 1) + 'A.png'];
+      var image = core.assets[PartsDir + 'SpeechBubble' + (rand(3) + 1) + 'A.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var w = 300;
@@ -1034,7 +1047,7 @@ function main() {
     //------はじめるボタン
     var StartButton = Class.create(ScaleSprite, {
     initialize: function(start){
-      var image = core.assets["assets/image/parts/StartImageA.png"];
+      var image = core.assets[PartsDir + "StartImageA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.start = start;
@@ -1076,7 +1089,7 @@ function main() {
     //------ つづけるボタン
     var ResumeButton = Class.create(ScaleSprite, {
     initialize: function(resume){
-      image = core.assets['assets/image/parts/ResumeImageA.png'];
+      image = core.assets[PartsDir + 'ResumeImageA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.resume = resume;
@@ -1119,7 +1132,7 @@ function main() {
     //------ やめるボタン
     var EndButton = Class.create(ScaleSprite, {
     initialize: function(end){
-      image = core.assets['assets/image/parts/EndImageA.png'];
+      image = core.assets[PartsDir + 'EndImageA.png'];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.end = end;
@@ -1162,7 +1175,7 @@ function main() {
     //------ ツイートボタン
     var TweetButton = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets["assets/image/parts/Twitter_Social_Icon_Circle_Color.png"];
+      var image = core.assets[PartsDir + "Twitter_Social_Icon_Circle_Color.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var size = 80;
