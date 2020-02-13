@@ -235,7 +235,7 @@ function main() {
       this.addChildOnFadePanel(gameover);
 
       // 音楽流してみるか enterframeで音楽最後まで行ったら最初からするようにしてる
-      this.bgm = assets[AudioDir + "game1.mp3"].clone();
+      this.bgm = core.assets[AudioDir + "game1.mp3"].clone();
       this.bgm.play();
 
       this.touches = [];
