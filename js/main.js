@@ -246,7 +246,7 @@ function main() {
           }else{ // 本があるとき
             if(e.y >= COUNTER_Y || e.y >= e.book.y){
               this.lane[id].touched();
-              e.start = {e.x, e.y};
+              e.start = {x: e.x, y: e.y};
               this.touches[id] = e;
             }
           }
