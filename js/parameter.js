@@ -69,7 +69,7 @@ HumanSetting = [];
 
 HumanSetting.push({
   name: "school",
-  frames: [1, 2, 3, 2],
+  frames: [0, 1, 2, 1],
   width: 32,
   height: 48,
   num: 16
@@ -77,7 +77,7 @@ HumanSetting.push({
 
 HumanSetting.push({
   name: "SchoolGirl",
-  frames: [1, 2, 3, 4, 5, 4, 3, 2],
+  frames: [0, 1, 2, 3, 4, 3, 2, 1],
   width: 40,
   height: 100,
   num: 1
