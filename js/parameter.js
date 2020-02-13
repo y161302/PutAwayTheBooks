@@ -22,13 +22,13 @@ SPEED = 1.0;
 LANE = 3;
 
 // タッチ判定となる指の移動距離 この距離以内ならOK
-DISTLIMIT = 20;
+DISTLIMIT = 30;
 
 // タッチ継続判定となる移動距離
-DISTMOVE = 40;
+DISTMOVE = 50;
 
 // 黒い本を返した判定とする縦の距離 この距離より上で離せばOK
-DISTBLACK = 50;
+DISTBLACK = 80;
 
 // レアキャラ（図書館キャラ）の出現率（％）
 RARERATE = 3;

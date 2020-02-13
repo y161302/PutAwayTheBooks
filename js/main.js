@@ -245,7 +245,7 @@ function main() {
               bp.visible = true;
             }
           }else{ // 本があるとき
-            if(e.y >= COUNTER_Y || e.y >= e.book.y){
+            if(e.y >= COUNTER_Y || e.y >= e.book.y){ // カウンターおよび本より画面的に下なら
               this.lane[id].touched();
               e.start = {x: e.x, y: e.y};
               this.touches[id] = e;
