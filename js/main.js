@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver C");
+alert("ver D");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -162,7 +162,10 @@ function main() {
       this.finishFadeOut = function(){
         fp.opacity = 1;
         fp.delta = 0;
-        if(core.bgm) core.bgm.stop();
+        if(core.bgm){
+          core.bgm.stop();
+          core.bgm = undefined;
+        }
         if(this.callback){
           this.callback();
           this.callback = undefined;
