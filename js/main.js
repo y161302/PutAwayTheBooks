@@ -402,8 +402,6 @@ function main() {
           
           // リミット到達時の処理
           if(!this.isGameOver){ // ゲームオーバー処理がされてないとき
-            // ゲームオーバー音を鳴らそう
-            core.assets[AudioDir + "gameOver.mp3"].clone().play();
             // リミット到達したレーンがあるか調べる
             var GameOverFlg = false;
             for(var i=0; i<LANE; i++){
@@ -411,6 +409,8 @@ function main() {
             }
             // リミット到達したレーンがあるとき
             if(GameOverFlg){
+              // ゲームオーバー音を鳴らそう
+              core.assets[AudioDir + "gameOver.mp3"].clone().play();
               this.isGameOver = true;
               gameover.visible = true;
               this.doFadeOut(()=>{this.finished = true;});
@@ -705,7 +705,7 @@ function main() {
     },
     removeBook: function(book){
       this.books.removeChild(book);
-      if(book.color = Book.Color.indexOf("black"))
+      if(book.color == Book.Color.indexOf("black"))
         core.assets[AudioDir + "bookBlack.mp3"].clone().play();
       core.point++;
     },
