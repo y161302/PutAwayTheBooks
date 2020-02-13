@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 0");
+alert("ver 1");
 
 // パラメータファイル読み込み
 var xhr = new XMLHttpRequest();
