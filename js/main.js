@@ -259,17 +259,15 @@ function main() {
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
           if(this.getDistance(this.touches[id], e) < DISTLIMIT){ // 一定距離内なら
-            if(this.touches[id].book.color != Book.Color.indexOf("Black")){ // 黒い本でなければ
-              if(this.getDistance(this.touches[id].start, e) < DISTLIMIT){ // タッチ開始位置からの距離が一定距離内なら
-                // 指位置の更新
-                this.touches[id].x = e.x;
-                this.touches[id].y = e.y;
-              }else{ // タッチ開始位置からの距離が一定距離内でなければ
-                // 消す
-                this.touches[id] = undefiend;
-                this.touchNum--;
-              }
-            }else{
+            if(this.getDistance(this.touches[id].start, e) < DISTLIMIT || this.touches[id].book.color == Book.Color.indexOf("Black")){ // タッチ開始位置からの距離が一定距離内または黒い本なら
+              // 指位置の更新
+              this.touches[id].x = e.x;
+              this.touches[id].y = e.y;
+            }else{ // タッチ開始位置からの距離が一定距離内でないかつ黒い本でなければ
+              // 消す
+              this.touches[id] = undefiend;
+              this.touchNum--;
+            }
           }else{ // 一定距離より離れてる場合の処理（どれか一つのタッチ記録を消す）
             this.touchNum--;
             // 隣のレーンのタッチ記録を見てどのタッチ記録を消すのか決めて消す
