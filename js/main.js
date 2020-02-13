@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 8");
+alert("ver 9");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -268,10 +268,10 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
-        console.log("move: " + id, this.touches[id], e.x, e.y);
+        console.log("move: " + id, this.touches[id], e.x, e.y, "num: " + this.touchNum);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
-          console.log("  続き: ", this.getDistance(this.touches[id], e));
+          console.log("move: 続き distance: ", this.getDistance(this.touches[id], e));
           if(this.getDistance(this.touches[id], e) < DISTMOVE){ // 一定距離内なら
             if(this.getDistance(this.touches[id].start, e) < DISTLIMIT || this.touches[id].book.color == Book.Color.indexOf("Black")){ // タッチ開始位置からの距離が一定距離内または黒い本なら
               // 指位置の更新
@@ -340,12 +340,13 @@ function main() {
             }
           }
         }
+        console.log("move: 最後 num: " + this.touchNum);
       });
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
         this.touchNum--;
         var id = parseInt(e.x * LANE / WIDTH);
-        console.log("lane: " + id, this.touches[id]);
+        console.log("lane: " + id, this.touches[id], "num: " + this.touchNum);
         if(this.touches[id]){
           var touch = this.touches[id];
           console.log("  続き: ", touch.id, touch.book.color);
