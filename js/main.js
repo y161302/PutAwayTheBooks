@@ -235,7 +235,6 @@ function main() {
         e.id = id;
         e.count = core.fps; // １秒間は待ってくれる
         e.book = this.lane[id].books.lastChild;
-        console.log(e.x, e.y, e.book);
         // タッチが有効であるときは記録する
         if(!this.untouchable && !this.touches[id]){
           if(e.book === undefined){ // 本がないとき
@@ -256,33 +255,66 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
-        console.log("move", e, this.touches[id]);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
           if(this.getDistance(this.touches[id], e) < DISTLIMIT){
             // 指位置の更新
             this.touches[id].x = e.x;
             this.touches[id].y = e.y;
-          }else{ // 一定距離より離れてる場合の処理
-            if(id * 2 == near && id > 0){
-              if(this.touches[id - 1]){
-                if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT){
+          }else{ // 一定距離より離れてる場合の処理（どれか一つのタッチ記録を消す）
+            this.touchNum--;
+            // 隣のレーンのタッチ記録を見てどのタッチ記録を消すのか決めて消す
+            if(id * 2 == near && id > 0){ // レーン左半分のとき
+              if(this.touches[id - 1]){ // 左側にタッチ記録があれば
+                if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT){ // 一定距離内なら左側を消す
                   this.touches[id - 1] = undefined;
-                  this.touchNum--;
+                }else{ // 一定距離内でなければ近い方を消す
+                  if(this.getDistance(this.touches[id], e) < this.getDistance(this.touches[id - 1], e)){
+                    this.touches[id - 1] = undefined;
+                  }else{
+                    this.touches[id] = undefined;
+                  }
                 }
+              }else{ // 左側にタッチ記録がなければ e のレーンのを消す
+                this.touches[id] = undefined;
               }
-            }else if(id * 2 + 1 == near && id < LANE - 1){
+            }else if(id * 2 + 1 == near && id > 0){ // レーン右半分のときも同じ
               if(this.touches[id + 1]){
                 if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT){
-                  if(!this.touches[id]){
-                    this.touches[id] = this.touches[id + 1];
-                    this.touches[id].x = e.x;
-                    this.touches[id].y = e.y;
-                  }else{
-                    this.touchNum--;
-                  }
                   this.touches[id + 1] = undefined;
+                }else{
+                  if(this.getDistance(this.touches[id], e) < this.getDistance(this.touches[id + 1], e)){
+                    this.touches[id + 1] = undefined;
+                  }else{
+                    this.touches[id] = undefined;
+                  }
                 }
+              }else{
+                this.touches[id] = undefined;
+              }
+            }
+          }
+        }else{ // タッチ記録が該当レーンにない時
+          if(id * 2 == near && id > 0){ // レーン左半分のとき
+            if(this.touches[id - 1]){ // 左側のレーンにタッチ記録があれば
+              if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT){ // 一定距離内なら設定を移す
+                this.touches[id] = this.touches[id - 1];
+                this.touches[id].x = e.x;
+                this.touches[id].y = e.y;
+              }else{ // 一定距離内でなければ消す
+                this.touches[id - 1] = undefined;
+                this.touchNum--;
+              }
+            }
+          }else if(id * 2 + 1 == near && id < LANE - 1){ // レーン右半分のときも同じ
+            if(this.touches[id + 1]){
+              if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT){
+                this.touches[id] = this.touches[id + 1];
+                this.touches[id].x = e.x;
+                this.touches[id].y = e.y;
+              }else{
+                this.touches[id + 1] = undefined;
+                this.touchNum--;
               }
             }
           }
