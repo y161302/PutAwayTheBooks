@@ -315,7 +315,7 @@ function main() {
             }
           }else if(id * 2 + 1 == near && id < LANE - 1){ // レーン右半分のときも同じ
             if(this.touches[id + 1]){
-              if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT && this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT){
+              if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT && this.getDistance(this.touches[id + 1].start, e) < DISTLIMIT){
                 this.touches[id] = this.touches[id + 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
