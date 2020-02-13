@@ -293,18 +293,18 @@ function main() {
         this.touchNum--;
         var id = parseInt(e.x * LANE / WIDTH);
         if(this.touches[id]){
-          var book = this.touches[id].book;
+          var touch = this.touches[id];
           // カウンターより上で離され、その指がタッチ開始した時の本が黒なら消す
-          if(e.y < COUNTER_Y && book.color == Book.Color.indexOf("Black")){
-            this.lane[book.id].removeBook(book);
+          if(e.y < COUNTER_Y && touch.book.color == Book.Color.indexOf("Black")){
+            this.lane[touch.id].removeBook(touch.book);
           }else{ // カウンターより下で離されたとき
             // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であれば消す
-            if(book.color == Book.Color.indexOf("Black")){
+            if(touch.book.color == Book.Color.indexOf("Black")){
               // スワイプヘルパーを表示　検討中…
-              new SwipeHelper(lane[id], this.touches[id].book);
+              new SwipeHelper(lane[id], touch.book);
             }else{
-              if(this.getDistance(this.touches[id], e) < DISTLIMIT){
-                this.lane[id].removeBook(book);
+              if(this.getDistance(touch, e) < DISTLIMIT){
+                this.lane[touch.id].removeBook(touch.book);
               }
             }
           }
