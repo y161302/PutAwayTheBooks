@@ -256,6 +256,7 @@ function main() {
               this.lane[id].touched();
               e.start = {x: e.x, y: e.y};
               this.touches[id] = e;
+              console.log(e, e.x, e.y);
             }
           }
         }
