@@ -175,7 +175,7 @@ function main() {
         if(fp.delta){
           fp.count += fp.delta;
           fp.opacity = fp.count / fp.max;
-          if(core.bgm) core.bgm.volume = fp.count / fp.max;
+          if(core.bgm) core.bgm.volume = 1 - fp.count / fp.max;
           if(fp.count >= fp.max){ // fadeOut 完了
             this.finishFadeOut();
           }else if(fp.count <= 0){ // fadeIn 完了
@@ -376,7 +376,6 @@ function main() {
       });
 
       //------ フレーム毎の処理（全体処理）
-      var finishTime = 0;
       this.addEventListener("enterframe", ()=>{
         if(!this.finished){ // this.finished: false
           // タッチした本の有効時間の減少
@@ -422,8 +421,6 @@ function main() {
               this.doFadeOut(()=>{this.finished = true;});
               this.untouchable = 100;
             }
-          }else{
-            finishTime++;
           }
         }else{ // this.finished: true;
           manager.change("result");
@@ -711,7 +708,7 @@ function main() {
     },
     removeBook: function(book){
       this.books.removeChild(book);
-      if(book.color == Book.Color.indexOf("black"))
+      if(book.color == Book.Color.indexOf("Black"))
         core.assets[AudioDir + "bookBlack.mp3"].clone().play();
       core.point++;
     },
