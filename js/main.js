@@ -2,7 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver 9");
+alert("ver A");
 var d = window.open().document;
 d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
 console.log = function(){
@@ -280,10 +280,8 @@ function main() {
             }else{ // タッチ開始位置からの距離が一定距離内でないかつ黒い本でなければ
               // 消す
               this.touches[id] = undefined;
-              this.touchNum--;
             }
           }else{ // 一定距離より離れてる場合の処理（どれか一つのタッチ記録を消す）
-            this.touchNum--;
             // 隣のレーンのタッチ記録を見てどのタッチ記録を消すのか決めて消す
             if(id * 2 == near && id > 0){ // レーン左半分のとき
               if(this.touches[id - 1]){ // 左側にタッチ記録があれば
@@ -324,7 +322,6 @@ function main() {
                 this.touches[id].y = e.y;
               }else{ // 一定距離内でなければ消す
                 this.touches[id - 1] = undefined;
-                this.touchNum--;
               }
             }
           }else if(id * 2 + 1 == near && id < LANE - 1){ // レーン右半分のときも同じ
@@ -335,7 +332,6 @@ function main() {
                 this.touches[id].y = e.y;
               }else{
                 this.touches[id + 1] = undefined;
-                this.touchNum--;
               }
             }
           }
