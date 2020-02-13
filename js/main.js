@@ -246,6 +246,7 @@ function main() {
           }else{ // 本があるとき
             if(e.y >= COUNTER_Y || e.y >= e.book.y){
               this.lane[id].touched();
+              e.start = {e.x, e.y};
               this.touches[id] = e;
             }
           }
@@ -257,10 +258,18 @@ function main() {
         var near = parseInt(e.x * LANE * 2 / WIDTH);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
-          if(this.getDistance(this.touches[id], e) < DISTLIMIT){
-            // 指位置の更新
-            this.touches[id].x = e.x;
-            this.touches[id].y = e.y;
+          if(this.getDistance(this.touches[id], e) < DISTLIMIT){ // 一定距離内なら
+            if(this.touches[id].book.color != Book.Color.indexOf("Black")){ // 黒い本でなければ
+              if(this.getDistance(this.touches[id].start, e) < DISTLIMIT){ // タッチ開始位置からの距離が一定距離内なら
+                // 指位置の更新
+                this.touches[id].x = e.x;
+                this.touches[id].y = e.y;
+              }else{ // タッチ開始位置からの距離が一定距離内でなければ
+                // 消す
+                this.touches[id] = undefiend;
+                this.touchNum--;
+              }
+            }else{
           }else{ // 一定距離より離れてる場合の処理（どれか一つのタッチ記録を消す）
             this.touchNum--;
             // 隣のレーンのタッチ記録を見てどのタッチ記録を消すのか決めて消す
@@ -297,7 +306,7 @@ function main() {
         }else{ // タッチ記録が該当レーンにない時
           if(id * 2 == near && id > 0){ // レーン左半分のとき
             if(this.touches[id - 1]){ // 左側のレーンにタッチ記録があれば
-              if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT){ // 一定距離内なら設定を移す
+              if(this.getDistance(this.touches[id - 1], e) < DISTLIMIT && this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT){ // 一定距離内およびタッチ開始位置からの距離が一定距離内なら設定を移す
                 this.touches[id] = this.touches[id - 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
@@ -308,7 +317,7 @@ function main() {
             }
           }else if(id * 2 + 1 == near && id < LANE - 1){ // レーン右半分のときも同じ
             if(this.touches[id + 1]){
-              if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT){
+              if(this.getDistance(this.touches[id + 1], e) < DISTLIMIT && this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT){
                 this.touches[id] = this.touches[id + 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
@@ -326,18 +335,14 @@ function main() {
         var id = parseInt(e.x * LANE / WIDTH);
         if(this.touches[id]){
           var touch = this.touches[id];
-          // カウンターより上で離され、その指がタッチ開始した時の本が黒なら消す
-          if(e.y < COUNTER_Y && touch.book.color == Book.Color.indexOf("Black")){
-            this.lane[touch.id].removeBook(touch.book);
-          }else{ // カウンターより下で離されたとき
-            // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であれば消す
-            if(touch.book.color == Book.Color.indexOf("Black")){
-              // スワイプヘルパーを表示　検討中…
-              new SwipeHelper(lane[id], touch.book);
-            }else{
-              if(this.getDistance(touch, e) < DISTLIMIT){
-                this.lane[touch.id].removeBook(touch.book);
-              }
+          // タッチ開始した時の本が黒のとき
+          if(touch.book.color == Book.Color.indexOf("Black")){
+            if(touch.start.y - e.y > DISTBLACK){ // 指定の縦の距離より上で離しているなら片付ける
+              this.lane[touch.id].removeBook(touch.book);
+            }
+          }else{ // タッチ開始した時の本が黒以外のとき
+            if(this.getDistance(touch.start, e) < DISTLIMIT){ // タッチ開始位置からの距離が一定距離内なら片付ける
+              this.lane[touch.id].removeBook(touch.book);
             }
           }
           this.touches[id] = undefined;
