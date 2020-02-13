@@ -256,7 +256,7 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
-        console.log("move", e, touches[id]);
+        console.log("move", e, this.touches[id]);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
           if(this.getDistance(this.touches[id], e) < DISTLIMIT){
@@ -291,40 +291,24 @@ function main() {
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
         this.touchNum--;
-        if(e.y < COUNTER_Y && e.y < e.book.y){ // カウンターより上で離された時
-          var black = {};
-          black.distX = WIDTH;
-          // X 座標が一番近い黒い本のタッチ記録があった時、その本を片付けたことにする
-          this.touches.forEach(item=>{
-            if(item){
-              if(item.book.color == Book.Color.indexOf("Black")){
-                var d = Math.abs(e.x - item.x);
-                console.log("end", e.x, item.x);
-                if(d < black.distX){
-                  black.distX = d;
-                  black.book = item.book;
-                  black.id = item.id;
-                }
-              }
-            }
-          });
-          if(black.book){
-            this.lane[black.id].removeBook(black.book);
-            this.touches[black.id] = undefined;
-          }
-        }else{ // カウンターより下で離された時
-          var id = parseInt(e.x * LANE / WIDTH);
-          // タッチされたレーンに基づき、黒い本でないタッチ記録があれば、その本を片付けたことにする。
-          if(this.touches[id]){
-            // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であることが条件
-            if(this.touches[id].book.color == Book.Color.indexOf("Black")){
+        var id = parseInt(e.x * LANE / WIDTH);
+        if(this.touches[id]){
+          var book = this.touches[id].book;
+          // カウンターより上で離され、その指がタッチ開始した時の本が黒なら消す
+          if(e.y < COUNTER_Y && book.color == Book.Color.indexOf("Black")){
+            this.lane[book.id].removeBook(book);
+          }else{ // カウンターより下で離されたとき
+            // 黒い本でないことと、タッチ開始位置から DISTLIMIT px 以内であれば消す
+            if(book.color == Book.Color.indexOf("Black")){
+              // スワイプヘルパーを表示　検討中…
               new SwipeHelper(lane[id], this.touches[id].book);
             }else{
               if(this.getDistance(this.touches[id], e) < DISTLIMIT){
-                this.lane[id].removeBook(this.touches[id].book);
+                this.lane[id].removeBook(book);
               }
             }
           }
+          this.touches[id] = undefined;
         }
         if(this.touchNum <= 0){
           for(var i=0; i<LANE; i++){
