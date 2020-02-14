@@ -232,7 +232,6 @@ function main() {
       this.addEventListener("touchstart", function(e) {
         var touch = {};
         var id = parseInt(e.x * LANE / WIDTH);
-        this.touchNum++;
         touch.id = id;
         touch.count = core.fps; // １秒間は待ってくれる
         touch.book = this.lane[id].books.lastChild;
@@ -261,10 +260,8 @@ function main() {
       this.addEventListener("touchmove", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
         var near = parseInt(e.x * LANE * 2 / WIDTH);
-        console.log("move: " + id, this.touches[id], e.x, e.y, "num: " + this.touchNum);
         // 一定距離内に有効なタッチ記録があれば、同じ指とみなす
         if(this.touches[id]){
-          console.log("move: 続き distance: ", this.getDistance(this.touches[id], e));
           if(this.getDistance(this.touches[id], e) < DISTMOVE){ // 一定距離内なら
             if(this.getDistance(this.touches[id].start, e) < DISTLIMIT || this.touches[id].book.color == Book.Color.indexOf("Black")){ // タッチ開始位置からの距離が一定距離内または黒い本なら
               // 指位置の更新
@@ -309,7 +306,9 @@ function main() {
         }else{ // タッチ記録が該当レーンにない時
           if(id * 2 == near && id > 0){ // レーン左半分のとき
             if(this.touches[id - 1]){ // 左側のレーンにタッチ記録があれば
-              if(this.getDistance(this.touches[id - 1], e) < DISTMOVE && this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT){ // 一定距離内およびタッチ開始位置からの距離が一定距離内なら設定を移す
+              if(this.getDistance(this.touches[id - 1], e) < DISTMOVE // 一定距離内およびタッチ開始位置からの距離が一定距離内（黒以外）なら設定を移す
+                 && (this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT
+                     || this.touches[id - 1].book.color = Book.Color.indexOf("Black"))){
                 this.touches[id] = this.touches[id - 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
@@ -319,7 +318,9 @@ function main() {
             }
           }else if(id * 2 + 1 == near && id < LANE - 1){ // レーン右半分のときも同じ
             if(this.touches[id + 1]){
-              if(this.getDistance(this.touches[id + 1], e) < DISTMOVE && this.getDistance(this.touches[id + 1].start, e) < DISTLIMIT){
+              if(this.getDistance(this.touches[id + 1], e) < DISTMOVE // 一定距離内およびタッチ開始位置からの距離が一定距離内（黒以外）なら設定を移す
+                 && (this.getDistance(this.touches[id + 1].start, e) < DISTLIMIT
+                     || this.touches[id + 1].book.color = Book.Color.indexOf("Black"))){
                 this.touches[id] = this.touches[id + 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
@@ -329,11 +330,9 @@ function main() {
             }
           }
         }
-        console.log("move: 最後 num: " + this.touchNum);
       });
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
-        this.touchNum--;
         var id = parseInt(e.x * LANE / WIDTH);
         console.log("lane: " + id, this.touches[id], "num: " + this.touchNum);
         if(this.touches[id]){
@@ -350,12 +349,6 @@ function main() {
             }
           }
           this.touches[id] = undefined;
-        }
-        if(this.touchNum <= 0){
-          for(var i=0; i<LANE; i++){
-            this.touches[i] = undefined;
-          }
-          this.touchNum == 0;
         }
       });
 
@@ -410,7 +403,7 @@ function main() {
           manager.change("result");
         }
 
-        // 音楽について
+        // 音楽のループ
         if(core.bgm.currentTime >= core.bgm.duration){
           core.bgm.stop();
           core.bgm.currentTime = 0;
