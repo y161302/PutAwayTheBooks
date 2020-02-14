@@ -1440,22 +1440,19 @@ enchant.EventTarget = enchant.Class.create({
 
             if (!this._activated) {
                 this._activated = true;
-                if (enchant.ENV.BROWSER === 'mobilesafari' &&
-                    enchant.ENV.USE_WEBAUDIO &&
-                    enchant.ENV.USE_TOUCH_TO_START_SCENE) {
-                    var d = new enchant.Deferred();
-                    var scene = this._createTouchToStartScene();
-                    scene.addEventListener(enchant.Event.TOUCH_START, function waitTouch() {
-                        this.removeEventListener(enchant.Event.TOUCH_START, waitTouch);
-                        var a = new enchant.WebAudioSound();
-                        a.buffer = enchant.WebAudioSound.audioContext.createBuffer(1, 1, 48000);
-                        a.play();
-                        core.removeScene(scene);
-                        core.start(d);
-                    }, false);
-                    core.pushScene(scene);
-                    return d;
-                }
+                moveStageToCenter(core);
+                var d = new enchant.Deferred();
+                var scene = this._createTouchToStartScene();
+                scene.addEventListener(enchant.Event.TOUCH_START, function waitTouch() {
+                    this.removeEventListener(enchant.Event.TOUCH_START, waitTouch);
+                    var a = new enchant.WebAudioSound();
+                    a.buffer = enchant.WebAudioSound.audioContext.createBuffer(1, 1, 48000);
+                    a.play();
+                    core.removeScene(scene);
+                    core.start(d);
+                }, false);
+                core.pushScene(scene);
+                return d;
             }
 
             this._requestNextFrame(0);
@@ -1506,7 +1503,7 @@ enchant.EventTarget = enchant.Class.create({
             return enchant.Deferred.parallel(o);
         },
         _createTouchToStartScene: function() {
-            var label = new enchant.Label('Touch to Start'),
+            var label = new enchant.Label('タッチで開始！'),
                 size = Math.round(core.width / 10),
                 scene = new enchant.Scene();
 
