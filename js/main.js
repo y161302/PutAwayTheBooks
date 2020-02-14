@@ -308,7 +308,7 @@ function main() {
             if(this.touches[id - 1]){ // 左側のレーンにタッチ記録があれば
               if(this.getDistance(this.touches[id - 1], e) < DISTMOVE // 一定距離内およびタッチ開始位置からの距離が一定距離内（黒以外）なら設定を移す
                  && (this.getDistance(this.touches[id - 1].start, e) < DISTLIMIT
-                     || this.touches[id - 1].book.color = Book.Color.indexOf("Black"))){
+                     || this.touches[id - 1].book.color == Book.Color.indexOf("Black"))){
                 this.touches[id] = this.touches[id - 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
@@ -320,7 +320,7 @@ function main() {
             if(this.touches[id + 1]){
               if(this.getDistance(this.touches[id + 1], e) < DISTMOVE // 一定距離内およびタッチ開始位置からの距離が一定距離内（黒以外）なら設定を移す
                  && (this.getDistance(this.touches[id + 1].start, e) < DISTLIMIT
-                     || this.touches[id + 1].book.color = Book.Color.indexOf("Black"))){
+                     || this.touches[id + 1].book.color == Book.Color.indexOf("Black"))){
                 this.touches[id] = this.touches[id + 1];
                 this.touches[id].x = e.x;
                 this.touches[id].y = e.y;
