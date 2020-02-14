@@ -262,6 +262,7 @@ function main() {
               this.untouchable = WAITTIME;
               ottk.visible = true;
               bp.visible = true;
+              core.assets[AudioDir + "ottk.mp3"].clone().play();
             }
           }else{ // 本があるとき
             if(e.y >= COUNTER_Y || e.y >= touch.book.y){ // カウンターおよび本より画面的に下なら
@@ -710,6 +711,8 @@ function main() {
       this.books.removeChild(book);
       if(book.color == Book.Color.indexOf("Black"))
         core.assets[AudioDir + "bookBlack.mp3"].clone().play();
+      else
+        core.assets[AudioDir + "bookRemove.mp3"].clone().play();
       core.point++;
     },
     getHumanNum: function(){
@@ -726,7 +729,9 @@ function main() {
         this.levelUp();
     },
     levelUp: function(){
-      core.assets[AudioDir + "LvUp.mp3"].clone().play();
+      var lvupSound = core.assets[AudioDir + "LvUp.mp3"].clone();
+      lvupSound.volume = 0.8;
+      lvupSound.play();
       this.lvup.start();
       this.touchNum = 0;
       this.Level++;
