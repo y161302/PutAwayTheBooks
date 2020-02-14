@@ -47,11 +47,13 @@ assets/image/rarehuman/guest_1A.png
 assets/image/rarehuman/guest_2A.png
 assets/image/rarehuman/guest_3A.png
 assets/audio/bookBlack.mp3
+assets/audio/bookRemove.mp3
 assets/audio/bookWrong.mp3
 assets/audio/game1.mp3
 assets/audio/gameOver.mp3
 assets/audio/gameStart.mp3
 assets/audio/LvUp.mp3
+assets/audio/ottk.mp3
 assets/audio/pageEnd.mp3
 assets/audio/pageResume.mp3
 assets/audio/result1.mp3
