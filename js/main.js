@@ -730,8 +730,8 @@ function main() {
     },
     levelUp: function(){
       var lvupSound = core.assets[AudioDir + "LvUp.mp3"].clone();
-      lvupSound.volume = 0.8;
       lvupSound.play();
+      lvupSound.volume = 0.8;
       this.lvup.start();
       this.touchNum = 0;
       this.Level++;
