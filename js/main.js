@@ -2,24 +2,7 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver D");
-var d = window.open().document;
-d.head.appendChild(d.createElement("style")).innerText = 'p { margin: 2px; } span::after{ content: " "; } p::after { content: "\\A"; white-space: pre;}';
-console.log = function(){
-  var p = d.body.appendChild(d.createElement("p"));
-  Array.from(arguments).forEach(a=>p.appendChild(d.createElement("span")).innerText=a);
-};
-window.onerror = e=>console.log(e, e.stack);
-
-// パラメータファイル読み込み
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./js/parameter.js", true);
-xhr.responseType = "text";
-xhr.onload = ()=>{
-  var src = document.head.appendChild(document.createElement("script"));
-  src.textContent = xhr.responseText + "prm.PARAMETER_ONLOAD = true;";
-};
-xhr.send("");
+alert("ver E");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
