@@ -251,7 +251,6 @@ function main() {
               this.lane[id].touched();
               touch.start = {x: e.x, y: e.y};
               this.touches[id] = touch;
-              console.log("lane: " + id, touch.x, touch.y, this.touches[id]);
             }
           }
         }
@@ -334,10 +333,8 @@ function main() {
       //------ タッチ入力（終了）
       this.addEventListener("touchend", function(e){
         var id = parseInt(e.x * LANE / WIDTH);
-        console.log("lane: " + id, this.touches[id], "num: " + this.touchNum);
         if(this.touches[id]){
           var touch = this.touches[id];
-          console.log("  続き: ", touch.id, touch.book.color);
           // タッチ開始した時の本が黒のとき
           if(touch.book.color == Book.Color.indexOf("Black")){
             if(touch.start.y - e.y > DISTBLACK){ // 指定の縦の距離より上で離しているなら片付ける
