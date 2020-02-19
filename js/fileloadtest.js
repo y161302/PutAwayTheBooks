@@ -1,7 +1,7 @@
-fileload();
+fileloadtest();
 
 function fileload(){
-  getFileList("./getFileList.php")
+  getFileList("./assetsFileList.txt")
     .then(filelist=>{
       PRELOAD = filelist;
       prm.FILELOAD_ONLOAD = true;

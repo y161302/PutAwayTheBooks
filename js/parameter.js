@@ -6,9 +6,13 @@ HUMANHEIGHT = 150; // 人の描画上の縦幅
 FPS = 15; // １秒当たりの描画フレーム数
 
 ////////// ファイルパスパラメータ ////////// このパラメータは、ファイル構成を変更したときに更新してください。
-HumanDir = "assets/image/human/";
-PartsDir = "assets/image/parts/";
-AudioDir = "assets/audio/";
+HumanDir = "./assets/image/human/";
+RareDir = "./assets/image/rarehuman/";
+PartsDir = "./assets/image/parts/";
+AudioDir = "./assets/audio/";
+AudioBGMDir = "./assets/audio/bgm/";
+AudioSEDir = "./assets/audio/se/";
+BackgroundDir = "./assets/image/background/";
 
 ////////// ゲームパラメータ― ////////// このパラメータは変更して大丈夫です。
 // 人が本を置いて立ち去るまでの初期時間
@@ -40,6 +44,12 @@ RARERATE = 3;
 
 // 黒い本の出現率 0 ～ 1 の実数
 BLACKRATE = 0.05;
+
+// ゲーム全体の BGM の音量 [0 - 100]
+VOLUME_BGM = 100;
+
+// ゲーム全体の効果音の音量 [0 - 100]
+VOLUME_SE = 0;
 
 // リザルト画面で「やめる」を選択した際の遷移先 URL
 BACK_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";

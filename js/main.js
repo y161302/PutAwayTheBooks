@@ -2,15 +2,16 @@ enchant(); // おまじない
 var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
-alert("ver F");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
 var id = setInterval(()=>{
-  if(prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD && prm.PARAMETER_ONLOAD){
-    if(b) main();
-    b = false;
-    clearInterval(id);
+  if(window.prm){
+    if(b && prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD && prm.PARAMETER_ONLOAD){
+      setTimeout(main, 1);
+      b = false;
+      clearInterval(id);
+    }
   }
 }, 1);
 
@@ -61,7 +62,6 @@ function main() {
       }
       document.querySelector("meta[name='viewport']").setAttribute("content", viewportContent);
     }
-    
 
     // 画面中央に表示
     moveStageToCenter(core);
@@ -74,9 +74,10 @@ function main() {
       switch(sceneName.toLowerCase()){
       case "title":
         core.replaceScene(new TitleScene());
-        style.background = "url('assets/image/background/bg_title" + (rand(2)+1) + ".png')";
+        style.background = "url('" + BackgroundDir + "bg_title" + (rand(2)+1) + ".png')";
         break;
       case "game":
+        core.level = 1;
         core.replaceScene(new GameScene());
         break;
       case "pause":
@@ -88,7 +89,7 @@ function main() {
         break;
       case "result":
         core.replaceScene(new ResultScene());
-        style.background = "url('assets/image/background/bg_result1.png')";
+        style.background = "url('" + BackgroundDir + "bg_result1.png')";
         break;
       }
     }
@@ -101,7 +102,7 @@ function main() {
 
       // フェードパネル
       fp = new ScaleSprite(WIDTH, HEIGHT);
-      fp.image = core.assets[PartsDir + 'BlackPanelA.png'];
+      fp.image = core.assets[PartsDir + "BlackPanelA.png"];
       fp.visible = false;
 
       // フェードパネルの上下のグループ
@@ -698,16 +699,19 @@ function main() {
     },
     touched: function(){
       this.touchNum++;
-      if(this.touchNum >= 4 + this.Level)
+      if(this.touchNum >= 3 * (5 + this.Level))
         this.levelUp();
     },
     levelUp: function(){
       var lvupSound = core.assets[AudioDir + "LvUp.mp3"].clone();
-      lvupSound.play();
-      lvupSound.volume = 0.5;
-      this.lvup.start();
-      this.touchNum = 0;
       this.Level++;
+      if(core.level < this.Level){
+        lvupSound.play();
+        lvupSound.volume = 0.5;
+        this.lvup.start();
+        core.level = this.Level;
+      }
+      this.touchNum = 0;
       if(this.Level >= 10){
         this.WAITTIME = 5;
         this.LAMBDA = 10;
@@ -734,7 +738,7 @@ function main() {
     var Book = Class.create(ScaleSprite, {
     initialize: function(lane, colorNum, index) {
       ScaleSprite.call(this, 50, 80);
-      this.image = core.assets[`assets/image/parts/Book${Book.Color[colorNum]}A.png`];
+      this.image = core.assets[`${PartsDir}Book${Book.Color[colorNum]}A.png`];
       this.color = colorNum;
       this.x = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width / 2 + index * (lane.id - (LANE - 1) / 2) * Book.PILE.X;
       this.y = COUNTER_Y + 40 - index * Book.PILE.Y;
@@ -755,7 +759,7 @@ function main() {
     //------ スワイプヘルパー
     var SwipeHelper = Class.create(ScaleSprite, {
     initialize: function(lane, book){
-      var image = core.assets[PartsDir + 'SwipeHelperA.png'];
+      var image = core.assets[PartsDir + "SwipeHelperA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.setX(book.x + (book.width - this.width) / 2);
@@ -790,7 +794,7 @@ function main() {
     //------ 人クラス
     var Human = Class.create(ScaleSprite, {
     initialize: function(lane, speed, index){
-      //console.log('./img/Human' + (rand(2) + 1) + 'A.png');
+      //console.log("./img/Human" + (rand(2) + 1) + "A.png");
       this.SPEED = lane.SPEED;
       var goalY = COUNTER_Y - HUMANHEIGHT * 0.4;
       var image;
@@ -799,14 +803,14 @@ function main() {
       if(rand(100) < RARERATE){
         // 図書館キャラの動きの定義
         var n = rand(4);
-        image = core.assets['assets/image/rarehuman/guest_' + n + 'A.png'];
+        image = core.assets[RareDir + "guest_" + n + "A.png"];
         frameLoop = [1];
         ScaleSprite.call(this, image.width, image.height);
       }else{
         var n = rand(HumanNum);
         var setting;
         HumanSetting.forEach(s=>{if(0<=n&&n<s.num) setting=s; n-=s.num;});
-        image = core.assets[HumanDir + setting.name + (rand(setting.num) + 1) + 'A.png'];
+        image = core.assets[HumanDir + setting.name + (rand(setting.num) + 1) + "A.png"];
         frameLoop = setting.frames;
         ScaleSprite.call(this, setting.width, setting.height);
       }
@@ -858,7 +862,7 @@ function main() {
     var LvUp = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 75);
-      this.image = core.assets[PartsDir + 'LEVELUPA.png'];
+      this.image = core.assets[PartsDir + "LEVELUPA.png"];
       this.frame = 0;
       this.x = 0;
       this.y = 100;
@@ -884,7 +888,7 @@ function main() {
     var Counter = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, 264);
-      this.image = core.assets[PartsDir + 'Counter.png'];
+      this.image = core.assets[PartsDir + "Counter.png"];
       this.x = 0;
       this.y = COUNTER_Y;
     }
@@ -894,7 +898,7 @@ function main() {
     var BlackPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets[PartsDir + 'BlackPanelA.png'];
+      this.image = core.assets[PartsDir + "BlackPanelA.png"];
       this.opacity = 0.4;
     }
     });
@@ -903,8 +907,8 @@ function main() {
     var PointLabel = Class.create(Label, {
     initialize: function(){
       Label.call(this);
-      this.font = '36px Comic Sans MS';
-      this.text = '0 冊';
+      this.font = "36px Comic Sans MS";
+      this.text = "0 冊";
       // ポイント文字の横幅を取得する関数
       this.x = (WIDTH - getTextWidth(this.text, this.font)) / 2;
       this.y = 560;
@@ -922,7 +926,7 @@ function main() {
     var Otetsuki = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 262, 67);
-      this.image = core.assets[PartsDir + 'OtetsukiA.png'];
+      this.image = core.assets[PartsDir + "OtetsukiA.png"];
       this.x = (WIDTH - this.width) / 2;
       this.y = 420;
       this.visible = false;
@@ -933,7 +937,7 @@ function main() {
     var GameOverSprite = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, 456, 80);
-      this.image = core.assets[PartsDir + 'GameOverA.png'];
+      this.image = core.assets[PartsDir + "GameOverA.png"];
       this.y = (HEIGHT - this.height) / 2;
       this.x = (WIDTH - this.width) / 2;
       this.visible = false;
@@ -944,7 +948,7 @@ function main() {
     var WarnningPanel = Class.create(ScaleSprite, {
     initialize: function(){
       ScaleSprite.call(this, WIDTH, HEIGHT);
-      this.image = core.assets[PartsDir + 'WarnningPanelA.png'];
+      this.image = core.assets[PartsDir + "WarnningPanelA.png"];
       this.FRAME = 15;
       this.frame = this.FRAME - 1;
       this.delta = -1;
@@ -963,7 +967,7 @@ function main() {
     //------ タイトルロゴ
     var TitleLogo = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets[PartsDir + 'title_title.png'];
+      var image = core.assets[PartsDir + "title_title.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
     }
@@ -972,7 +976,7 @@ function main() {
     //------ タイトルに表示する本
     var TitleBook = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets[PartsDir + 'title_book.png'];
+      var image = core.assets[PartsDir + "title_book.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.y = 160;
@@ -982,7 +986,7 @@ function main() {
     //------ タイトルに表示するなのビィ
     var Nanobie = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets['assets/image/rarehuman/guest_2A.png'];
+      var image = core.assets[RareDir + "guest_2A.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var scale = 240 / this.height;
@@ -1021,7 +1025,7 @@ function main() {
     //------ タイトルに表示するなのビィの吹き出し
     var SpeechBubble = Class.create(ScaleSprite, {
     initialize: function(){
-      var image = core.assets[PartsDir + 'SpeechBubble' + (rand(3) + 1) + 'A.png'];
+      var image = core.assets[PartsDir + "SpeechBubble" + (rand(3) + 1) + "A.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       var w = 300;
@@ -1085,7 +1089,7 @@ function main() {
     //------ つづけるボタン
     var ResumeButton = Class.create(ScaleSprite, {
     initialize: function(resume){
-      image = core.assets[PartsDir + 'ResumeImageA.png'];
+      image = core.assets[PartsDir + "ResumeImageA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.resume = resume;
@@ -1128,7 +1132,7 @@ function main() {
     //------ やめるボタン
     var EndButton = Class.create(ScaleSprite, {
     initialize: function(end){
-      image = core.assets[PartsDir + 'EndImageA.png'];
+      image = core.assets[PartsDir + "EndImageA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
       this.end = end;
@@ -1214,7 +1218,7 @@ function main() {
       if(!core.canvas){
         core.canvas = document.getElementsByTagName("canvas")[0];
         if(core.canvas){
-          core.context2d = core.canvas.getContext('2d');
+          core.context2d = core.canvas.getContext("2d");
           console.log("set context2d: ", core.context2d);
         }
       }
@@ -1232,16 +1236,16 @@ var openTweetPage = function(){
                 + TWEET_URL + " #田原市図書館";
 
   var ua = navigator.userAgent.toLowerCase();
-  var isAndroid = ua.indexOf('android') !== -1;
+  var isAndroid = ua.indexOf("android") !== -1;
   var isiOS = (ua.indexOf("iphone") > -1) || (ua.indexOf("ipod") > -1) || (ua.indexOf("ipad") > -1);
   
 
   var iframe = document.body.appendChild(document.createElement("iframe"));
   iframe.style.display = "none";
   if(isiOS){
-    iframe.src = 'twitter://post?message=' + message;
+    iframe.src = "twitter://post?message=" + message;
   }else if(isAndroid){
-    iframe.src = 'intent://post?message=' + message + '#Intent;scheme=twitter;package=com.twitter.android;end;';
+    iframe.src = "intent://post?message=" + message + "#Intent;scheme=twitter;package=com.twitter.android;end;";
   }
   iframe.parentNode.removeChild(iframe);
   setTimeout(function(){
