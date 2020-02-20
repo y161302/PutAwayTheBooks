@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. J");
+alert("ver. K");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1226,7 +1226,7 @@ function main() {
       this.setY(580);
       var that = this;
       this.addEventListener("touchstart", function(e){
-        console.log("icon touchstart", e.x, e.y);
+        console.log("icon touchstart", e.x, e.y, that);
         // アイコン上をタッチしたら少しだけ透過
         if(!this.touch &&
            e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
@@ -1236,7 +1236,7 @@ function main() {
         }
       });
       this.addEventListener("touchmove", function(e){
-        console.log("icon touchmove", e.x, e.y, that.touch);
+        console.log("icon touchmove", e.x, e.y, that);
         // アイコン上から外れたら元に戻す
         if(e.x < that.x || e.x >= that.x + that.width * that.scaleX ||
            e.y < that.y || e.y >= that.y + that.height * that.scaleY){
@@ -1245,7 +1245,7 @@ function main() {
         }
       });
       this.addEventListener("touchend", function(e){
-        console.log("icon touchend", e.x, e.y, that.touch);
+        console.log("icon touchend", e.x, e.y, that);
         // アイコン上で離したらタッチしたことにする
         if(that.touch &&
            e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
