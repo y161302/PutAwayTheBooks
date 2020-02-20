@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. W");
+alert("ver. X");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1327,8 +1327,10 @@ function main() {
       // BGM 音量設定のシークバー
       var bgmSeekBar = new SeekBar(120, bgp.Y + 100, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.bgm = value;
+        VOLUME_BGM = value;
+        core.setVolumeBGM(value);
       });
-      bgmSeekBar.value = core.UserData.se;
+      bgmSeekBar.value = (core.UserData.BGM || VOLUME_BGM);
 
       // 効果音の音量設定のラベル
       var seLabel = new Label();
@@ -1340,8 +1342,10 @@ function main() {
       // 効果音の音量性のシークバー
       var seSeekBar = new SeekBar(120, bgp.Y + 200, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.se = value;
+        VOLUME_SE = value;
+        core.play(AudioSEDir + "LvUp.mp3");
       });
-      seSeekBar.value = core.UserData.se;
+      seSeekBar.value = (core.UserData.se || VOLUME_SE);
 
       // x ボタン
       var closeButton = new Label();
@@ -1364,12 +1368,13 @@ function main() {
       this.visible = false;
 
       // x ボタンが押されたら保存して消す
+      var that = this;
       this.addEventListener("touchstart", function(e){
         if(e.x >= closeButton.x &&
            e.x < closeButton.x + closeButton.size.width &&
            e.y >= closeButton.y &&
            e.y < closeButton.y + closeButton.size.height)
-          this.parentNode.removeChild(this);
+          that.visible = false;
       });
     },
     visible: {
@@ -1442,7 +1447,6 @@ function main() {
           offsetX = e.x;
           offsetValue = that.value;
         }
-        console.log("seekbar: touchstart.", that.touchable, that.value, e.x, e.y);
       });
       this.addEventListener("touchmove", function(e){
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
@@ -1452,7 +1456,6 @@ function main() {
         }else{
           that.touchable = undefined;
         }
-        console.log("seekbar: touchmove.", that.touchable, that.value, e.x, e.y);
       });
       this.addEventListener("touchend", function(e){
         if(that.touchable){
@@ -1461,13 +1464,11 @@ function main() {
           }
           that.value = offsetValue + parseInt((e.x - offsetX) * 100 / (w * 0.8));
         }
-        console.log("seekbar: touchend.", that.touchable, that.value, e.x, e.y);
         that.touchable = undefined;
       });
     },
     value: {
       set(value){
-        console.log("seekbar: ", value);
         if(typeof(value) === typeof(""))
           var value = parseInt(value.replace(/[^0-9]/g, ""));
         // 数値を [0-100] に丸める
