@@ -31,19 +31,19 @@ SPEED = 1.0;
 LANE = 3;
 
 // タッチ判定となる指の移動距離 この距離以内ならOK
-DISTLIMIT = 30;
+DISTLIMIT = 40;
 
 // タッチ継続判定となる１フレームの移動距離
-DISTMOVE = 50;
+DISTMOVE = 80;
 
 // 黒い本を返した判定とする縦の距離 この距離より上で離せばOK
 DISTBLACK = 60;
 
 // レアキャラ（図書館キャラ）の出現率（％）
-RARERATE = 3;
+RARERATE = 5;
 
 // 黒い本の出現率 0 ～ 1 の実数
-BLACKRATE = 0.05;
+BLACKRATE = 0.1;
 
 // ゲーム全体の BGM の音量 [0 - 100]
 VOLUME_BGM = 100;
