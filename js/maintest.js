@@ -869,7 +869,8 @@ function main() {
           }
         }else{ // ゴールにたどり着いたとき
           if(this.c == 0){ // たどり着いた瞬間の処理
-            var n = rand(parseInt(lane.Level / 15) + 2) + 1;
+            var n = parseInt(lane.Level / 10 + 1) - rand(5) + 1;
+            if(n < 1) n = 1;
             for(var i=0; i<n; i++){
               lane.addBook();
             }
