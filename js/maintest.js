@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. C");
+alert("ver. D");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1199,6 +1199,61 @@ function main() {
     }
     });
 
+    //------ 設定パネル
+    var SettingPanel = Class.create(Group, {
+    initialize: function(){
+      Group.call(this);
+      this.x = 0;
+      this.y = 0;
+
+      // 背景を暗くする
+      var bp = new Sprite(WIDTH, HEIGHT);
+      bp.image = core.assets[PartsDir + "BlackPanelA.png"];
+      bp.opacity = 0.6;
+
+      // 背景画像
+      var image = core.assets[PartsDir + "1819.png"];
+      var scale = WIDTH / image.width;
+      var bgp = new Sprite(image.width, image.height);
+      bgp.scaleX = scale;
+      bgp.scaleY = scale;
+      bgp.x = 0;
+      bgp.y = (HEIGHT - image.height * scale) / 2;
+
+      // BGM 音量設定のラベル
+      var bgmLabel = new Label();
+      bgmLabel.font = "24px sans serif";
+      bgmLabel.text = "BGM の音量"
+      bgmLabel.x = 100;
+      bgmLabel.y = bgp.y + 60;
+
+      // BGM 音量設定のシークバー
+      var bgmSeekBar = new SeekBar(120, bgp.y+100, (WIDTH - 120) / 2, 40, (value)=>{
+        core.UserData.bgm = value;
+      });
+
+      // 効果音の音量設定のラベル
+      var seLabel = new Label();
+      seLabel.font = "24px sans serif";
+      seLabel.text = "効果音の音量"
+      seLabel.x = 100;
+      seLabel.y = bgp.y + 200;
+
+      // 効果音の音量性のシークバー
+      var seSeekBar = new SeekBar(120, bgp.y + 240, (WIDTH - 120) / 2, 40, (value)=>{
+        core.UserData.se = value;
+      });
+
+      // 部品の追加
+      this.addChild(bp);
+      this.addChild(bgp);
+      this.addChild(bgmLabel);
+      this.addChild(bgmSeekBar);
+      this.addChild(seLabel);
+      this.addChild(seSeekBar);
+    }
+    });
+
     //------ シークバー
     var SeekBar = Class.create(Group, {
     initialize: function(x, y, w, h, targetfunc){
@@ -1246,10 +1301,10 @@ function main() {
       var offsetX = 0;
       this.touchable = undefined;
       this.addEventListener("touchstart", function(e){
-        if(e.x > x + pointer.x - 10 &&
-           e.x < x + pointer.x + pointer.width * pointer.scaleY + 10 &&
-           e.y > y + pointer.y - 10 &&
-           e.y < y + pointer.y + pointer.height * pointer.scaleY + 10 &&
+        if(e.x > this.x + pointer.x - 10 &&
+           e.x < this.x + pointer.x + pointer.width * pointer.scaleY + 10 &&
+           e.y > this.y + pointer.y - 10 &&
+           e.y < this.y + pointer.y + pointer.height * pointer.scaleY + 10 &&
            that.touchable === undefined){
           that.touchable = e;
           offsetX = e.x;
@@ -1269,11 +1324,9 @@ function main() {
           if(getDistance(e, that.touchable) > DISTMOVE){
             e = that.touchable;
           }
-          that.touchable = undefined;
-          that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
-        }else{
-          that.touchable = undefined;
         }
+        that.touchable = undefined;
+        that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
       });
     },
     value: {
