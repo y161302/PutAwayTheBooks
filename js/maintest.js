@@ -735,6 +735,7 @@ function main() {
         core.play(AudioSEDir + "LvUp.mp3");
         this.lvup.start();
         core.level = this.Level;
+        console.log("Lv. " + core.level);
       }
       this.touchNum = 0;
       if(this.Level >= 50){
@@ -869,7 +870,7 @@ function main() {
           }
         }else{ // ゴールにたどり着いたとき
           if(this.c == 0){ // たどり着いた瞬間の処理
-            var n = parseInt(lane.Level / 10 + 1) - rand(5) + 1;
+            var n = parseInt(lane.Level / 10) - rand(5) + 1;
             if(n < 1) n = 1;
             for(var i=0; i<n; i++){
               lane.addBook();
