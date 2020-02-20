@@ -592,13 +592,14 @@ function main() {
       var volPanel = new VolumeSettingPanel();
       var volIcon = new VolumeIcon(function(){volPanel.visible = true;});
       var sb = new SpeechBubble();
+      var that = this;
 
       // オブジェクトの追加
       this.addChild(logo);
       this.addChild(book);
       this.addChild(nanobee);
       this.addChild(start);
-      sb.addToParent(function(node){this.insertBefore(node, start)});
+      sb.addToParent(function(node){that.insertBefore(node, start)});
       this.addChild(volIcon);
       this.addChild(volPanel);
 
