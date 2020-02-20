@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. T");
+alert("ver. U");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1085,13 +1085,13 @@ function main() {
         var image = core.assets[PartsDir + "SpeechBubble" + (i+1) + "A.png"];
         var sb = new ScaleSprite(image.width, image.height);
         sb.image = image;
-        var w = 300;
-        var scale = w / image.width;
-        var h = image.height * scale;
+        sb.scale = w / image.width;
+        sb.w = 300;
+        sb.h = image.height * scale;
         sb.scaleX = 0;
         sb.scaleY = 0;
-        sb.X = w;
-        sb.Y = 120 + h;
+        sb.X = sb.w;
+        sb.Y = 120 + sb.h;
         sb.visible = false;
         this.sbs.push(sb);
       }
@@ -1103,10 +1103,10 @@ function main() {
       var sb = this.sbs[num];
       sb.visible = true;
       this.visible = true;
-      var moveFrame = parseInt(core.fps / 3);
-      sb.tl.moveBy(-w/2, -h/2, moveFrame).and().scaleTo(scale, moveFrame)
-           .delay(parseInt(core.fps * 2.5))
-           .moveBy(w/2, h/2, moveFrame).and().scaleTo(0, moveFrame)
+      var moveFrame = parseInt(FPS / 3);
+      sb.tl.moveBy(-sb.w/2, -sb.h/2, moveFrame).and().scaleTo(sb.scale, moveFrame)
+           .delay(parseInt(FPS * 2.5))
+           .moveBy(sb.w/2, sb.h/2, moveFrame).and().scaleTo(0, moveFrame)
              .then(function(){sb.visible = false; this.visible = false;}).clear();
     }
     });
