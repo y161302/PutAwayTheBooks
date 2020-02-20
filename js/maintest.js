@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. N");
+alert("ver. O");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1274,12 +1274,12 @@ function main() {
       // 背景画像
       var image = core.assets[PartsDir + "1819.png"];
       var scale = WIDTH / image.width;
-      var bgp = new Sprite(image.width, image.height);
+      var bgp = new ScaleSprite(image.width, image.height);
       bgp.image = image;
       bgp.scaleX = scale;
       bgp.scaleY = scale;
-      bgp.x = 0;
-      bgp.y = (HEIGHT - image.height * scale) / 2;
+      bgp.setX(0);
+      bgp.setY((HEIGHT - image.height * scale) / 2);
 
       // BGM 音量設定のラベル
       var bgmLabel = new Label();
