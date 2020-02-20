@@ -726,7 +726,7 @@ function main() {
     },
     touched: function(){
       this.touchNum++;
-      if(this.touchNum >= (5 + parseInt(this.Level / 5))
+      if(this.touchNum >= (5 + parseInt(this.Level / 5)))
         this.levelUp();
     },
     levelUp: function(){
@@ -773,9 +773,8 @@ function main() {
         this.x = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width / 2 + idx * (lane.id - (LANE - 1) / 2) * Book.PILE.X;
         this.y = COUNTER_Y + 40 - idx * Book.PILE.Y;
       });
-      if(colorNum == Book.Color.indexOf("Black") && core.blackCount > 0){
+      if(colorNum == Book.Color.indexOf("Black")){
         lane.scene.addChild(new SwipeHelper(lane, this));
-        core.blackCount--;
       }
     }
     });
