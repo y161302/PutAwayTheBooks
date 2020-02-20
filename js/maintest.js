@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. F");
+alert("ver. G");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1249,7 +1249,7 @@ function main() {
       Group.call(this);
       this.x = 0;
       this.y = 0;
-      this.visible = false;
+      this._visible = true;
 
       // 背景を暗くする
       var bp = new Sprite(WIDTH, HEIGHT);
@@ -1260,6 +1260,7 @@ function main() {
       var image = core.assets[PartsDir + "1819.png"];
       var scale = WIDTH / image.width;
       var bgp = new Sprite(image.width, image.height);
+      bgp.image = image;
       bgp.scaleX = scale;
       bgp.scaleY = scale;
       bgp.x = 0;
@@ -1306,6 +1307,9 @@ function main() {
       this.addChild(seSeekBar);
       this.addChild(closeButton);
 
+      // 部品を追加したので非表示設定
+      this.visible = false;
+
       // x ボタンが押されたら保存して消す
       this.addEventListener("touchstart", function(e){
         if(e.x >= closeButton.x &&
@@ -1314,6 +1318,12 @@ function main() {
            e.y < closeButton.y + closeButton.size.height)
           this.parentNode.removeChild(this);
       });
+    },
+    visible: get(){
+      return this._visible;
+    }, set(value){
+      this._visible = value;
+      this.childNodes.forEach(node=>{node.visible = value;});
     }
     });
 
@@ -1394,8 +1404,9 @@ function main() {
     },
     value: {
       set(value){
+        if(typeof(value) === typeof(""))
+          var value = parseInt(value.replace(/[^0-9]/g, ""));
         // 数値を [0-100] に丸める
-        var value = parseInt(value.replace(/[^0-9]/g, ""));
         if(isNaN(value) || value < 0) value = 0;
         else if(value>100){
           value = 100;
