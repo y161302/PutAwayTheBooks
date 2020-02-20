@@ -695,13 +695,10 @@ function main() {
       return this.books.childNodes.length;
     },
     addBook: function(){
-      var n = rand(parseInt((this.Level - 1) / 4)) + 1;
-      for(i=0; i<n; i++){
-        if(Math.random() < this.BLACKRATE)
-          this.books.addChild(new Book(this, 0, this.getBookNum()));
-        else
-          this.books.addChild(new Book(this, rand(5)+1, this.getBookNum()));
-      }
+      if(Math.random() < this.BLACKRATE)
+        this.books.addChild(new Book(this, 0, this.getBookNum()));
+      else
+        this.books.addChild(new Book(this, rand(5)+1, this.getBookNum()));
     },
     popBook: function(){
       var ret = this.books.lastChild;
