@@ -102,3 +102,6 @@ HumanSetting.push({
 
 // 人ファイルの合計数を計算 
 HumanNum = HumanSetting.map(s=>{return s.num;}).reduce((p,c)=>{return p+c;});
+
+// なのビィの吹き出しの数
+SpeechBubbleNum = 3;

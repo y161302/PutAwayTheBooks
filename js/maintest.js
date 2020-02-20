@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. S");
+alert("ver. T");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -591,12 +591,14 @@ function main() {
       var start = new StartButton(started);
       var volPanel = new VolumeSettingPanel();
       var volIcon = new VolumeIcon(function(){volPanel.visible = true;});
+      var sb = new SpeechBubble();
 
       // オブジェクトの追加
       this.addChild(logo);
       this.addChild(book);
       this.addChild(nanobee);
       this.addChild(start);
+      sb.addToParent(function(node){this.insertBefore(node, start)});
       this.addChild(volIcon);
       this.addChild(volPanel);
 
@@ -620,10 +622,8 @@ function main() {
       this.addEventListener("enterframe", ()=>{
         if(!this.sbCount){
           this.sbCount = rand(20) + 20;
-          this.sb = new SpeechBubble();
-          this.insertBefore(this.sb, volIcon);
-        }
-        if(this.underFadePanel.childNodes.indexOf(this.sb) == -1){
+          sb.show(rand(SpeechBubbleNum));
+        }else if(!sb.visible){
           this.sbCount--;
         }
       });
@@ -1077,24 +1077,36 @@ function main() {
     });
 
     //------ タイトルに表示するなのビィの吹き出し
-    var SpeechBubble = Class.create(ScaleSprite, {
+    var SpeechBubble = Class.create({
     initialize: function(){
-      var image = core.assets[PartsDir + "SpeechBubble" + (rand(3) + 1) + "A.png"];
-      ScaleSprite.call(this, image.width, image.height);
-      this.image = image;
-      var w = 300;
-      var scale = w / image.width;
-      var h = image.height * scale;
-      this.scaleX = 0;
-      this.scaleY = 0;
-      this.X = w;
-      this.Y = 120 + h;
-
+      this.sbs = [];
+      for(var i=0; i<SpeechBubbleNum; i++){
+        var image = core.assets[PartsDir + "SpeechBubble" + (i+1) + "A.png"];
+        var sb = new ScaleSprite(image.width, image.height);
+        sb.image = image;
+        var w = 300;
+        var scale = w / image.width;
+        var h = image.height * scale;
+        sb.scaleX = 0;
+        sb.scaleY = 0;
+        sb.X = w;
+        sb.Y = 120 + h;
+        sb.visible = false;
+        this.sbs.push(sb);
+      }
+    },
+    addToParent: function(addFunc){
+      this.sbs.forEach(addFunc);
+    },
+    show: function(num){
+      var sb = this.sbs[num];
+      sb.visible = true;
+      this.visible = true;
       var moveFrame = parseInt(core.fps / 3);
-      this.tl.moveBy(-w/2, -h/2, moveFrame).and().scaleTo(scale, moveFrame)
-             .delay(parseInt(core.fps * 2.5))
-             .moveBy(w/2, h/2, moveFrame).and().scaleTo(0, moveFrame)
-             .removeFromScene();
+      sb.tl.moveBy(-w/2, -h/2, moveFrame).and().scaleTo(scale, moveFrame)
+           .delay(parseInt(core.fps * 2.5))
+           .moveBy(w/2, h/2, moveFrame).and().scaleTo(0, moveFrame)
+             .then(function(){sb.visible = false; this.visible = false;}).clear();
     }
     });
 
@@ -1421,7 +1433,7 @@ function main() {
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
           that.touchable.x = e.x;
           that.touchable.y = e.y;
-          that.value = parseInt((e.x - offsetX) / (w * 0.8) * 100);
+          that.value = that.value + parseInt((e.x - offsetX) / (w * 0.8) * 100);
         }else{
           that.touchable = undefined;
         }
@@ -1431,13 +1443,14 @@ function main() {
           if(getDistance(e, that.touchable) > DISTMOVE){
             e = that.touchable;
           }
-          that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
+          that.value = that.value + parseInt((e.x - offsetX) * 100 / (w * 0.8));
         }
         that.touchable = undefined;
       });
     },
     value: {
       set(value){
+        console.log("seekbar: ", value);
         if(typeof(value) === typeof(""))
           var value = parseInt(value.replace(/[^0-9]/g, ""));
         // 数値を [0-100] に丸める
@@ -1449,12 +1462,11 @@ function main() {
         // ラベルに数値をセットする
         this.label.text = value + "";
         var size = getTextSize(this.label.text, this.label.font);
-        this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
+        this.label.x = this.x + this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
         this.label.y = (this.h + size.height) / 2;
-        console.log("seekbar: ", size, this.w, this.h);
 
         // ポインターを動かす
-        this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.w * value / 100;
+        this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.w * 0.8 * value / 100;
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
