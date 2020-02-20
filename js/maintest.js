@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. G");
+alert("ver. H");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -87,9 +87,20 @@ function main() {
         core.bgm.volume = vol * VOLUME_BGM / 100;
     };
 
-    ////////// ポインタ管理 //////////
+    ////////// 距離を測るやつ //////////
     function getDistance(e, f){
       return Math.sqrt(Math.pow(e.x - f.x, 2) + Math.pow(e.y - f.y, 2));
+    };
+
+    ////////// canvas の context2D から得られる文字の横幅を得る関数 //////////
+    function getTextSize(str, font){
+      if(!core.context2d){
+        return str.length * 24;
+      }else{
+        core.context2d.font = font;
+        var measure = core.context2d.measureText(str);
+        return measure;
+      }
     };
 
     ////////// シーン管理 //////////
@@ -1211,8 +1222,8 @@ function main() {
       this.image = image;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.x = 10;
-      this.y = 580;
+      this.setX(10);
+      this.setY(580);
       this.addEventListener("touchstart", function(e){
         // アイコン上をタッチしたら少しだけ透過
         if(!this.touch &&
@@ -1455,17 +1466,6 @@ function main() {
     // 実質のスタート
     var manager = new SceneManager();
     manager.change("title");
-
-    // canvas の context2D から得られる文字の横幅を得る関数
-    function getTextSize(str, font){
-      if(!core.context2d){
-        return str.length * 24;
-      }else{
-        core.context2d.font = font;
-        var measure = core.context2d.measureText(str);
-        return measure;
-      }
-    };
 
     // canvas が追加され次第 context2D を取得する
     core.currentScene.addEventListener("enterframe", ()=>{
