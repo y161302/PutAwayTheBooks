@@ -23,7 +23,7 @@ function main() {
   core.fps = FPS; // frames（フレーム）per（毎）second（秒）：ゲームの進行スピードを設定しています。
   core.preload(PRELOAD);
   core.UserData = new UserDataUtil();
- 
+  
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
     // canvas が追加され次第 context2D を取得する
     core.currentScene.addEventListener("enterframe", ()=>{
@@ -1328,7 +1328,7 @@ function main() {
       var bgmSeekBar = new SeekBar(120, bgp.Y + 100, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.bgm = value;
         VOLUME_BGM = value;
-        core.setVolumeBGM(value);
+        core.setVolumeBGM(1);
       });
       bgmSeekBar.value = (core.UserData.BGM || VOLUME_BGM);
 
