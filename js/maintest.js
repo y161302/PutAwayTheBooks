@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. M");
+alert("ver. N");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -621,7 +621,7 @@ function main() {
         if(!this.sbCount){
           this.sbCount = rand(20) + 20;
           this.sb = new SpeechBubble();
-          this.insertBefore(this.sb, volPanel);
+          this.insertBefore(this.sb, volIcon);
         }
         if(this.underFadePanel.childNodes.indexOf(this.sb) == -1){
           this.sbCount--;
@@ -1229,7 +1229,6 @@ function main() {
       this.setY(y);
       var that = this;
       this.addEventListener("touchstart", function(e){
-        console.log("icon touchstart", e.x, e.y, that);
         // アイコン上をタッチしたら少しだけ透過
         if(!this.touch &&
            e.x >= x && e.x < x + that.width * that.scaleX &&
@@ -1239,7 +1238,6 @@ function main() {
         }
       });
       this.addEventListener("touchmove", function(e){
-        console.log("icon touchmove", e.x, e.y, that);
         // アイコン上から外れたら元に戻す
         if(e.x < x || e.x >= x + that.width * that.scaleX ||
            e.y < y || e.y >= y + that.height * that.scaleY){
@@ -1248,7 +1246,6 @@ function main() {
         }
       });
       this.addEventListener("touchend", function(e){
-        console.log("icon touchend", e.x, e.y, that);
         // アイコン上で離したらタッチしたことにする
         if(that.touch &&
            e.x >= x && e.x < x + that.width * that.scaleX &&
@@ -1377,7 +1374,7 @@ function main() {
       var scale = h / image.height;
       pointer.scaleX = scale;
       pointer.scaleY = scale;
-      pointer.setX(image.w * scale / 2);
+      pointer.setX(image.width * scale / 2);
       pointer.setY(image.height * scale / 2);
       pointer.rotate = -30;
       pointer.tl.rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
