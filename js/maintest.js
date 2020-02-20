@@ -578,12 +578,16 @@ function main() {
       var book = new TitleBook();
       var nanobee = new Nanobee();
       var start = new StartButton(started);
+      var volPanel = new VolumeSettingPanel();
+      var volIcon = new VolumeIcon(function(){volPanel.visible = true;});
 
       // オブジェクトの追加
       this.addChild(logo);
       this.addChild(book);
       this.addChild(nanobee);
       this.addChild(start);
+      this.addChild(volIcon);
+      this.addChild(volPanel);
 
       // 音楽流すぜ
       core.play(AudioBGMDir + "title1.mp3");
@@ -1199,12 +1203,52 @@ function main() {
     }
     });
 
-    //------ 設定パネル
-    var SettingPanel = Class.create(Group, {
+    var VolumeIcon = Class.create(ScaleSprite, {
+    initialize: function(PanelOpenFunc){
+      var image = core.assets[PartsDir + "VolumeIcon.png"];
+      ScaleSprite.call(this, image.width, image.height);
+      var scale = 50 / image.width;
+      this.image = image;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.x = 10;
+      this.y = 580;
+      this.addEventListener("touchstart", function(e){
+        // アイコン上をタッチしたら少しだけ透過
+        if(!this.touch &&
+           e.x >= this.x && e.x < this.x + this.width * this.scaleX &&
+           e.y >= this.y && e.y < this.y + this.height * this.scaleY){
+          this.opacity = 0.6;
+          this.touch = e;
+        }
+      });
+      this.addEventListener("touchmove", function(e){
+        // アイコン上から外れたら元に戻す
+        if(e.x < this.x || e.x >= this.x + this.width * this.scaleX ||
+           e.y < this.y || e.y >= this.y + this.height * this.scaleY){
+          this.opacity = 1;
+          this.touch = undefined;
+        }
+      });
+      this.addEventListener("touchend", function(e){
+        // アイコン上で離したらタッチしたことにする
+        if(this.touch &&
+           e.x >= this.x && e.x < this.x + this.width * this.scaleX &&
+           e.y >= this.y && e.y < this.y + this.height * this.scaleY){
+          this.opacity = 1;
+          this.touch = undefined;
+          PanelOpenFunc();
+        }
+      });
+    });
+
+    //------ 音量設定パネル
+    var VolumeSettingPanel = Class.create(Group, {
     initialize: function(){
       Group.call(this);
       this.x = 0;
       this.y = 0;
+      this.visible = false;
 
       // 背景を暗くする
       var bp = new Sprite(WIDTH, HEIGHT);
@@ -1222,7 +1266,7 @@ function main() {
 
       // BGM 音量設定のラベル
       var bgmLabel = new Label();
-      bgmLabel.font = "24px sans serif";
+      bgmLabel.font = "32px sans serif";
       bgmLabel.text = "BGM の音量"
       bgmLabel.x = 100;
       bgmLabel.y = bgp.y + 60;
@@ -1234,7 +1278,7 @@ function main() {
 
       // 効果音の音量設定のラベル
       var seLabel = new Label();
-      seLabel.font = "24px sans serif";
+      seLabel.font = "32px sans serif";
       seLabel.text = "効果音の音量"
       seLabel.x = 100;
       seLabel.y = bgp.y + 200;
@@ -1244,6 +1288,14 @@ function main() {
         core.UserData.se = value;
       });
 
+      // x ボタン
+      var closeButton = new Label();
+      closeButton.font = "24px sans serif";
+      closeButton.text = "x";
+      closeButton.size = getTextSize(closeButton.text, closeButton.font);
+      closeButton.x = (WIDTH - closeButton.size.width) / 2;
+      closeButton.y = bgp.y + 280;
+      
       // 部品の追加
       this.addChild(bp);
       this.addChild(bgp);
@@ -1251,6 +1303,16 @@ function main() {
       this.addChild(bgmSeekBar);
       this.addChild(seLabel);
       this.addChild(seSeekBar);
+      this.addChild(closeButton);
+
+      // x ボタンが押されたら保存して消す
+      this.addEventListener("touchstart", function(e){
+        if(e.x >= closeButton.x &&
+           e.x < closeButton.x + closeButton.size.width &&
+           e.y >= closeButton.y &&
+           e.y < closeButton.y + closeButton.size.height)
+          this.parentNode.removeChild(this);
+      });
     }
     });
 
