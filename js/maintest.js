@@ -26,15 +26,16 @@ function main() {
   
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
     // canvas が追加され次第 context2D を取得する
-    core.currentScene.addEventListener("enterframe", ()=>{
+    var timerID = setInterval(()=>{
       if(!core.canvas){
         core.canvas = document.getElementsByTagName("canvas")[0];
         if(core.canvas){
           core.context2d = core.canvas.getContext("2d");
           console.log("set context2d: ", core.context2d);
+          clearInterval(timerID);
         }
       }
-    });
+    }, 1);
     
     ////////// ウィンドウ設定（iOS対応用） //////////
     pointingMarginTop = 0;
@@ -106,7 +107,10 @@ function main() {
     ////////// canvas の context2D から得られる文字の横幅を得る関数 //////////
     function getTextSize(str, font){
       if(!core.context2d){
-        return {width: str.length * 24, height: 24};
+        var temp = document.createElement("span");
+        temp.style.font = font;
+        var size = parseInt(temp.style.fontSize.replace(/[^0-9]/g, ""));
+        return {width: str.length * size / 2, height: size};
       }else{
         core.context2d.font = font;
         var measure = core.context2d.measureText(str);
