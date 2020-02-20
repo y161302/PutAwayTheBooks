@@ -1349,7 +1349,7 @@ function main() {
       pointer.setX(image.w * scale / 2);
       pointer.setY(image.height * scale / 2);
       pointer.rotate = -30;
-      pointer.tl.rotateTo(0, paseInt(FPS/4), enchant.Easing.SIN_EASEIN)
+      pointer.tl.rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
                 .rotateTo(30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT)
                 .rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
                 .rotateTo(-30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT).loop();
