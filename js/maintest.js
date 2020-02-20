@@ -426,8 +426,8 @@ function main() {
         }
 
         // 音楽のループ
-        if(core.bgm.currentTime >= core.bgm.duration){
-          core.bgm.stop();
+        if(core.bgm.currentTime >= 104){
+          core.bgm.pause();
           core.bgm.currentTime = 0;
           core.bgm.play();
         }
@@ -726,7 +726,7 @@ function main() {
     },
     touched: function(){
       this.touchNum++;
-      if(this.touchNum >= (10 + 2 * this.Level))
+      if(this.touchNum >= (5 + 2 * this.Level))
         this.levelUp();
     },
     levelUp: function(){
@@ -744,7 +744,7 @@ function main() {
       }else{
         var value = (this.Level % 10 + parseInt(this.Level / 10) * 4) / 30; // Lv.1 - 50 が 30 段階になるように（上がり方は階段状）
         this.WAITTIME = WAITTIME - (WAITTIME - 10) * value;
-        this.LAMBDA = LAMBDA - (LAMBDA - 10) * value;
+        this.LAMBDA = LAMBDA - (LAMBDA - 15) * value;
         this.SPEED = SPEED + this.Level / 25;
       }
     },
