@@ -22,7 +22,7 @@ WAITTIME = 25;
 LIMIT = 15;
 
 // 人の初期出現率 (１人 ／ LAMBDA フレーム)
-LAMBDA = 25;
+LAMBDA = 30;
 
 // 人が歩いてくる初期速度
 SPEED = 1.0;

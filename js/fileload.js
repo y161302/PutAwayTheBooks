@@ -1,11 +1,11 @@
 fileload();
 
-async function fileload(){
-  await getFileList("./assetsFileList.txt")
+function fileload(){
+  getFileList("./getFileList.php")
     .then(filelist=>{
       PRELOAD = filelist;
+      prm.FILELOAD_ONLOAD = true;
     });
-  prm.FILELOAD_ONLOAD = true;
 }
 
 function getFileList(url){
@@ -14,7 +14,7 @@ function getFileList(url){
     xhr.open("GET", url, true);
     xhr.responseType = "text";
     xhr.onload = ()=>{
-      resolve(xhr.responseText.split("\n"));
+      resolve(xhr.responseText.replace(/\r/g, "\n").replace(/\n\n/g, "\n").split("\n").filter(value=>value!==""));
     };
     xhr.send("");
   });
