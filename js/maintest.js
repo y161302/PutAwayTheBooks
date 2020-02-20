@@ -742,7 +742,7 @@ function main() {
         this.LAMBDA = 10;
         this.SPEED = 3;
       }else{
-        this.WAITTIME = WAITTIME - this.Level * 0.25;
+        this.WAITTIME = WAITTIME - this.Level * 0.2;
         this.LAMBDA = LAMBDA - this.Level * 0.25;
         this.SPEED = SPEED + this.Level / 25;
       }

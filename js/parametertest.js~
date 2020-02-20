@@ -16,13 +16,13 @@ BackgroundDir = "./assets/image/background/";
 
 ////////// ゲームパラメータ― ////////// このパラメータは変更して大丈夫です。
 // 人が本を置いて立ち去るまでの初期時間
-WAITTIME = 20;
+WAITTIME = 25;
 
 // ゲームオーバーとなる積立冊数
 LIMIT = 15;
 
 // 人の初期出現率 (１人 ／ LAMBDA フレーム)
-LAMBDA = 35;
+LAMBDA = 30;
 
 // 人が歩いてくる初期速度
 SPEED = 1.0;
@@ -49,7 +49,7 @@ BLACKRATE = 0.05;
 VOLUME_BGM = 100;
 
 // ゲーム全体の効果音の音量 [0 - 100]
-VOLUME_SE = 70;
+VOLUME_SE = 0;
 
 // リザルト画面で「やめる」を選択した際の遷移先 URL
 BACK_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
