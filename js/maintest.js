@@ -697,7 +697,7 @@ function main() {
       return this.books.childNodes.length;
     },
     addBook: function(){
-      var n = parseInt(lane.Level / 10) - rand(5) + 1;
+      var n = parseInt(this.Level / 10) - rand(5) + 1;
       if(n < 1) n = 1;
       for(var i=0; i<n; i++){
         if(Math.random() < this.BLACKRATE)
