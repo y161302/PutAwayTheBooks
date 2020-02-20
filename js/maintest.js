@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. K");
+alert("ver. L");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1222,15 +1222,17 @@ function main() {
       this.image = image;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX(10);
-      this.setY(580);
+      var x = 10;
+      var y = 580;
+      this.setX(x);
+      this.setY(y);
       var that = this;
       this.addEventListener("touchstart", function(e){
         console.log("icon touchstart", e.x, e.y, that);
         // アイコン上をタッチしたら少しだけ透過
         if(!this.touch &&
-           e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
-           e.y >= that.y && e.y < that.y + that.height * that.scaleY){
+           e.x >= x && e.x < x + that.width * that.scaleX &&
+           e.y >= y && e.y < y + that.height * that.scaleY){
           that.opacity = 0.6;
           that.touch = e;
         }
@@ -1238,8 +1240,8 @@ function main() {
       this.addEventListener("touchmove", function(e){
         console.log("icon touchmove", e.x, e.y, that);
         // アイコン上から外れたら元に戻す
-        if(e.x < that.x || e.x >= that.x + that.width * that.scaleX ||
-           e.y < that.y || e.y >= that.y + that.height * that.scaleY){
+        if(e.x < x || e.x >= x + that.width * that.scaleX ||
+           e.y < y || e.y >= y + that.height * that.scaleY){
           that.opacity = 1;
           that.touch = undefined;
         }
@@ -1248,8 +1250,8 @@ function main() {
         console.log("icon touchend", e.x, e.y, that);
         // アイコン上で離したらタッチしたことにする
         if(that.touch &&
-           e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
-           e.y >= that.y && e.y < that.y + that.height * that.scaleY){
+           e.x >= x && e.x < x + that.width * that.scaleX &&
+           e.y >= y && e.y < y + that.height * that.scaleY){
           that.opacity = 1;
           that.touch = undefined;
           PanelOpenFunc();
