@@ -1319,11 +1319,13 @@ function main() {
           this.parentNode.removeChild(this);
       });
     },
-    visible: get(){
-      return this._visible;
-    }, set(value){
-      this._visible = value;
-      this.childNodes.forEach(node=>{node.visible = value;});
+    visible: {
+      get(){
+        return this._visible;
+      }, set(value){
+        this._visible = value;
+        this.childNodes.forEach(node=>{node.visible = value;});
+      }
     }
     });
 
