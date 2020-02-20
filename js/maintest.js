@@ -1085,8 +1085,8 @@ function main() {
         var image = core.assets[PartsDir + "SpeechBubble" + (i+1) + "A.png"];
         var sb = new ScaleSprite(image.width, image.height);
         sb.image = image;
-        sb.scale = w / image.width;
         sb.w = 300;
+        sb.scale = sb.w / image.width;
         sb.h = image.height * scale;
         sb.scaleX = 0;
         sb.scaleY = 0;
