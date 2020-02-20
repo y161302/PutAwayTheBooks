@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. L");
+alert("ver. M");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -621,7 +621,7 @@ function main() {
         if(!this.sbCount){
           this.sbCount = rand(20) + 20;
           this.sb = new SpeechBubble();
-          this.addChild(this.sb);
+          this.insertBefore(this.sb, volPanel);
         }
         if(this.underFadePanel.childNodes.indexOf(this.sb) == -1){
           this.sbCount--;
@@ -1214,6 +1214,7 @@ function main() {
     }
     });
 
+    // 音量設定パネルを開くためのアイコン
     var VolumeIcon = Class.create(ScaleSprite, {
     initialize: function(PanelOpenFunc){
       var image = core.assets[PartsDir + "VolumeIcon.png"];
@@ -1353,6 +1354,7 @@ function main() {
       this.x = x;
       this.y = y;
       this.w = w; // 単純に数値保持のため
+      this.h = h; // 同上
       this.targetFunc = targetfunc; // 値が変わった時に設定する関数
 
       // シークバーのバー
@@ -1382,6 +1384,7 @@ function main() {
                 .rotateTo(30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT)
                 .rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
                 .rotateTo(-30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT).loop();
+      this.pointer = pointer;
 
       // 要素を追加
       this.addChild(bar);
@@ -1435,7 +1438,7 @@ function main() {
         this.label.text = value + "";
         var size = getTextSize(this.text, this.font);
         this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
-        this.label.y = (this.height * scale + size.height) / 2;
+        this.label.y = (this.h + size.height) / 2;
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
