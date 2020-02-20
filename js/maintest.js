@@ -1372,8 +1372,10 @@ function main() {
         if(e.x >= closeButton.x &&
            e.x < closeButton.x + closeButton.size.width &&
            e.y >= closeButton.y &&
-           e.y < closeButton.y + closeButton.size.height)
+           e.y < closeButton.y + closeButton.size.height){
           that.visible = false;
+          core.UserData.exportUserData();
+        }
       });
     },
     visible: {
@@ -1462,7 +1464,11 @@ function main() {
             e = that.touchable;
           }
           that.value = offsetValue + parseInt((e.x - offsetX) * 100 / (w * 0.8));
-          core.play(AudioSEDir + "LvUp.mp3");
+          setTimeout(function(){
+            var tempSE = core.assets[AudioSEDir + "LvUp.mp3"].clone();
+            tempSE.play();
+            tempSE.volume = that.value / 100;
+          }, 1);
         }
         that.touchable = undefined;
       });
