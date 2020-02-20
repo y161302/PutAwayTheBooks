@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. V");
+alert("ver. W");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -25,6 +25,17 @@ function main() {
   core.UserData = new UserDataUtil();
  
   core.onload = function() { // ゲームの準備が整ったらメインの処理を実行します。
+    // canvas が追加され次第 context2D を取得する
+    core.currentScene.addEventListener("enterframe", ()=>{
+      if(!core.canvas){
+        core.canvas = document.getElementsByTagName("canvas")[0];
+        if(core.canvas){
+          core.context2d = core.canvas.getContext("2d");
+          console.log("set context2d: ", core.context2d);
+        }
+      }
+    });
+    
     ////////// ウィンドウ設定（iOS対応用） //////////
     pointingMarginTop = 0;
     var baseW = WIDTH;
@@ -95,7 +106,7 @@ function main() {
     ////////// canvas の context2D から得られる文字の横幅を得る関数 //////////
     function getTextSize(str, font){
       if(!core.context2d){
-        return str.length * 24;
+        return {width: str.length * 24, height: 24};
       }else{
         core.context2d.font = font;
         var measure = core.context2d.measureText(str);
@@ -1324,10 +1335,10 @@ function main() {
       seLabel.font = "32px sans serif";
       seLabel.text = "効果音の音量"
       seLabel.x = 100;
-      seLabel.y = bgp.Y + 200;
+      seLabel.y = bgp.Y + 160;
 
       // 効果音の音量性のシークバー
-      var seSeekBar = new SeekBar(120, bgp.Y + 240, (WIDTH - 120) / 2, 40, (value)=>{
+      var seSeekBar = new SeekBar(120, bgp.Y + 200, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.se = value;
       });
       seSeekBar.value = core.UserData.se;
@@ -1418,6 +1429,7 @@ function main() {
       // タッチ操作で動かすリスナー
       var that = this;
       var offsetX = 0;
+      var offsetValue = 0;
       var pointerX = 0;
       this.touchable = undefined;
       this.addEventListener("touchstart", function(e){
@@ -1428,6 +1440,7 @@ function main() {
            that.touchable === undefined){
           that.touchable = e;
           offsetX = e.x;
+          offsetValue = that.value;
         }
         console.log("seekbar: touchstart.", that.touchable, that.value, e.x, e.y);
       });
@@ -1435,7 +1448,7 @@ function main() {
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
           that.touchable.x = e.x;
           that.touchable.y = e.y;
-          that.value = that.value + parseInt((e.x - offsetX) / (w * 0.8) * 100);
+          that.value = offsetValue + parseInt((e.x - offsetX) / (w * 0.8) * 100);
         }else{
           that.touchable = undefined;
         }
@@ -1446,7 +1459,7 @@ function main() {
           if(getDistance(e, that.touchable) > DISTMOVE){
             e = that.touchable;
           }
-          that.value = that.value + parseInt((e.x - offsetX) * 100 / (w * 0.8));
+          that.value = offsetValue + parseInt((e.x - offsetX) * 100 / (w * 0.8));
         }
         console.log("seekbar: touchend.", that.touchable, that.value, e.x, e.y);
         that.touchable = undefined;
@@ -1512,17 +1525,6 @@ function main() {
     // 実質のスタート
     var manager = new SceneManager();
     manager.change("title");
-
-    // canvas が追加され次第 context2D を取得する
-    core.currentScene.addEventListener("enterframe", ()=>{
-      if(!core.canvas){
-        core.canvas = document.getElementsByTagName("canvas")[0];
-        if(core.canvas){
-          core.context2d = core.canvas.getContext("2d");
-          console.log("set context2d: ", core.context2d);
-        }
-      }
-    });
   }
   core.start(); // ゲームをスタートさせます
   console.log("started game.");
