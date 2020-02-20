@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. U");
+alert("ver. V");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1429,6 +1429,7 @@ function main() {
           that.touchable = e;
           offsetX = e.x;
         }
+        console.log("seekbar: touchstart.", that.touchable, that.value, e.x, e.y);
       });
       this.addEventListener("touchmove", function(e){
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
@@ -1438,6 +1439,7 @@ function main() {
         }else{
           that.touchable = undefined;
         }
+        console.log("seekbar: touchmove.", that.touchable, that.value, e.x, e.y);
       });
       this.addEventListener("touchend", function(e){
         if(that.touchable){
@@ -1446,6 +1448,7 @@ function main() {
           }
           that.value = that.value + parseInt((e.x - offsetX) * 100 / (w * 0.8));
         }
+        console.log("seekbar: touchend.", that.touchable, that.value, e.x, e.y);
         that.touchable = undefined;
       });
     },
@@ -1460,6 +1463,8 @@ function main() {
           value = 100;
         }
 
+        this._value = value;
+
         // ラベルに数値をセットする
         this.label.text = value + "";
         var size = getTextSize(this.label.text, this.label.font);
@@ -1471,6 +1476,9 @@ function main() {
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
+      },
+      get(){
+        return this._value;
       }
     }
     });
