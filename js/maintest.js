@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. P");
+alert("ver. Q");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -650,26 +650,28 @@ function main() {
     initialize: function(w, h){
       Sprite.call(this, w, h);
     },
-    setX: {
+    X: {
+      get(){
+        if(this._xx === undefined)
+          return this.x;
+        else
+          return this._xx;
+      },
       set(x){
         this.x = x - this.width * (1 - this.scaleX) / 2;
         this._xx = x;
       }
     },
-    setY: {
+    Y: {
+      get(){
+        if(this._yy === undefined)
+          return this.y;
+        else
+          return this._yy;
+      },
       set(y){
         this.y = y - this.height * (1 - this.scaleY) / 2;
         this._yy = y;
-      }
-    },
-    getX: {
-      get(){
-        return this._xx - this.width * (1 - this.scaleX) / 2;
-      }
-    },
-    getY: {
-      get(){
-        return this._yy - this.height * (1 - this.scaleY) / 2;
       }
     }
     });
@@ -817,8 +819,8 @@ function main() {
       var image = core.assets[PartsDir + "SwipeHelperA.png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
-      this.setX = book.x + (book.width - this.width) / 2;
-      this.setY = book.y - this.height - 10;
+      this.X = book.x + (book.width - this.width) / 2;
+      this.Y = book.y - this.height - 10;
       this.tl.moveBy(0, -50, core.fps - 1).and().fadeOut(core.fps - 1)
              .moveBy(0, 50, 1).and().show().loop();
       this.addEventListener("enterframe", ()=>{
@@ -877,10 +879,10 @@ function main() {
       // 描画座標計算用の数値設定
       var offsetY = - HUMANHEIGHT; // ちょうど画面から見えない上部をずらす前のＹ座標とする
       var setY = offsetY; // 初期Ｙ座標はオフセットそのまま
-      this.setY = setY; // ScaleSprite.setY()
+      this.Y = setY; // ScaleSprite.Y()
       var offsetX = (lane.id * 2 + 1) * WIDTH / (LANE * 2) - this.width * scale / 2; // レーンの中心Ｘ座標をずらす前のＸ座標とする
       var setX = offsetX - (lane.id - (LANE - 1) / 2) * ((COUNTER_Y - 60) - setY) / 10; // 初期Ｘ座標は少し中心寄り
-      this.setX = setX; // ScaleSprite.setX()
+      this.X = setX; // ScaleSprite.X()
       // 動きの設定用
       this.c = 0;
       this.moveAge = 0;
@@ -892,9 +894,9 @@ function main() {
           if(setY < goalY - 80 * (lane.getHumanNum() - lane.humans.childNodes.indexOf(this) - 1)){
             // 行列を形成する必要がない時はスピードに合わせて動かす。
             setY = offsetY + (COUNTER_Y + HUMANHEIGHT / 2) / (5 * core.fps) * this.SPEED * this.moveAge;
-            this.setY = setY;
+            this.Y = setY;
             setX = offsetX - (lane.id - (LANE - 1) / 2) * (goalY - setY) / 8;
-            this.setX = setX;
+            this.X = setX;
             this.moveAge++;
           }
         }else{ // ゴールにたどり着いたとき
@@ -1044,8 +1046,8 @@ function main() {
       var scale = 240 / this.height;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX = 300;
-      this.setY = 100;
+      this.X = 300;
+      this.Y = 100;
       this.tl.moveBy(0, 100, parseInt(core.fps * 1.5), enchant.Easing.SIN_EASEINOUT)
              .moveBy(0, -100, parseInt(core.fps * 1.5), enchant.Easing.SIN_EASEINOUT)
              .loop();
@@ -1085,8 +1087,8 @@ function main() {
       var h = image.height * scale;
       this.scaleX = 0;
       this.scaleY = 0;
-      this.setX = w;
-      this.setY = 120 + h;
+      this.X = w;
+      this.Y = 120 + h;
 
       var moveFrame = parseInt(core.fps / 3);
       this.tl.moveBy(-w/2, -h/2, moveFrame).and().scaleTo(scale, moveFrame)
@@ -1108,8 +1110,8 @@ function main() {
       var h = image.height * scale;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX = WIDTH / 2 - this.width * scale / 2;
-      this.setY = 520;
+      this.X = WIDTH / 2 - this.width * scale / 2;
+      this.Y = 520;
       this.addEventListener("touchstart", (e)=>{
         var x = e.x - this.width * (1 - scale) / 2 - this.x;
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
@@ -1151,8 +1153,8 @@ function main() {
       var h = image.height * scale;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX = WIDTH * 1 / 4 - this.width * scale / 2;
-      this.setY = 540;
+      this.X = WIDTH * 1 / 4 - this.width * scale / 2;
+      this.Y = 540;
       this.addEventListener("touchstart", (e)=>{
         var x = e.x - this.width * (1 - scale) / 2 - this.x;
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
@@ -1194,8 +1196,8 @@ function main() {
       var h = image.height * scale;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX = WIDTH * 3 / 4 - this.width * scale / 2;
-      this.setY = 540;
+      this.X = WIDTH * 3 / 4 - this.width * scale / 2;
+      this.Y = 540;
       this.addEventListener("touchstart", (e)=>{
         var x = e.x - this.width * (1 - scale) / 2 - this.x;
         var y = e.y - this.height * (1 - scale) / 2 - this.y;
@@ -1235,8 +1237,8 @@ function main() {
       this.scaleY = scale;
       var x = 10;
       var y = 580;
-      this.setX = x;
-      this.setY = y;
+      this.X = x;
+      this.Y = y;
       var that = this;
       this.addEventListener("touchstart", function(e){
         // アイコン上をタッチしたら少しだけ透過
@@ -1288,18 +1290,18 @@ function main() {
       bgp.image = image;
       bgp.scaleX = scale;
       bgp.scaleY = scale;
-      bgp.setX = 0;
-      bgp.setY = (HEIGHT - image.height * scale) / 2;
+      bgp.X = 0;
+      bgp.Y = (HEIGHT - image.height * scale) / 2;
 
       // BGM 音量設定のラベル
       var bgmLabel = new Label();
       bgmLabel.font = "32px sans serif";
       bgmLabel.text = "BGM の音量"
       bgmLabel.x = 100;
-      bgmLabel.y = bgp.getY + 60;
+      bgmLabel.y = bgp.Y + 60;
 
       // BGM 音量設定のシークバー
-      var bgmSeekBar = new SeekBar(120, bgp.getY + 100, (WIDTH - 120) / 2, 40, (value)=>{
+      var bgmSeekBar = new SeekBar(120, bgp.Y + 100, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.bgm = value;
       });
 
@@ -1308,10 +1310,10 @@ function main() {
       seLabel.font = "32px sans serif";
       seLabel.text = "効果音の音量"
       seLabel.x = 100;
-      seLabel.y = bgp.getY + 200;
+      seLabel.y = bgp.Y + 200;
 
       // 効果音の音量性のシークバー
-      var seSeekBar = new SeekBar(120, bgp.getY + 240, (WIDTH - 120) / 2, 40, (value)=>{
+      var seSeekBar = new SeekBar(120, bgp.Y + 240, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.se = value;
       });
 
@@ -1321,7 +1323,7 @@ function main() {
       closeButton.text = "x";
       closeButton.size = getTextSize(closeButton.text, closeButton.font);
       closeButton.x = (WIDTH - closeButton.size.width) / 2;
-      closeButton.y = bgp.getY + 280;
+      closeButton.y = bgp.Y + 280;
       
       // 部品の追加
       this.addChild(bp);
@@ -1370,8 +1372,8 @@ function main() {
       bar.image = image;
       bar.scaleX = w / image.width * 0.8; // シークバー＋数値なので横幅は８割にする
       bar.scaleY = h / image.height / 3; // シークバー＋ポインターなので縦幅は 1/3 にする
-      bar.setX = 0;
-      bar.setY = h / 6; // == (h/3) / 2;
+      bar.X = 0;
+      bar.Y = h / 6; // == (h/3) / 2;
 
       // 数値表示用ラベル this.text を変更すると座標が設定される
       this.label = new Label();
@@ -1384,8 +1386,8 @@ function main() {
       var scale = h / image.height;
       pointer.scaleX = scale;
       pointer.scaleY = scale;
-      pointer.setX = image.width * scale / 2;
-      pointer.setY = image.height * scale / 2;
+      pointer.X = image.width * scale / 2;
+      pointer.Y = image.height * scale / 2;
       pointer.rotate = -30;
       pointer.tl.rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
                 .rotateTo(30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT)
@@ -1463,8 +1465,8 @@ function main() {
       var scale = size / this.height;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.setX = (WIDTH - this.width * this.scaleX) / 2;
-      this.setY = 400;
+      this.X = (WIDTH - this.width * this.scaleX) / 2;
+      this.Y = 400;
       this.visible = false;
 
       // タップしたらツイート画面を別タブで開く
