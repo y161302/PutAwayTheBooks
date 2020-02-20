@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. Q");
+alert("ver. R");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1304,6 +1304,7 @@ function main() {
       var bgmSeekBar = new SeekBar(120, bgp.Y + 100, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.bgm = value;
       });
+      bgmSeekBar.value = core.UserData.se;
 
       // 効果音の音量設定のラベル
       var seLabel = new Label();
@@ -1316,6 +1317,7 @@ function main() {
       var seSeekBar = new SeekBar(120, bgp.Y + 240, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.se = value;
       });
+      seSeekBar.value = core.UserData.se;
 
       // x ボタン
       var closeButton = new Label();
@@ -1370,10 +1372,10 @@ function main() {
       var image = core.assets[PartsDir + "SeekBar.png"];
       var bar = new ScaleSprite(image.width, image.height);
       bar.image = image;
-      bar.scaleX = w / image.width * 0.8; // シークバー＋数値なので横幅は８割にする
-      bar.scaleY = h / image.height / 3; // シークバー＋ポインターなので縦幅は 1/3 にする
+      bar.scaleX = w / image.width * 0.8; // w = シークバー＋数値 なので横幅は８割にする
+      bar.scaleY = h / image.height / 6; // h = シークバー＋ポインター なので縦幅は 1/6 にする
       bar.X = 0;
-      bar.Y = h / 6; // == (h/3) / 2;
+      bar.Y = h / 12; // == (h/6) / 2;
 
       // 数値表示用ラベル this.text を変更すると座標が設定される
       this.label = new Label();
@@ -1386,8 +1388,8 @@ function main() {
       var scale = h / image.height;
       pointer.scaleX = scale;
       pointer.scaleY = scale;
-      pointer.X = image.width * scale / 2;
-      pointer.Y = image.height * scale / 2;
+      pointer.X = - image.width * scale / 2;
+      pointer.Y = 0;
       pointer.rotate = -30;
       pointer.tl.rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
                 .rotateTo(30, parseInt(FPS/4), enchant.Easing.SIN_EASEOUT)
@@ -1405,10 +1407,10 @@ function main() {
       var offsetX = 0;
       this.touchable = undefined;
       this.addEventListener("touchstart", function(e){
-        if(e.x > this.x + pointer.x - 10 &&
-           e.x < this.x + pointer.x + pointer.width * pointer.scaleY + 10 &&
-           e.y > this.y + pointer.y - 10 &&
-           e.y < this.y + pointer.y + pointer.height * pointer.scaleY + 10 &&
+        if(e.x > x + pointer.X - 10 &&
+           e.x < x + pointer.X + pointer.width * pointer.scaleY + 10 &&
+           e.y > y + pointer.Y - 10 &&
+           e.y < y + pointer.Y + pointer.height * pointer.scaleY + 10 &&
            that.touchable === undefined){
           that.touchable = e;
           offsetX = e.x;
@@ -1418,7 +1420,7 @@ function main() {
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
           that.touchable.x = e.x;
           that.touchable.y = e.y;
-          that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
+          that.value = parseInt((e.x - offsetX) / (w * 0.8) * 100);
         }else{
           that.touchable = undefined;
         }
@@ -1445,7 +1447,7 @@ function main() {
 
         // ラベルに数値をセットする
         this.label.text = value + "";
-        var size = getTextSize(this.text, this.font);
+        var size = getTextSize(this.label.text, this.label.font);
         this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
         this.label.y = (this.h + size.height) / 2;
         
