@@ -70,7 +70,6 @@ function main() {
 
     ////////// 音量設定を含めた音声再生するやつ //////////
     core.play = url => {
-      console.log(url);
       if(url.indexOf(AudioBGMDir) >= 0){
         core.bgm = core.assets[url].clone();
         core.bgm.play();
@@ -682,10 +681,11 @@ function main() {
       // フレーム毎の処理
       this.addEventListener("enterframe", ()=>{
         // 人の出現（生成）
-        if(core.frame % this.LAMBDA == 0){
-          this.numberOfAppear = rand(this.LAMBDA);
+        var l = parseInt(this.LAMBDA);
+        if(core.frame % l == 0){
+          this.numberOfAppear = rand(l);
         }
-        if(core.frame % this.LAMBDA == this.numberOfAppear){
+        if(core.frame % l == this.numberOfAppear){
           this.humans.insertBefore(new Human(this, this.SPEED, this.getHumanNum()), this.humans.firstChild);
         }
         this.warnning = (this.books.childNodes.length > LIMIT * 0.8) || (this.books.childNodes.length >= LIMIT - 2);
@@ -742,9 +742,9 @@ function main() {
         this.LAMBDA = 10;
         this.SPEED = 3;
       }else{
-        this.WAITTIME = WAITTIME - (this.Level - 1) * 0.25;
-        this.LAMBDA = LAMBDA - (this.Level - 1) * 0.25;
-        this.SPEED = SPEED + (this.Level - 1) / 25;
+        this.WAITTIME = WAITTIME - this.Level * 0.25;
+        this.LAMBDA = LAMBDA - this.Level * 0.25;
+        this.SPEED = SPEED + this.Level / 25;
       }
     },
     registBook: function(grpBook){
