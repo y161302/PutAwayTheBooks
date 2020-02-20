@@ -70,6 +70,8 @@ PRELOAD = ["./assets/audio/LvUp.mp3",
 "./assets/image/rarehuman/guest_1A.png",
 "./assets/image/rarehuman/guest_2A.png",
 "./assets/image/rarehuman/guest_3A.png",
-"./assets/image/parts/SeekBar.png"];
+"./assets/image/parts/SeekBar.png",
+"./assets/image/parts/1819.png",
+"./assets/image/parts/VolumeIcon.png"];
 
 prm.FILELOAD_ONLOAD = true;

@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. E");
+alert("ver. F");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
