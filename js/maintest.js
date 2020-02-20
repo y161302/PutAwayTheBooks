@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. I");
+alert("ver. J");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1224,33 +1224,34 @@ function main() {
       this.scaleY = scale;
       this.setX(10);
       this.setY(580);
+      var that = this;
       this.addEventListener("touchstart", function(e){
         console.log("icon touchstart", e.x, e.y);
         // アイコン上をタッチしたら少しだけ透過
         if(!this.touch &&
-           e.x >= this.x && e.x < this.x + this.width * this.scaleX &&
-           e.y >= this.y && e.y < this.y + this.height * this.scaleY){
-          this.opacity = 0.6;
-          this.touch = e;
+           e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
+           e.y >= that.y && e.y < that.y + that.height * that.scaleY){
+          that.opacity = 0.6;
+          that.touch = e;
         }
       });
       this.addEventListener("touchmove", function(e){
-        console.log("icon touchmove", e.x, e.y, this.touch);
+        console.log("icon touchmove", e.x, e.y, that.touch);
         // アイコン上から外れたら元に戻す
-        if(e.x < this.x || e.x >= this.x + this.width * this.scaleX ||
-           e.y < this.y || e.y >= this.y + this.height * this.scaleY){
-          this.opacity = 1;
-          this.touch = undefined;
+        if(e.x < that.x || e.x >= that.x + that.width * that.scaleX ||
+           e.y < that.y || e.y >= that.y + that.height * that.scaleY){
+          that.opacity = 1;
+          that.touch = undefined;
         }
       });
       this.addEventListener("touchend", function(e){
-        console.log("icon touchend", e.x, e.y, this.touch);
+        console.log("icon touchend", e.x, e.y, that.touch);
         // アイコン上で離したらタッチしたことにする
-        if(this.touch &&
-           e.x >= this.x && e.x < this.x + this.width * this.scaleX &&
-           e.y >= this.y && e.y < this.y + this.height * this.scaleY){
-          this.opacity = 1;
-          this.touch = undefined;
+        if(that.touch &&
+           e.x >= that.x && e.x < that.x + that.width * that.scaleX &&
+           e.y >= that.y && e.y < that.y + that.height * that.scaleY){
+          that.opacity = 1;
+          that.touch = undefined;
           PanelOpenFunc();
         }
       });
