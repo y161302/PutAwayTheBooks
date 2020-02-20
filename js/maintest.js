@@ -742,8 +742,9 @@ function main() {
         this.LAMBDA = 10;
         this.SPEED = 3;
       }else{
-        this.WAITTIME = WAITTIME - this.Level * 0.2;
-        this.LAMBDA = LAMBDA - this.Level * 0.25;
+        var value = (this.Level % 10 + parseInt(this.Level / 10) * 4) / 30; // Lv.1 - 50 が 30 段階になるように（上がり方は階段状）
+        this.WAITTIME = WAITTIME - (WAITTIME - 10) * value;
+        this.LAMBDA = LAMBDA - (LAMBDA - 10) * value;
         this.SPEED = SPEED + this.Level / 25;
       }
     },
@@ -869,7 +870,7 @@ function main() {
           }
         }else{ // ゴールにたどり着いたとき
           if(this.c == 0){ // たどり着いた瞬間の処理
-            var n = rand(parseInt(lane.Level / 2)) + 1;
+            var n = rand(parseInt(lane.Level / 5)) + 1;
             for(var i=0; i<n; i++){
               lane.addBook();
             }
