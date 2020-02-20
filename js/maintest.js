@@ -3,6 +3,8 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
+alert("ver. A");
+
 // フラグがすべて建ったら main() を実行 //
 var b = true;
 var id = setInterval(()=>{
