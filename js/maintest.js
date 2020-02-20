@@ -726,7 +726,7 @@ function main() {
     },
     touched: function(){
       this.touchNum++;
-      if(this.touchNum >= (5 + 2 * this.Level))
+      if(this.touchNum >= (5 + parseInt(this.Level / 5))
         this.levelUp();
     },
     levelUp: function(){
@@ -870,7 +870,7 @@ function main() {
           }
         }else{ // ゴールにたどり着いたとき
           if(this.c == 0){ // たどり着いた瞬間の処理
-            var n = rand(parseInt(lane.Level / 5)) + 1;
+            var n = rand(parseInt(lane.Level / 10)) + 2;
             for(var i=0; i<n; i++){
               lane.addBook();
             }
