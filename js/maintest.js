@@ -70,6 +70,7 @@ function main() {
 
     ////////// 音量設定を含めた音声再生するやつ //////////
     core.play = url => {
+      console.log(url);
       if(url.indexOf(AudioBGMDir) >= 0){
         core.bgm = core.assets[url].clone();
         core.bgm.play();
