@@ -1454,7 +1454,7 @@ function main() {
         console.log("seekbar: ", size, this.w, this.h);
 
         // ポインターを動かす
-        pointer.X = (- pointer.width * pointer.scaleX / 2) + this.w * value / 100;
+        this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.w * value / 100;
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
