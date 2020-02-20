@@ -695,10 +695,14 @@ function main() {
       return this.books.childNodes.length;
     },
     addBook: function(){
-      if(Math.random() < this.BLACKRATE)
-        this.books.addChild(new Book(this, 0, this.getBookNum()));
-      else
-        this.books.addChild(new Book(this, rand(5)+1, this.getBookNum()));
+      var n = parseInt(lane.Level / 10) - rand(5) + 1;
+      if(n < 1) n = 1;
+      for(var i=0; i<n; i++){
+        if(Math.random() < this.BLACKRATE)
+          this.books.addChild(new Book(this, 0, this.getBookNum()));
+        else
+          this.books.addChild(new Book(this, rand(5)+1, this.getBookNum()));
+      }
     },
     popBook: function(){
       var ret = this.books.lastChild;
@@ -867,11 +871,7 @@ function main() {
           }
         }else{ // ゴールにたどり着いたとき
           if(this.c == 0){ // たどり着いた瞬間の処理
-            var n = parseInt(lane.Level / 10) - rand(5) + 1;
-            if(n < 1) n = 1;
-            for(var i=0; i<n; i++){
-              lane.addBook();
-            }
+            lane.addBook();
           }
           this.c++;
           if(this.c > lane.WAITTIME){ // 一定時間たったら消える
