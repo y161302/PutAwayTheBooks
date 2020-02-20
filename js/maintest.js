@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. R");
+alert("ver. S");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1375,7 +1375,7 @@ function main() {
       bar.scaleX = w / image.width * 0.8; // w = シークバー＋数値 なので横幅は８割にする
       bar.scaleY = h / image.height / 6; // h = シークバー＋ポインター なので縦幅は 1/6 にする
       bar.X = 0;
-      bar.Y = h / 12; // == (h/6) / 2;
+      bar.Y = (h + h/6) / 2;
 
       // 数値表示用ラベル this.text を変更すると座標が設定される
       this.label = new Label();
@@ -1388,7 +1388,7 @@ function main() {
       var scale = h / image.height;
       pointer.scaleX = scale;
       pointer.scaleY = scale;
-      pointer.X = - image.width * scale / 2;
+      pointer.X = - pointer.width * pointer.scaleX / 2;
       pointer.Y = 0;
       pointer.rotate = -30;
       pointer.tl.rotateTo(0, parseInt(FPS/4), enchant.Easing.SIN_EASEIN)
@@ -1405,6 +1405,7 @@ function main() {
       // タッチ操作で動かすリスナー
       var that = this;
       var offsetX = 0;
+      var pointerX = 0;
       this.touchable = undefined;
       this.addEventListener("touchstart", function(e){
         if(e.x > x + pointer.X - 10 &&
@@ -1430,9 +1431,9 @@ function main() {
           if(getDistance(e, that.touchable) > DISTMOVE){
             e = that.touchable;
           }
+          that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
         }
         that.touchable = undefined;
-        that.value = parseInt((e.x - offsetX) * 100 / (w * 0.8));
       });
     },
     value: {
@@ -1450,6 +1451,10 @@ function main() {
         var size = getTextSize(this.label.text, this.label.font);
         this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
         this.label.y = (this.h + size.height) / 2;
+        console.log("seekbar: ", size, this.w, this.h);
+
+        // ポインターを動かす
+        pointer.X = (- pointer.width * pointer.scaleX / 2) + this.w * value / 100;
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
