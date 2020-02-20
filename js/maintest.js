@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. X");
+alert("ver. Y");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1343,7 +1343,6 @@ function main() {
       var seSeekBar = new SeekBar(120, bgp.Y + 200, (WIDTH - 120) / 2, 40, (value)=>{
         core.UserData.se = value;
         VOLUME_SE = value;
-        core.play(AudioSEDir + "LvUp.mp3");
       });
       seSeekBar.value = (core.UserData.se || VOLUME_SE);
 
@@ -1463,6 +1462,7 @@ function main() {
             e = that.touchable;
           }
           that.value = offsetValue + parseInt((e.x - offsetX) * 100 / (w * 0.8));
+          core.play(AudioSEDir + "LvUp.mp3");
         }
         that.touchable = undefined;
       });
@@ -1482,8 +1482,8 @@ function main() {
         // ラベルに数値をセットする
         this.label.text = value + "";
         var size = getTextSize(this.label.text, this.label.font);
-        this.label.x = this.x + this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
-        this.label.y = (this.h + size.height) / 2;
+        this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
+        this.label.y = (this.h - size.height) / 2;
 
         // ポインターを動かす
         this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.w * 0.8 * value / 100;
