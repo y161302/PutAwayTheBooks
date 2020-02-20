@@ -1087,7 +1087,7 @@ function main() {
         sb.image = image;
         sb.w = 300;
         sb.scale = sb.w / image.width;
-        sb.h = image.height * scale;
+        sb.h = image.height * sb.scale;
         sb.scaleX = 0;
         sb.scaleY = 0;
         sb.X = sb.w;
