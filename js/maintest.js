@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. C");
+alert("ver. D");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1311,6 +1311,7 @@ function main() {
       // ちかちかを終えて固定する
       this.tl.clear();
       this.opacity = 1;
+    }
     });
 
     // ランクの表示
@@ -1367,7 +1368,8 @@ function main() {
       this.scaleX = scale;
       this.scaleY = scale;
       this.X = (WIDTH + WIDTH/2 - WIDTH/3) / 2;
-      this.Y = 200 - this.height * scale / 2
+      this.Y = 200 - this.height * scale / 2;
+    }
     });
 
     // 音量設定パネルを開くためのアイコン
