@@ -8,7 +8,8 @@ alert("ver. C");
 // フラグがすべて建ったら main() を実行 //
 var b = true;
 var id = setInterval(()=>{
-  if(window.prm){
+  if(window.prm){ 
+    // 大体のフラグは html 内で onload="java..." ってしてる。ないやつは .js ファイル内にあるはず
     if(b && prm.WINDOW_ONLOAD && prm.ENCHANT_JS_ONLOAD && prm.FILELOAD_ONLOAD && prm.PARAMETER_ONLOAD && prm.USERDATAUTIL_ONLOAD){
       setTimeout(main, 1);
       b = false;
