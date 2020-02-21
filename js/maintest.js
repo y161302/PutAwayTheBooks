@@ -1389,7 +1389,7 @@ function main() {
         scaleX: (WIDTH * 1/3) / this.width,
         scaleY: (WIDTH * 1/3) / this.width,
         x: this.getXbyX(WIDTH * 7/12, (WIDTH * 1/3) / this.width),
-        y: this.getYbyY(200 - this.height * this.scaleY / 2, (WIDTH * 1/3) / this.width),
+        y: this.getYbyY(200 - this.height * (WIDTH * 1/3) / this.width * 1/2, (WIDTH * 1/3) / this.width),
         time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
       }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
