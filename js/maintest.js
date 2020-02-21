@@ -491,28 +491,38 @@ function main() {
       var gameover = new GameOverSprite();
       gameover.visible = true;
       gameover.defaultY = gameover.y;
+      
       var label1 = new Label();
       label1.font = "24px Arial";
       label1.text = "あなたは";
       label1.x = 20;
       label1.y = 200;
       label1.visible = false;
+      
       var label2 = new Label();
       label2.font = "24px Arial";
       label2.text = "片付けた！";
       label2.x = 320;
       label2.y = WIDTH - 20 - getTextSize(label2.text, label2.font).width;
       label2.visible = false;
+      
       var ptLabel = new PointLabel();
       ptLabel.font = "48px Century Gothic";
       ptLabel.y = 260;
       ptLabel.visible = false;
       ptLabel.random = false;
+      
       var tweet = new TweetButton();
+      
       var resume = new ResumeButton(resumed);
       resume.opacity = 0;
+      
       var end = new EndButton(ended);
       end.opacity = 0;
+
+      var best = new BestLabel();
+
+      var rank = new RankLabel(core.point);
 
       // オブジェクトの追加
       this.addChildOnFadePanel(gameover);
@@ -522,6 +532,7 @@ function main() {
       this.addChild(tweet);
       this.addChild(resume);
       this.addChild(end);
+      this.addChild(best);
 
       // 音楽鳴らすぜぇ
       core.play(AudioBGMDir + "result1.mp3");
@@ -529,6 +540,10 @@ function main() {
       // スコアの保存と前回のスコアの取得
       this.pointPrev = core.UserData.prev;
       core.UserData.prev = core.point;
+      if(core.UserData.best < core.point){ // 自己ベスト
+        this.best = true;
+        core.UserData.best = core.point;
+      }
       core.UserData.exportUserData();
 
       // フェードインの実行
@@ -544,11 +559,13 @@ function main() {
           label2.visible = true;
           ptLabel.visible = true;
           ptLabel.random = true;
+          best.show();
         }
         if(this.age == 60 && !this.finished){
           ptLabel.random = false;
           ptLabel.text = core.point + " 冊";
           ptLabel.x = (WIDTH - getTextSize(ptLabel.text, ptLabel.font).width) / 2;
+          rank.show();
         }
         if(this.age > 60 && this.age <= 90 && !this.finished){
           resume.opacity = (this.age - 60) / 30;
@@ -556,6 +573,9 @@ function main() {
         }
         if(this.age == 90 && !this.finished){
           tweet.visible = true;
+          this.finished = true;
+          best.finish();
+          rank.finish();
         }
       });
       
@@ -578,6 +598,8 @@ function main() {
           tweet.visible = true;
           resume.opacity = 1.0;
           end.opacity = 1.0;
+          best.finish();
+          rank.finish();
         }else{
           // 各ボタンの処理をここに書こうかしら
         }
@@ -686,9 +708,16 @@ function main() {
           return this._yy;
       },
       set(y){
+        
         this.y = y - this.height * (1 - this.scaleY) / 2;
         this._yy = y;
       }
+    },
+    getXbyX: function(X){
+      return X - this.width * (1 - this.scaleX) / 2;
+    },
+    getYbyY: function(Y){
+      return Y - this.height * (1 - this.scaleY) / 2;
     }
     });
     
@@ -740,7 +769,7 @@ function main() {
       return this.books.childNodes.length;
     },
     addBook: function(){
-      var n = parseInt((this.Level - 1) / 6) - rand(5) + 1;
+      var n = parseInt(((this.Level - 1) % 10) / 2) - rand(5) + 1;
       if(n < 1) n = 1;
       if(core.level > 30) n = rand(4) + 3; // ３～６冊
       for(var i=0; i<n; i++){
@@ -790,7 +819,8 @@ function main() {
         this.LAMBDA = 10;
         this.SPEED = 3;
       }else{
-        var value = (((this.Level - 1) % 10) * 2 + parseInt((this.Level - 1) / 10) * 5) / 30; // Lv.1 - 30 が 30 段階になるように（上がり方は階段状）
+        var offset = parseInt((this.Level - 1) / 10);
+        var value = (((this.Level - 1) % 10) * (offset + 1)) / 30; // Lv.1 - 30 が 30 段階になるように（上がり方はのこぎり状）
         this.WAITTIME = WAITTIME - (WAITTIME - 10) * value;
         this.LAMBDA = LAMBDA - (LAMBDA - 15) * value;
         this.SPEED = SPEED + value * 1.5;
@@ -1252,6 +1282,92 @@ function main() {
         }
       });
     }
+    });
+
+    // 自己ベスト！の表示
+    var BestLabel = Class.create(ScaleSprite, {
+    initialize: function(){
+      // 画像設定とか
+      var image = core.assets[PartsDir + "best.png"];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+
+      // 場所とかの設定
+      var w = WIDTH / 2;
+      this.scaleX = w / image.width;
+      this.scaleY = w / image.width;
+      this.X = 0;
+      this.Y = 340;
+
+      // 最初は見えない
+      this.opacity = 0;
+    },
+    show: function(){
+      // ちかちかさせる
+      this.tl.delay(parseInt(FPS / 5)).show()
+             .delay(parseInt(FPS / 5)).hide().loop();
+    },
+    finish: function(){
+      // ちかちかを終えて固定する
+      this.tl.clear();
+      this.opacity = 1;
+    });
+
+    // ランクの表示
+    var RankLabel = Class.create(ScaleSprite, {
+    initialize: function(score){
+      // ランクを測る
+      var rank = parseInt(score/200);
+      if(rank > 4) rank = 4;
+
+      // 画像設定とか
+      var image = core.assets[PartsDir + "rank" + rank + ".png"];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+
+      // 最初は見えない小ささ
+      this.scaleX = 0;
+      this.scaleY = 0;
+
+      // 初期位置は画面中央 (スケールが０のため画面中央指定で大丈夫）
+      this.X = WIDTH / 2;
+      this.Y = HEIGHT / 2;
+
+      // 傾きを最終の傾きにしておく
+      this.rotate(35);
+
+      // 透明度まっくす
+      this.opacity = 0;
+    },
+    show: function(){
+      // 全体的に中心の座標に従って動く
+      this.tl.tween({ // 画面中央で拡大しながら回転
+        scaleX: WIDTH / this.width,
+        scaleY: WIDTH / this.width,
+        rotation: this.rotation + 2880,
+        opacity: 1,
+        time: FPS * 2,
+      }).tween({ // 目的地（画面右上のほう）へ[横幅がWIDTHの1/3]まで縮小しながら移動
+        scaleX: (WIDTH * 1/3) / this.width,
+        scaleY: (WIDTH * 1/3) / this.width,
+        X: (WIDTH + WIDTH/2 - WIDTH/3) / 2,
+        Y: 200 - this.height * this.scaleY / 2,
+        time: FPS,
+        easing: Easing.SIN_EASEIN,
+      }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
+        scaleX: (WIDTH * 1/2) / this.width,
+        scaleY: (WIDTH * 1/2) / this.width,
+        time: parseInt(FPS / 4);
+        easing: Easing.SIN_EASEOUT,
+      });
+    },
+    finish: function(){
+      this.tl.clear();
+      var scale = (WIDTH * 1/3) / this.width;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      this.X = (WIDTH + WIDTH/2 - WIDTH/3) / 2;
+      this.Y = 200 - this.height * scale / 2
     });
 
     // 音量設定パネルを開くためのアイコン
