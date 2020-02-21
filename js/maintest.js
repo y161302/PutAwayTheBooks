@@ -1331,7 +1331,7 @@ function main() {
       bgmLabel.y = bgp.Y + 60;
 
       // BGM 音量設定のシークバー
-      var bgmSeekBar = new SeekBar(barX, bgp.Y + 100, (WIDTH - barX) / 2, 40, (value)=>{
+      var bgmSeekBar = new SeekBar(barX, bgp.Y + 100, WIDTH - barX * 2, 40, (value)=>{
         core.UserData.bgm = value;
         VOLUME_BGM = value;
         core.setVolumeBGM(1);
@@ -1346,7 +1346,7 @@ function main() {
       seLabel.y = bgp.Y + 160;
 
       // 効果音の音量性のシークバー
-      var seSeekBar = new SeekBar(barX, bgp.Y + 200, (WIDTH - barX) / 2, 40, (value)=>{
+      var seSeekBar = new SeekBar(barX, bgp.Y + 200, WIDTH - barX * 2, 40, (value)=>{
         core.UserData.se = value;
         VOLUME_SE = value;
       });
