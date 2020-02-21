@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. H");
+alert("ver. I");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -575,6 +575,7 @@ function main() {
         }
         if(this.age == 90 && !this.finished){
           tweet.visible = true;
+          best.finish();
         }
       });
       
@@ -689,27 +690,18 @@ function main() {
     },
     X: {
       get(){
-        if(this._xx === undefined)
-          return this.x;
-        else
-          return this._xx;
+        return this.x + this.width * (1 - this.scaleX) / 2;
       },
       set(x){
         this.x = x - this.width * (1 - this.scaleX) / 2;
-        this._xx = x;
       }
     },
     Y: {
       get(){
-        if(this._yy === undefined)
-          return this.y;
-        else
-          return this._yy;
+        return this.y + this.height * (1 - this.scaleY) / 2
       },
       set(y){
-        
         this.y = y - this.height * (1 - this.scaleY) / 2;
-        this._yy = y;
       }
     },
     getXbyX: function(X){
@@ -1350,7 +1342,7 @@ function main() {
       }).tween({ // 目的地（画面右上のほう）へ[横幅がWIDTHの1/3]まで縮小しながら移動
         scaleX: (WIDTH * 1/3) / this.width,
         scaleY: (WIDTH * 1/3) / this.width,
-        x: this.getXbyX((WIDTH + WIDTH/2 - WIDTH/3) / 2),
+        x: this.getXbyX((WIDTH *  2/3),
         y: this.getYbyY(200 - this.height * this.scaleY / 2),
         time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
