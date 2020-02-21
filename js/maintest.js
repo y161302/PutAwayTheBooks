@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. Z");
+alert("ver. A");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1305,6 +1305,9 @@ function main() {
       this.y = 0;
       this._visible = true;
 
+      // シークバー表示位置
+      var barX = 80;
+
       // 背景を暗くする
       var bp = new Sprite(WIDTH, HEIGHT);
       bp.image = core.assets[PartsDir + "BlackPanelA.png"];
@@ -1324,11 +1327,11 @@ function main() {
       var bgmLabel = new Label();
       bgmLabel.font = "32px sans serif";
       bgmLabel.text = "BGM の音量"
-      bgmLabel.x = 100;
+      bgmLabel.x = barX - 20;
       bgmLabel.y = bgp.Y + 60;
 
       // BGM 音量設定のシークバー
-      var bgmSeekBar = new SeekBar(120, bgp.Y + 100, (WIDTH - 120) / 2, 40, (value)=>{
+      var bgmSeekBar = new SeekBar(barX, bgp.Y + 100, (WIDTH - barX) / 2, 40, (value)=>{
         core.UserData.bgm = value;
         VOLUME_BGM = value;
         core.setVolumeBGM(1);
@@ -1339,11 +1342,11 @@ function main() {
       var seLabel = new Label();
       seLabel.font = "32px sans serif";
       seLabel.text = "効果音の音量"
-      seLabel.x = 100;
+      seLabel.x = barX - 20;
       seLabel.y = bgp.Y + 160;
 
       // 効果音の音量性のシークバー
-      var seSeekBar = new SeekBar(120, bgp.Y + 200, (WIDTH - 120) / 2, 40, (value)=>{
+      var seSeekBar = new SeekBar(barX, bgp.Y + 200, (WIDTH - barX) / 2, 40, (value)=>{
         core.UserData.se = value;
         VOLUME_SE = value;
       });
@@ -1399,20 +1402,21 @@ function main() {
       this.y = y;
       this.w = w; // 単純に数値保持のため
       this.h = h; // 同上
+      this.barW = 0.7 * this.w;
       this.targetFunc = targetfunc; // 値が変わった時に設定する関数
 
       // シークバーのバー
       var image = core.assets[PartsDir + "SeekBar.png"];
       var bar = new ScaleSprite(image.width, image.height);
       bar.image = image;
-      bar.scaleX = w / image.width * 0.8; // w = シークバー＋数値 なので横幅は８割にする
+      bar.scaleX = this.barW / image.width; // w = シークバー＋数値 なので横幅は７割にする
       bar.scaleY = h / image.height / 6; // h = シークバー＋ポインター なので縦幅は 1/6 にする
       bar.X = 0;
       bar.Y = (h + h/6) / 2;
 
       // 数値表示用ラベル this.text を変更すると座標が設定される
       this.label = new Label();
-      this.label.font = (h * 0.8) + "px sans-serif";
+      this.label.font = (h * 0.6) + "px sans-serif";
 
       // シークポインタ用なのビィ
       image = core.assets[RareDir + "guest_2A.png"];
@@ -1456,7 +1460,7 @@ function main() {
         if(that.touchable && getDistance(e, that.touchable) < DISTMOVE){
           that.touchable.x = e.x;
           that.touchable.y = e.y;
-          that.value = offsetValue + parseInt((e.x - offsetX) / (w * 0.8) * 100);
+          that.value = offsetValue + parseInt((e.x - offsetX) / that.barW * 100);
         }else{
           that.touchable = undefined;
         }
@@ -1466,7 +1470,7 @@ function main() {
           if(getDistance(e, that.touchable) > DISTMOVE){
             e = that.touchable;
           }
-          that.value = offsetValue + parseInt((e.x - offsetX) * 100 / (w * 0.8));
+          that.value = offsetValue + parseInt((e.x - offsetX) * 100 / that.barW);
           setTimeout(function(){
             var tempSE = core.assets[AudioSEDir + "LvUp.mp3"].clone();
             tempSE.play();
@@ -1491,11 +1495,11 @@ function main() {
         // ラベルに数値をセットする
         this.label.text = value + "";
         var size = getTextSize(this.label.text, this.label.font);
-        this.label.x = this.w * 0.8 + (this.w * 0.2 - size.width) / 2;
+        this.label.x = this.barW + ((this.w - this.barW) - size.width) / 2;
         this.label.y = (this.h - size.height) / 2;
 
         // ポインターを動かす
-        this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.w * 0.8 * value / 100;
+        this.pointer.X = (- this.pointer.width * this.pointer.scaleX / 2) + this.barW * value / 100;
         
         // targetFunc があれば実行
         if(this.targetFunc) this.targetFunc(value);
