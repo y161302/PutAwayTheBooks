@@ -1358,7 +1358,7 @@ function main() {
       }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
         scaleX: (WIDTH * 1/2) / this.width,
         scaleY: (WIDTH * 1/2) / this.width,
-        time: parseInt(FPS / 4);
+        time: parseInt(FPS / 4),
         easing: Easing.SIN_EASEOUT,
       });
     },
