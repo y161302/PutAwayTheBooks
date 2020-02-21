@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. G");
+alert("ver. H");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -560,7 +560,8 @@ function main() {
           label2.visible = true;
           ptLabel.visible = true;
           ptLabel.random = true;
-          best.show();
+          if(this.best)
+            best.show();
         }
         if(this.age == 60 && !this.finished){
           ptLabel.random = false;
@@ -574,9 +575,6 @@ function main() {
         }
         if(this.age == 90 && !this.finished){
           tweet.visible = true;
-          this.finished = true;
-          best.finish();
-          rank.finish();
         }
       });
       
@@ -1354,7 +1352,7 @@ function main() {
         scaleY: (WIDTH * 1/3) / this.width,
         x: this.getXbyX((WIDTH + WIDTH/2 - WIDTH/3) / 2),
         y: this.getYbyY(200 - this.height * this.scaleY / 2),
-        time: FPS,
+        time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
       }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
         scaleX: (WIDTH * 1/2) / this.width,
