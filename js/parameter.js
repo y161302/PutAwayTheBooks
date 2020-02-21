@@ -16,13 +16,13 @@ BackgroundDir = "./assets/image/background/";
 
 ////////// ゲームパラメータ― ////////// このパラメータは変更して大丈夫です。
 // 人が本を置いて立ち去るまでの初期時間
-WAITTIME = 25;
+WAITTIME = 20;
 
 // ゲームオーバーとなる積立冊数
 LIMIT = 15;
 
 // 人の初期出現率 (１人 ／ LAMBDA フレーム)
-LAMBDA = 25;
+LAMBDA = 35;
 
 // 人が歩いてくる初期速度
 SPEED = 1.0;
@@ -31,16 +31,16 @@ SPEED = 1.0;
 LANE = 3;
 
 // タッチ判定となる指の移動距離 この距離以内ならOK
-DISTLIMIT = 30;
+DISTLIMIT = 40;
 
 // タッチ継続判定となる１フレームの移動距離
-DISTMOVE = 50;
+DISTMOVE = 80;
 
 // 黒い本を返した判定とする縦の距離 この距離より上で離せばOK
 DISTBLACK = 60;
 
 // レアキャラ（図書館キャラ）の出現率（％）
-RARERATE = 3;
+RARERATE = 4;
 
 // 黒い本の出現率 0 ～ 1 の実数
 BLACKRATE = 0.05;
@@ -49,7 +49,7 @@ BLACKRATE = 0.05;
 VOLUME_BGM = 100;
 
 // ゲーム全体の効果音の音量 [0 - 100]
-VOLUME_SE = 0;
+VOLUME_SE = 70;
 
 // リザルト画面で「やめる」を選択した際の遷移先 URL
 BACK_URL = "http://www2.city.tahara.aichi.jp/section/library/info/200123game.html";
@@ -102,3 +102,6 @@ HumanSetting.push({
 
 // 人ファイルの合計数を計算 
 HumanNum = HumanSetting.map(s=>{return s.num;}).reduce((p,c)=>{return p+c;});
+
+// なのビィの吹き出しの数
+SpeechBubbleNum = 3;

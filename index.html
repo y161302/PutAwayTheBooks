@@ -12,7 +12,7 @@ PRELOAD = undefined;
 window.onload = ()=>prm.WINDOW_ONLOAD=true;
 
 // 画面中央に表示する
-window.onresize = ()=>moveStageToCenter(core);
+window.onresize = ()=>{if(window.core)moveStageToCenter(core);};
 
 ////////// 表示位置を画面中央にする奴 //////////
 var moveStageToCenter = function(core) {
@@ -30,7 +30,7 @@ var moveStageToCenter = function(core) {
     </script>
     <script src="./js/enchant.js" id="enchant.js" onload="javascript:prm.ENCHANT_JS_ONLOAD=true;"></script>
     <script src="./js/fileload.js" id="fileload.js"></script>
-    <script src="./js/parameter.js" id="fileload.js" onload="javascript:prm.PARAMETER_ONLOAD=true;"></script>
+    <script src="./js/parameter.js" id="parameter.js" onload="javascript:prm.PARAMETER_ONLOAD=true;"></script>
     <script src="./js/userdatautil.js" id="userdatautil.js" onload="javascript:prm.USERDATAUTIL_ONLOAD=true;"></script>
     <script src="./js/main.js"></script>
   </head>
