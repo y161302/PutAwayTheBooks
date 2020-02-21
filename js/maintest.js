@@ -305,7 +305,7 @@ function main() {
               touch.start = {x: e.x, y: e.y};
               this.touches[id] = touch;
               // 黒い本のときは、戻すまでにタップした回数を数える
-              if(touch.book.color == Book.Color.indexOf("Black")){
+              if(touch.book.color == Book.Color.indexOf("Black") && !touch.book.touchCount){
                 touch.book.touchCount = 0;
                 console.log("黒い本です", touch.book.touchCount);
               }
