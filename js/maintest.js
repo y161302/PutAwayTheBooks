@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. O");
+alert("ver. P");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1362,22 +1362,22 @@ function main() {
       var image = core.assets[PartsDir + "rank" + rank + ".png"];
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
-
+      
+      // 透明感まっくす
+      this.opacity = 0;
+    },
+    show: function(){      
       // 最初は見えない小ささ
       this.scaleX = 0;
       this.scaleY = 0;
-
+      
       // 初期位置は画面中央 (スケールが０のため画面中央指定で大丈夫）
       this.X = WIDTH / 2;
       this.Y = HEIGHT / 2;
 
-      // 傾きを最終の傾きにしておく
-      this.rotate(35);
-
-      // 透明度まっくす
-      this.opacity = 0;
-    },
-    show: function(){
+      // 傾ける
+      this.rotation = 35;
+      
       // 拡大縮小だけなら座標変更いらない問題
       this.tl.tween({ // 画面中央で拡大しながら回転
         scaleX: WIDTH / this.width,
@@ -1406,6 +1406,8 @@ function main() {
       this.scaleY = scale;
       this.X = WIDTH * 1/2;
       this.Y = 200 - this.height * scale / 2;
+      this.rotation = 35;
+      this.opacity = 1;
     }
     });
 
