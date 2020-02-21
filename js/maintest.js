@@ -1342,7 +1342,7 @@ function main() {
       }).tween({ // 目的地（画面右上のほう）へ[横幅がWIDTHの1/3]まで縮小しながら移動
         scaleX: (WIDTH * 1/3) / this.width,
         scaleY: (WIDTH * 1/3) / this.width,
-        x: this.getXbyX((WIDTH *  2/3),
+        x: this.getXbyX(WIDTH *  2/3),
         y: this.getYbyY(200 - this.height * this.scaleY / 2),
         time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
