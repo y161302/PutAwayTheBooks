@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. A");
+alert("ver. C");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -732,16 +732,16 @@ function main() {
         if(core.frame % l == this.numberOfAppear){
           this.humans.insertBefore(new Human(this, this.SPEED, this.getHumanNum()), this.humans.firstChild);
         }
-        this.warnning = (this.books.childNodes.length > LIMIT * 0.8) || (this.books.childNodes.length >= LIMIT - 2);
+        this.warnning = (this.books.childNodes.length > LIMIT * 0.7) || (this.books.childNodes.length >= LIMIT - 3);
       });
     },
     getBookNum: function(){
       return this.books.childNodes.length;
     },
     addBook: function(){
-      var n = parseInt((this.Level - 1) / 10) - rand(5) + 1;
+      var n = parseInt((this.Level - 1) / 6) - rand(5) + 1;
       if(n < 1) n = 1;
-      if(core.level > 50) n = rand(3) + 3;
+      if(core.level > 30) n = rand(4) + 3; // ３～６冊
       for(var i=0; i<n; i++){
         if(Math.random() < this.BLACKRATE)
           this.books.addChild(new Book(this, 0, this.getBookNum()));
@@ -772,7 +772,7 @@ function main() {
     },
     touched: function(){
       this.touchNum++;
-      if(this.touchNum >= (5 + parseInt(this.Level / 5)))
+      if(this.touchNum >= (4 + parseInt(this.Level / 5)))
         this.levelUp();
     },
     levelUp: function(){
@@ -784,12 +784,12 @@ function main() {
         console.log("Lv. " + core.level);
       }
       this.touchNum = 0;
-      if(this.Level > 50){
+      if(this.Level > 30){
         this.WAITTIME = 5;
         this.LAMBDA = 10;
         this.SPEED = 3;
       }else{
-        var value = ((this.Level - 1) % 10 + parseInt((this.Level - 1) / 10) * 5) / 30; // Lv.1 - 50 が 30 段階になるように（上がり方は階段状）
+        var value = (((this.Level - 1) % 10) * 2 + parseInt((this.Level - 1) / 10) * 5) / 30; // Lv.1 - 30 が 30 段階になるように（上がり方は階段状）
         this.WAITTIME = WAITTIME - (WAITTIME - 10) * value;
         this.LAMBDA = LAMBDA - (LAMBDA - 15) * value;
         this.SPEED = SPEED + value * 1.5;
@@ -1121,7 +1121,7 @@ function main() {
       sb.tl.moveBy(-sb.w/2, -sb.h/2, moveFrame).and().scaleTo(sb.scale, moveFrame)
            .delay(parseInt(FPS * 2.5))
            .moveBy(sb.w/2, sb.h/2, moveFrame).and().scaleTo(0, moveFrame)
-             .then(function(){sb.visible = false; this.visible = false;}).clear();
+             .then(function(){sb.visible = false; this.visible = false; sb.tl.clear();});
     }
     });
 
