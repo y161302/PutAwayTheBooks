@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. J");
+alert("ver. K");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -396,10 +396,11 @@ function main() {
             if(touch.start.y - e.y > DISTBLACK){ // 指定の縦の距離より上で離しているなら片付ける
               this.lane[touch.id].removeBook(touch.book);
             }else{ // 間違って黒い本をタップした時
-              core.play(AudioSEDir + "BookWrong.mp3");
+              core.play(AudioSEDir + "bookWrong.mp3");
               touch.book.count++;
               if(touch.book.count > 3){ // 3回以上同じ黒い本をタップしていた時はいずみちゃん登場
                 this.addChild(new IzumiChan());
+                console.log("izumi pop up.");
               }
             }
           }else{ // タッチ開始した時の本が黒以外のとき
