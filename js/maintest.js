@@ -304,6 +304,9 @@ function main() {
               this.lane[id].touched();
               touch.start = {x: e.x, y: e.y};
               this.touches[id] = touch;
+              // 黒い本のときは、戻すまでにタップした回数を数える
+              if(touch.book.color == Book.Color.indexOf("Black"))
+                touch.book.count = 0;
             }
           }
         }
@@ -392,6 +395,12 @@ function main() {
           if(touch.book.color == Book.Color.indexOf("Black")){
             if(touch.start.y - e.y > DISTBLACK){ // 指定の縦の距離より上で離しているなら片付ける
               this.lane[touch.id].removeBook(touch.book);
+            }else{ // 間違って黒い本をタップした時
+              core.play(AudioSEDir + "BookWrong.mp3");
+              touch.book.count++;
+              if(touch.book.count > 3){ // 3回以上同じ黒い本をタップしていた時はいずみちゃん登場
+                this.addChild(new IzumiChan());
+              }
             }
           }else{ // タッチ開始した時の本が黒以外のとき
             if(getDistance(touch.start, e) < DISTLIMIT){ // タッチ開始位置からの距離が一定距離内なら片付ける
@@ -575,7 +584,8 @@ function main() {
         }
         if(this.age == 90 && !this.finished){
           tweet.visible = true;
-          best.finish();
+          if(this.best)
+            best.finish();
         }
       });
       
@@ -1055,6 +1065,35 @@ function main() {
     }
     });
 
+    //------ いずみちゃんが横切る
+    var IzumiChan = Class.create(ScaleSprite, {
+    initialize: function(){
+      var image = core.assets[PartsDir + "izumi.png"];
+      ScaleSprite.call(this, image.width, image.height);
+      this.image = image;
+
+      // まずはスケールを合わせる（高さを100pxにする）
+      var scale = 100 / this.height;
+      this.scaleX = scale;
+      this.scaleY = scale;
+      
+      this.X = WIDTH;
+      this.Y = COUNTER_Y - 20;
+
+      // 横切るよー
+      this.tl.tween({
+        x: this.getXbyX(-this.width * scale),
+        time: WAITTIME * 2,
+      }).and().waitUntil(function(){
+        this.Y = COUNTER_Y - 20 - parseInt((this.age % 6) / 3) * 5;
+        if(this.X == -this.width * scale)
+          return true;
+        else
+          return false;
+      }).then(function(){this.parentNode.removeChild(this);});
+    }
+    });
+
     //------ タイトルロゴ
     var TitleLogo = Class.create(ScaleSprite, {
     initialize: function(){
@@ -1355,10 +1394,10 @@ function main() {
     },
     finish: function(){
       this.tl.clear();
-      var scale = (WIDTH * 1/3) / this.width;
+      var scale = (WIDTH * 1/2) / this.width;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.X = (WIDTH + WIDTH/2 - WIDTH/3) / 2;
+      this.X = WIDTH * 2/3;
       this.Y = 200 - this.height * scale / 2;
     }
     });
