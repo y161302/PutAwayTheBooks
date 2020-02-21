@@ -1354,12 +1354,12 @@ function main() {
         X: (WIDTH + WIDTH/2 - WIDTH/3) / 2,
         Y: 200 - this.height * this.scaleY / 2,
         time: FPS,
-        easing: Easing.SIN_EASEIN,
+        easing: enchant.Easing.SIN_EASEIN,
       }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
         scaleX: (WIDTH * 1/2) / this.width,
         scaleY: (WIDTH * 1/2) / this.width,
         time: parseInt(FPS / 4),
-        easing: Easing.SIN_EASEOUT,
+        easing: enchant.Easing.SIN_EASEOUT,
       });
     },
     finish: function(){

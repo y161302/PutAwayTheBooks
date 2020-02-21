@@ -40,10 +40,10 @@ DISTMOVE = 80;
 DISTBLACK = 60;
 
 // レアキャラ（図書館キャラ）の出現率（％）
-RARERATE = 5;
+RARERATE = 4;
 
 // 黒い本の出現率 0 ～ 1 の実数
-BLACKRATE = 0.1;
+BLACKRATE = 0.05;
 
 // ゲーム全体の BGM の音量 [0 - 100]
 VOLUME_BGM = 100;
