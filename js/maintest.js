@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. L");
+alert("ver. M");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1076,20 +1076,21 @@ function main() {
       ScaleSprite.call(this, image.width, image.height);
       this.image = image;
 
-      // まずはスケールを合わせる（高さを100pxにする）
-      var scale = 100 / this.height;
+      // まずはスケールを合わせる（高さを200pxにする）
+      var scale = 200 / this.height;
       this.scaleX = scale;
       this.scaleY = scale;
       
       this.X = WIDTH;
-      this.Y = COUNTER_Y - 20;
+      var y = rand(HEIGHT - 200);
+      this.Y = y;
 
       // 横切るよー
       this.tl.tween({
         x: this.getXbyX(-this.width * scale),
         time: WAITTIME * 2,
       }).and().waitUntil(function(){
-        this.Y = COUNTER_Y - 20 - parseInt((this.age % 6) / 3) * 5;
+        this.Y = y - parseInt((this.age % 6) / 3) * 5;
         if(this.X == -this.width * scale)
           return true;
         else
