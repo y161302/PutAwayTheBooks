@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. E");
+alert("ver. F");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1341,7 +1341,7 @@ function main() {
       this.opacity = 0;
     },
     show: function(){
-      // 全体的に中心の座標に従って動く
+      // 拡大縮小だけなら座標変更いらない問題
       this.tl.tween({ // 画面中央で拡大しながら回転
         scaleX: WIDTH / this.width,
         scaleY: WIDTH / this.width,
