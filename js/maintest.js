@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. Y");
+alert("ver. Z");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -106,15 +106,14 @@ function main() {
 
     ////////// canvas の context2D から得られる文字の横幅を得る関数 //////////
     function getTextSize(str, font){
+      var temp = document.createElement("span");
+      temp.style.font = font;
+      var size = parseInt(temp.style.fontSize.replace(/[^0-9]/g, ""));
       if(!core.context2d){
-        var temp = document.createElement("span");
-        temp.style.font = font;
-        var size = parseInt(temp.style.fontSize.replace(/[^0-9]/g, ""));
         return {width: str.length * size / 2, height: size};
       }else{
         core.context2d.font = font;
-        var measure = core.context2d.measureText(str);
-        return measure;
+        return {width: core.context2d.measureText(str).width, height: size};
       }
     };
 
