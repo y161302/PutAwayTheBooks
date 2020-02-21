@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. N");
+alert("ver. O");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -307,7 +307,6 @@ function main() {
               // 黒い本のときは、戻すまでにタップした回数を数える
               if(touch.book.color == Book.Color.indexOf("Black") && !touch.book.touchCount){
                 touch.book.touchCount = 0;
-                console.log("黒い本です", touch.book.touchCount);
               }
             }
           }
@@ -400,10 +399,8 @@ function main() {
             }else{ // 間違って黒い本をタップした時
               core.play(AudioSEDir + "bookWrong.mp3");
               touch.book.touchCount++;
-              console.log("黒い本だってば", touch.book.touchCount);
               if(touch.book.touchCount > 3){ // 3回以上同じ黒い本をタップしていた時はいずみちゃん登場
                 this.addChild(new IzumiChan());
-                console.log("izumi pop up.");
               }
             }
           }else{ // タッチ開始した時の本が黒以外のとき
@@ -612,7 +609,8 @@ function main() {
           tweet.visible = true;
           resume.opacity = 1.0;
           end.opacity = 1.0;
-          best.finish();
+          if(this.best)
+            best.finish();
           rank.finish();
         }else{
           // 各ボタンの処理をここに書こうかしら
@@ -718,11 +716,15 @@ function main() {
         this.y = y - this.height * (1 - this.scaleY) / 2;
       }
     },
-    getXbyX: function(X){
-      return X - this.width * (1 - this.scaleX) / 2;
+    getXbyX: function(X, scaleX){
+      if(scaleX === undefined)
+        scaleX = this.scaleX;
+      return X - this.width * (1 - scaleX) / 2;
     },
-    getYbyY: function(Y){
-      return Y - this.height * (1 - this.scaleY) / 2;
+    getYbyY: function(Y, scaleY){
+      if(scaleY === undefined)
+        scaleY = this.scaleY;
+      return Y - this.height * (1 - scaleY) / 2;
     }
     });
     
@@ -1386,8 +1388,8 @@ function main() {
       }).tween({ // 目的地（画面右上のほう）へ[横幅がWIDTHの1/3]まで縮小しながら移動
         scaleX: (WIDTH * 1/3) / this.width,
         scaleY: (WIDTH * 1/3) / this.width,
-        x: this.getXbyX(WIDTH *  7/12),
-        y: this.getYbyY(200 - this.height * this.scaleY / 2),
+        x: this.getXbyX(WIDTH * 7/12, (WIDTH * 1/3) / this.width),
+        y: this.getYbyY(200 - this.height * this.scaleY / 2, (WIDTH * 1/3) / this.width),
         time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
       }).tween({ // 目的地で[横幅がWIDTHの1/2]まで拡大
