@@ -3,7 +3,7 @@ var rand = function(n){ // よく使う [0-n) ランダム
   return Math.floor(Math.random() * n);
 };
 
-alert("ver. M");
+alert("ver. N");
 
 // フラグがすべて建ったら main() を実行 //
 var b = true;
@@ -1090,7 +1090,7 @@ function main() {
         x: this.getXbyX(-this.width * scale),
         time: WAITTIME * 2,
       }).and().waitUntil(function(){
-        this.Y = y - parseInt((this.age % 6) / 3) * 5;
+        this.Y = y - parseInt((this.age % 6) / parseInt(FPS / 5)) * 5;
         if(this.X == -this.width * scale)
           return true;
         else
@@ -1386,7 +1386,7 @@ function main() {
       }).tween({ // 目的地（画面右上のほう）へ[横幅がWIDTHの1/3]まで縮小しながら移動
         scaleX: (WIDTH * 1/3) / this.width,
         scaleY: (WIDTH * 1/3) / this.width,
-        x: this.getXbyX(WIDTH *  2/3),
+        x: this.getXbyX(WIDTH *  7/12),
         y: this.getYbyY(200 - this.height * this.scaleY / 2),
         time: parseInt(FPS * 3/4),
         easing: enchant.Easing.SIN_EASEIN,
@@ -1402,7 +1402,7 @@ function main() {
       var scale = (WIDTH * 1/2) / this.width;
       this.scaleX = scale;
       this.scaleY = scale;
-      this.X = WIDTH * 2/3;
+      this.X = WIDTH * 1/2;
       this.Y = 200 - this.height * scale / 2;
     }
     });
